@@ -8,9 +8,10 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AuthModule } from "./components/auth/auth.module";
 import { HelloworldComponent } from './components/helloworld/helloworld.component';
 import { RouterModule } from "@angular/router";
+import { PrimaryButtonComponent } from './components/shared/primary-button/primary-button.component';
 
 @NgModule({
-  declarations: [AppComponent, AuthComponent, HelloworldComponent],
+  declarations: [AppComponent, AuthComponent, HelloworldComponent, PrimaryButtonComponent],
   imports: [
     HttpClientModule,
     BrowserModule,
