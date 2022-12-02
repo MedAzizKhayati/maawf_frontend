@@ -6,18 +6,25 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+import { AppModule } from '@/app/app.module';
+import { StandardInputComponent } from '../shared/standard-input/standard-input.component';
+import { AuthComponent } from './auth.component';
+import { SharedModuleModule } from '../shared/shared-module.module';
 
 @NgModule({
   declarations: [
     SignInComponent,
-    SignUpComponent
+    SignUpComponent,
+    AuthComponent,
+   
   ],
   imports: [
     CommonModule,
     BrowserModule,
     AuthRoutingModule,
-    RouterModule
-  ],
+    RouterModule,
+    SharedModuleModule
+    ],
   providers: [SignUpComponent],
 })
 export class AuthModule { }

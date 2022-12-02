@@ -1,1 +1,31 @@
-<p>sign-in works!</p>
+<div
+  class="main-container bg-primary w-full h-full flex flex-col justify-center"
+>
+  <div class="sub-container flex items-start flex-col gap-7">
+    <h3 class="label">Check your feed</h3>
+    <div class="flex">
+      <h1 class="title">Login to your account</h1>
+      <h1 class="title point">.</h1>
+    </div>
+    <h4 class="sub-note">
+      New here ? Register <a href="facebook.com">here</a>
+    </h4>
+    <form class="flex flex-col gap-4">
+      <div class="mail">
+        <app-standard-input
+          [type]="'text'"
+          [label]="'Email'"
+        ></app-standard-input>
+      </div>
+      <div class="mail">
+        <app-standard-input
+          [type]="'password'"
+          [label]="'Password'"
+        ></app-standard-input>
+      </div>
+      <div class="btn">
+        <app-primary-button [text]="'Create Account'"></app-primary-button>
+      </div>
+    </form>
+  </div>
+</div>

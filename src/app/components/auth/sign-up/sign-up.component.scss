@@ -1,0 +1,45 @@
+.main-container {
+  background-image: radial-gradient(
+      101.42% 197.75% at 100% -1.42%,
+      rgba(7, 11, 24, 0.52) 0%,
+      #282a37 47.78%,
+      #282a37 100%
+    ),
+    url("../../../../assets/images/sign-up.png");
+  background-repeat: no-repeat;
+  background-position: right;
+  color: white;
+  height: 100vh;
+  .sub-container {
+    padding-left: 5%;
+    .label {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 29px;
+      color: #acacac;
+    }
+    .title {
+      font-style: normal;
+      font-weight: 700;
+      font-size: 78px;
+      line-height: 94px;
+      &.point {
+        color: rgba(73, 162, 226, 1);
+      }
+    }
+    .sub-note {
+      font-family: "Inter";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 19px;
+      a {
+        color: #49a2e2;
+      }
+    }
+    form {
+      width: 30%;
+    }
+  }
+}

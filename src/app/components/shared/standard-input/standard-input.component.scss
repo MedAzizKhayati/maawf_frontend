@@ -1,0 +1,23 @@
+.input-container {
+  width: 100%;
+  .placeholder {
+    position: absolute;
+    color: #949494;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    padding: 12px 24px;
+  }
+  .form-input {
+    background: #35384b;
+    height: 76px;
+    width: 100%;
+    padding-top: 9px;
+    padding-left: 24px;
+    color: white;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 19px;
+  }
+}
