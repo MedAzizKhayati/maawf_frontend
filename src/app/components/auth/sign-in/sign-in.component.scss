@@ -6,23 +6,12 @@
       #282a37 100%
     ),
     url("../../../../assets/images/sign.png");
-  background-repeat: no-repeat;
-  background-position: right;
-  color: white;
-  height: 100vh;
   .sub-container {
-    padding-left: 5%;
     .label {
-      font-style: normal;
-      font-weight: 500;
-      font-size: 24px;
       line-height: 29px;
-      /* identical to box height */
       color: #acacac;
     }
     .title {
-      font-style: normal;
-      font-weight: 700;
       font-size: 78px;
       line-height: 94px;
       &.point {
@@ -30,16 +19,9 @@
       }
     }
     .sub-note {
-      font-style: normal;
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 19px;
       a {
         color: #49a2e2;
       }
-    }
-    form {
-      width: 30%;
     }
   }
 }
