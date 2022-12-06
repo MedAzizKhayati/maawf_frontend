@@ -1,0 +1,28 @@
+<style>
+    .chat-section {
+        max-height: calc(~"100vh - 150px")
+    }
+</style>
+
+<section class="p-7 border-r border-secondaryBg flex flex-col chat-section">
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl">Chats</h1>
+        <div class="w-5 h-5 bg-blue-700 rounded"></div>
+    </div>
+    <div class="flex gap-3 py-5">
+        <filter-button [toggled]="true" [title]='"Open"'></filter-button>
+        <filter-button [toggled]="true" [title]='"Closed"'></filter-button>
+        <filter-button [toggled]="false" [title]='"Unread"'></filter-button>
+    </div>
+    <div class="flex flex-col gap-5 overflow-y-auto flex-1 border">
+        <chat-item></chat-item>
+        <chat-item [selected]="true"></chat-item>
+        <chat-item></chat-item>
+        <chat-item></chat-item>
+        <chat-item></chat-item>
+        <chat-item></chat-item>
+        <chat-item></chat-item>
+        <chat-item></chat-item>
+        <chat-item [selected]="true"></chat-item>
+    </div>
+</section>

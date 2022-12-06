@@ -3,12 +3,16 @@ import { BrowserModule } from "@angular/platform-browser";
 import { allIcons, HeroIconModule } from "ng-heroicon";
 import { HttpClientModule } from "@angular/common/http";
 import { AppComponent } from "./app.component";
+import { MessengerModule } from "./messenger/messenger.module";
+import { AppRoutingModule } from "./app-routing.module";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    AppRoutingModule,
     HttpClientModule,
     BrowserModule,
+    MessengerModule,
     HeroIconModule.forRoot(
       {
         ...allIcons,
@@ -22,4 +26,4 @@ import { AppComponent } from "./app.component";
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
