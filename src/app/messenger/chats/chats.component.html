@@ -1,6 +1,6 @@
 <style>
     .chat-section {
-        max-height: calc(~"100vh - 150px")
+        max-height:  calc(100vh - 96px);
     }
 </style>
 
@@ -14,7 +14,7 @@
         <filter-button [toggled]="true" [title]='"Closed"'></filter-button>
         <filter-button [toggled]="false" [title]='"Unread"'></filter-button>
     </div>
-    <div class="flex flex-col gap-5 overflow-y-auto flex-1 border">
+    <div class="flex flex-col gap-5 overflow-y-auto flex-1 -scroll-m-5">
         <chat-item></chat-item>
         <chat-item [selected]="true"></chat-item>
         <chat-item></chat-item>
