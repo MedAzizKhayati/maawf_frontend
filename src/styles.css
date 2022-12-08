@@ -6,3 +6,8 @@
 :root {
     color-scheme: dark light;
 }
+
+.scrollable-container {
+    height: calc(100vh - 6rem);
+    max-height: calc(100vh - 6rem);
+}

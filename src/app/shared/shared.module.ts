@@ -1,16 +1,22 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FilterButtonComponent } from './filter-button/filter-button.component';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FilterButtonComponent } from "./filter-button/filter-button.component";
+import { HeroIconModule, allIcons } from "ng-heroicon";
 
 @NgModule({
-  declarations: [
-    FilterButtonComponent
-  ],
+  declarations: [FilterButtonComponent],
   imports: [
-    CommonModule
+    CommonModule,
+    HeroIconModule.forRoot(
+      {
+        ...allIcons,
+      },
+      {
+        defaultHostDisplay: "inlineBlock", // default 'none'
+        attachDefaultDimensionsIfNoneFound: true, // default 'false'
+      }
+    ),
   ],
-  exports: [
-    FilterButtonComponent
-  ]
+  exports: [FilterButtonComponent, HeroIconModule],
 })
-export class SharedModule { }
+export class SharedModule {}

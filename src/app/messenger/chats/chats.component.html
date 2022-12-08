@@ -1,28 +1,17 @@
-<style>
-    .chat-section {
-        max-height:  calc(100vh - 96px);
-    }
-</style>
-
-<section class="p-7 border-r border-secondaryBg flex flex-col chat-section">
+<section class="p-7 pb-5 border-r w-min md:w-full border-secondaryBg flex flex-col scrollable-container gap-2">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl">Chats</h1>
-        <div class="w-5 h-5 bg-blue-700 rounded"></div>
+        <hero-icon name="plus" hostDisplay="inlineBlock" type="outline" class="w-5 h-5 text-primaryBlue"></hero-icon>
     </div>
-    <div class="flex gap-3 py-5">
+    <div class="hidden md:flex gap-2 py-5">
         <filter-button [toggled]="true" [title]='"Open"'></filter-button>
         <filter-button [toggled]="true" [title]='"Closed"'></filter-button>
         <filter-button [toggled]="false" [title]='"Unread"'></filter-button>
     </div>
-    <div class="flex flex-col gap-5 overflow-y-auto flex-1 -scroll-m-5">
-        <chat-item></chat-item>
-        <chat-item [selected]="true"></chat-item>
-        <chat-item></chat-item>
-        <chat-item></chat-item>
-        <chat-item></chat-item>
-        <chat-item></chat-item>
-        <chat-item></chat-item>
-        <chat-item></chat-item>
-        <chat-item [selected]="true"></chat-item>
+    <div class="flex flex-col gap-5 p-7 my-0 -m-7 overflow-y-auto flex-1">
+        <chat-item *ngFor="let chat of chats" [chat]="chat"></chat-item>
     </div>
+    <button class="w-full py-4 rounded-2xl bg-fadedBlue text-primaryBlue">
+        Send Feedback
+    </button>
 </section>

@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { Endpoints } from "../http/endpoints";
@@ -38,6 +37,7 @@ export class AuthService {
       );
 
       this.localeService.setToken(result?.token);
+      this.localeService.setUser(result?.user);
     } catch (e: any) {
       console.error(e);
     }
@@ -48,7 +48,7 @@ export class AuthService {
       const result: any = await firstValueFrom(
         await this.httpService.get(Endpoints.WhoAmI)
       );
-
+      this.localeService.setUser(result);
       return result;
     } catch (e: any) {
       console.error(e);
