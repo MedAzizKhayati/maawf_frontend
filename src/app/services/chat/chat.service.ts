@@ -13,7 +13,7 @@ export type ChatMap = { [key: string]: Chat };
   providedIn: 'root'
 })
 export class ChatService extends Socket {
-  public static readonly PAGE_SIZE = 9;
+  public static readonly PAGE_SIZE = 30;
   private chats: ChatMap = {};
 
   private chatsSubject: Subject<ChatMap> = new Subject();
@@ -40,6 +40,7 @@ export class ChatService extends Socket {
       });
     });
     this.getChats();
+    this.preProcessChat = this.preProcessChat.bind(this);
   }
 
   public getMessage(groupChatId: string) {
@@ -56,7 +57,7 @@ export class ChatService extends Socket {
         if (chat.pageSize === 2 * ChatService.PAGE_SIZE) {
           chat.page = chat.page + 1;
           chat.pageSize = ChatService.PAGE_SIZE;
-        }        
+        }
         chat.messages.unshift(data.message);
         this.chatsSubject.next(this.chats);
         return data.message;
@@ -67,9 +68,10 @@ export class ChatService extends Socket {
   public async getNextMessages(chatGroupId: string) {
     const chat = await this.getChat_(chatGroupId);
     const page = chat.page;
+
     const messages = await firstValueFrom(
       await this.httpService.get<Message[]>(Endpoints.Messages + chatGroupId, {
-        limit: ChatService.PAGE_SIZE,
+        limit: chat.pageSize,
         page
       })
     );
@@ -104,8 +106,8 @@ export class ChatService extends Socket {
   }
 
   private preProcessChat(chat: Chat) {
-    chat.pageSize = ChatService.PAGE_SIZE;
-    chat.messages = [];
+    chat.pageSize = ChatService.PAGE_SIZE;    
+    chat.messages = this.chats[chat.id]?.messages || [];
     chat.hasMore = true;
     chat.page = 1;
     return chat;
@@ -130,6 +132,7 @@ export class ChatService extends Socket {
           map(this.preProcessChat)
         )
       );
+
       this.chats[id] = response;
       this.chatsSubject.next(this.chats);
       return response;

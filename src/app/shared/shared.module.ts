@@ -2,10 +2,12 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FilterButtonComponent } from "./filter-button/filter-button.component";
 import { HeroIconModule, allIcons } from "ng-heroicon";
+import { InfiniteScrollModule } from "ngx-infinite-scroll";
 
 @NgModule({
   declarations: [FilterButtonComponent],
   imports: [
+    InfiniteScrollModule,
     CommonModule,
     HeroIconModule.forRoot(
       {
@@ -17,6 +19,6 @@ import { HeroIconModule, allIcons } from "ng-heroicon";
       }
     ),
   ],
-  exports: [FilterButtonComponent, HeroIconModule],
+  exports: [FilterButtonComponent, HeroIconModule, InfiniteScrollModule],
 })
-export class SharedModule {}
+export class SharedModule { }

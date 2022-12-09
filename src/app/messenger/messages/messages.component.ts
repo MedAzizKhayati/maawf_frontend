@@ -1,7 +1,6 @@
 import { ChatService } from '@/app/services/chat/chat.service';
-import { SendMessageDto } from '@/app/services/chat/send-message.dto';
 import { Chat, Message } from '@/types/chat.type';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -18,24 +17,36 @@ export class MessagesComponent implements OnInit {
   chat: Chat | undefined;
   messages: Message[][] = [];
   subscriptions: Subscription[] = [];
-  loading = true;
+  loading = false;
 
   constructor(
+    private changeDetectionRef: ChangeDetectorRef,
     private chatService: ChatService,
     private route: ActivatedRoute
   ) {
     this.route.params.subscribe(params => {
-      this.messagesDiv?.nativeElement.scrollTo?.(0, 0);
+      // let init = true;
+      if(this.messagesDiv){
+        this.messagesDiv.nativeElement.scrollTop = 0;
+      }
       this.id = params['id'];
       this.subscriptions.forEach(sub => sub.unsubscribe());
       const chatSub = this.chatService.getChat(this.id).subscribe((chat) => {
         this.chat = chat;
-        this.messages = this.chatService.getMessageBlocks(this.id);
-        console.log(this.chat.messages.length);
+        this.messages = this.chatService.getMessageBlocks(this.id);        
+        // const scrollTop = this.messagesDiv?.nativeElement.scrollTop;
+        // const scrollHeight = this.messagesDiv?.nativeElement.scrollHeight;
+        // this.changeDetectionRef.detectChanges();
+        // const newScrollHeight = this.messagesDiv?.nativeElement.scrollHeight;
+        // const newScrollTop = this.messagesDiv?.nativeElement.scrollTop;
+        // if (this.messagesDiv && !init) {          
+        //   this.messagesDiv.nativeElement.scrollTop = newScrollTop + newScrollHeight - scrollHeight;
+        // }
+        // init = false;
       });
       this.getMessages();
-      const messagesSub = this.chatService.getMessage(this.id).subscribe(() => {
-      });
+      const messagesSub = this.chatService.getMessage(this.id)
+        .subscribe(() => null);
       this.subscriptions = [
         chatSub,
         messagesSub
@@ -44,9 +55,9 @@ export class MessagesComponent implements OnInit {
   }
 
   getMessages() {
+    if (this.loading) return;
     this.loading = true;
-    this.chatService.getNextMessages(this.id).then(() => {
-      this.messages = this.chatService.getMessageBlocks(this.id);
+    this.chatService.getNextMessages(this.id).then((m) => {      
       this.loading = false;
     })
   }
@@ -54,9 +65,10 @@ export class MessagesComponent implements OnInit {
   ngOnInit(): void {
     document.getElementById("messages")?.addEventListener(
       'scroll',
-      () => {
+      (event) => {
+        
         const loader = document.getElementById('loader');
-        if (loader && !this.loading) {
+        if (loader) {
           const rect = loader.getBoundingClientRect();
           if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
             this.getMessages();

@@ -5,13 +5,13 @@ import { MessagesComponent } from './messages/messages.component';
 import { MessengerRoutingModule } from './messenger-routing.module';
 import { ChatsComponent } from './chats/chats.component';
 import { HeaderComponent } from './header/header.component';
-import { HeroIconModule, allIcons } from 'ng-heroicon';
 import { SharedModule } from "../shared/shared.module";
 import { ChatItemComponent } from './chat-item/chat-item.component';
 import { ChatHeadComponent } from './chat-head/chat-head.component';
 import { AppRoutingModule } from '../app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { ChatInputComponent } from './chat-input/chat-input.component';
+// import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 @NgModule({
     declarations: [
         MessengerComponent,
@@ -27,7 +27,7 @@ import { ChatInputComponent } from './chat-input/chat-input.component';
         CommonModule,
         MessengerRoutingModule,
         FormsModule,
-        SharedModule
+        SharedModule,
     ]
 })
 export class MessengerModule { }
