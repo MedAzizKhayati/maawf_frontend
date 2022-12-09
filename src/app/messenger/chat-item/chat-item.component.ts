@@ -8,10 +8,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ChatItemComponent implements OnInit {
   selected: boolean = false;
-  id: string = '';
+  id?: string;
 
   @Input()
-  chat: Chat = {} as Chat;
+  chat?: Chat;
 
   constructor(
     private router: Router,
@@ -26,11 +26,11 @@ export class ChatItemComponent implements OnInit {
   }
 
   ngDoCheck() {
-    this.selected = this.id === this.chat.id;
+    this.selected = this.id === this.chat?.id;
   }
 
   navigateToChat() {
-    this.router.navigate(['messenger', this.chat.id]);
+    this.router.navigate(['messenger', this.chat?.id]);
   }
 
 }

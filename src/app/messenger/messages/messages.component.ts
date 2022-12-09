@@ -14,7 +14,7 @@ export class MessagesComponent implements OnInit {
 
   id = '';
   settings: boolean = false;
-  chat: Chat | undefined;
+  chat?: Chat;
   messages: Message[][] = [];
   subscriptions: Subscription[] = [];
   loading = false;
