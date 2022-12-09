@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   title: "Local Environment Heading",
   apiURL: "http://localhost:5000",
+  wsUrl: "ws://localhost:5000",
 };
 
 /*

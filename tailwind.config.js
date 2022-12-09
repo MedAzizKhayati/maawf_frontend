@@ -1,10 +1,22 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{html,ts}",
-  ],
+  content: ["./src/**/*.{html,ts}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primaryBg: "#282A37",
+        secondaryBg: "#3E4151",
+        teritiaryBg: "#35384B",
+        primaryBlue: "#49A2E2",
+        fadedBlue: "#49A2E242",
+        notification: {
+          background: "#F33D3D",
+          text: "#3A0E0E",
+        }
+      },
+    },
   },
-  plugins: [],
-}
+  plugins: [
+    require("tailwindcss-animation-delay"),
+  ],
+};

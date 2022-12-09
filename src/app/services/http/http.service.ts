@@ -32,17 +32,18 @@ export class HttpService {
     this.baseUrl = envService.apiUrl;
   }
 
-  public async post(endpoint: Endpoints, params: any) {
-    const result = await this.httpClient.post(this.baseUrl + endpoint, params, {
+  public async post<T>(endpoint: string, params: any) {
+    const result = await this.httpClient.post<T>(this.baseUrl + endpoint, params, {
       headers: this.headers,
     });
 
     return result;
   }
 
-  public async get(endpoint: Endpoints) {
-    const result = await this.httpClient.get(this.baseUrl + endpoint, {
+  public async get<T>(endpoint: string, params?: any) {
+    const result = await this.httpClient.get<T>(this.baseUrl + endpoint, {
       headers: this.headers,
+      params
     });
 
     return result;

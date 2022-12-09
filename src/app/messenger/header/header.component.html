@@ -1,0 +1,29 @@
+<nav class="h-24 p-5 px-10 flex items-center gap-7 border-b border-secondaryBg">
+  <div class="flex gap-7 flex-1 items-center">
+    <hero-icon
+      name="chat"
+      hostDisplay="inlineBlock"
+      type="solid"
+      class="w-10 h-10 fill-primaryBlue text-transparent"
+    ></hero-icon>
+    <h1 class="text-3xl">Messaging</h1>
+  </div>
+  <input
+    class="w-24 md:w-60 h-12 rounded-xl flex items-center px-5 text-gray-400 bg-teritiaryBg font-medium outline-none"
+    placeholder="Search"
+  >
+  <div class="relative h-8">
+    <hero-icon
+      name="bell"
+      hostDisplay="inlineBlock"
+      type="outline"
+      class="w-8 h-8 text-white"
+    ></hero-icon>
+    <div
+      class="absolute -right-0.5 -top-0.5 rounded-full h-3 w-3 flex justify-center items-center bg-notification-background text-notification-text text-xs"
+    >
+      1
+    </div>
+  </div>
+  <div class="w-12 h-12 bg-blue-600 rounded-full"></div>
+</nav>

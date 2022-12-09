@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
   providedIn: "root",
 })
 export class LocaleService {
-  constructor() {}
+  constructor() { }
 
   public getToken() {
     return localStorage.getItem("token");
@@ -12,5 +12,13 @@ export class LocaleService {
 
   public setToken(token: string) {
     localStorage.setItem("token", token);
+  }
+
+  public getUser() {
+    return JSON.parse(localStorage.getItem("user") || "null");
+  }
+
+  public setUser(user: any) {
+    localStorage.setItem("user", JSON.stringify(user));
   }
 }
