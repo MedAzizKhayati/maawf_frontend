@@ -9,7 +9,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { RouterModule } from "@angular/router";
 import { ButtonComponent } from "./shared/button/button.component";
 import { StandardInputComponent } from "./shared/standard-input/standard-input.component";
-import { AuthModule } from "./auth/auth/auth.module";
+import { AuthModule } from "./auth/auth.module";
 
 @NgModule({
   declarations: [

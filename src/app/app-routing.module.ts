@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { AuthRoutingModule } from "./auth/auth/auth-routing.module";
+import { AuthRoutingModule } from "./auth/auth-routing.module";
 import { MessengerRoutingModule } from "./messenger/messenger-routing.module";
 const routes: Routes = [];
 
