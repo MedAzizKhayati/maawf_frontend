@@ -6,22 +6,4 @@
       #282a37 100%
     ),
     url("../../../assets/images/sign.png");
-  .sub-container {
-    .label {
-      line-height: 29px;
-      color: #acacac;
-    }
-    .title {
-      font-size: 78px;
-      line-height: 94px;
-      &.point {
-        color: rgba(73, 162, 226, 1);
-      }
-    }
-    .sub-note {
-      a {
-        color: #49a2e2;
-      }
-    }
-  }
 }

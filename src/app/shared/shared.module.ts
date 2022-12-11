@@ -1,10 +1,11 @@
-import { NgModule } from "@angular/core";
+import { forwardRef, NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FilterButtonComponent } from "./filter-button/filter-button.component";
 import { HeroIconModule, allIcons } from "ng-heroicon";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { ButtonComponent } from "./button/button.component";
 import { StandardInputComponent } from "./standard-input/standard-input.component";
+import { ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { StandardInputComponent } from "./standard-input/standard-input.componen
   imports: [
     InfiniteScrollModule,
     CommonModule,
+    ReactiveFormsModule,
     HeroIconModule.forRoot(
       {
         ...allIcons,

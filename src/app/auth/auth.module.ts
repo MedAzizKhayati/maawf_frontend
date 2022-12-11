@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { forwardRef, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AuthRoutingModule } from './auth-routing.module';
@@ -8,6 +8,8 @@ import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { AuthComponent } from './auth.component';
 import { SharedModule } from '@/app/shared/shared.module';
+import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { StandardInputComponent } from '../shared/standard-input/standard-input.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,7 @@ import { SharedModule } from '@/app/shared/shared.module';
     BrowserModule,
     AuthRoutingModule,
     RouterModule,
+    ReactiveFormsModule,
     SharedModule
     ],
   providers: [SignUpComponent],
