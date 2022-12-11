@@ -6,10 +6,8 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppModule } from '@/app/app.module';
-import { StandardInputComponent } from '../shared/standard-input/standard-input.component';
 import { AuthComponent } from './auth.component';
-import { SharedModuleModule } from '../shared/shared-module.module';
+import { SharedModule } from '@/app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +20,7 @@ import { SharedModuleModule } from '../shared/shared-module.module';
     BrowserModule,
     AuthRoutingModule,
     RouterModule,
-    SharedModuleModule
+    SharedModule
     ],
   providers: [SignUpComponent],
 })

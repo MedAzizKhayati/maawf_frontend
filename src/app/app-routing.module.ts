@@ -1,11 +1,11 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { AuthComponent } from "./components/auth/auth.component";
-
+import { AuthRoutingModule } from "./auth/auth/auth-routing.module";
+import { MessengerRoutingModule } from "./messenger/messenger-routing.module";
 const routes: Routes = [];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [MessengerRoutingModule,AuthRoutingModule, RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

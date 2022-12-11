@@ -14,7 +14,9 @@ export class AppComponent {
   constructor(
     private authSerivce: AuthService,
     private localeService: LocaleService
-  ) {}
+  ) {
+    this.whoami();
+  }
 
   public async register() {
     const auth: AuthDTO = {
@@ -39,7 +41,6 @@ export class AppComponent {
 
   public async whoami() {
     const result = await this.authSerivce.whoami();
-
-    console.log(result);
+    console.log('User', result);
   }
 }

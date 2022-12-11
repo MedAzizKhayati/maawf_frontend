@@ -1,0 +1,36 @@
+<section class="pb-5 border-r border-secondaryBg flex scrollable-container">
+    <div class="flex flex-col flex-1">
+        <div class="flex p-7 items-center justify-between text-2xl font-medium w-full shadow-md">
+            <h1>Message Group</h1>
+            <hero-icon (click)="toggleSettings()" name="information-circle" type="outline"
+                class="w-8 h-8 text-primaryBlue cursor-pointer transition-all hover:scale-105">
+            </hero-icon>
+        </div>
+        <div #messagesDiv id="messages" class="flex flex-col-reverse gap-5 p-7 overflow-y-auto flex-1">
+            <chat-head *ngFor="let block of messages" [messages]="block"></chat-head>
+            <!-- Loader  -->
+            <div *ngIf="!chat || chat.hasMore" id="loader" class="flex items-center gap-2 justify-center">
+                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse"></div>
+                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-200"></div>
+                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-400"></div>
+            </div>
+            <!-- End of discussion -->
+            <div *ngIf="chat && !chat.hasMore" class="flex items-center gap-2 justify-center">
+                <hero-icon name="check-circle" type="outline" class="w-5 h-5 text-primaryBlue"></hero-icon>
+                <span class="text-primaryBlue">No more messages</span>
+            </div>
+        </div>
+        <chat-input></chat-input>
+    </div>
+    <div *ngIf="settings"
+        class="max-w-sm flex-1 h-full p-7 pb-0 flex flex-col justify-between border-l border-secondaryBg">
+        <button class="w-full py-2 rounded-full bg-fadedBlue text-primaryBlue">
+            Settings
+        </button>
+        <button class="mx-auto py-2 rounded-full text-red-600 font-medium flex items-center gap-2">
+            <hero-icon name="trash" type="outline" class="w-5 h-5"></hero-icon>
+            Delete Conversation
+        </button>
+    </div>
+
+</section>

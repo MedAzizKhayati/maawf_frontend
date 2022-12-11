@@ -1,0 +1,22 @@
+<div [ngClass]="{
+    'w-full flex text-sm md:text-base gap-2 items-end': true,
+    'flex-row-reverse': right
+}">
+    <div *ngIf="!right" class="w-9 h-9 rounded-full bg-slate-300">
+
+    </div>
+    <div class="max-w-[60%] lg:max-w-[50%] flex flex-col-reverse gap-0.5" [ngClass]="{'items-end': right}">
+
+        <div *ngFor="let message of messages; let index = index; let first = first; let last = last"
+            class="bg-secondaryBg min-h-[2.25rem] w-fit flex items-center py-2 px-4 rounded-md break-all" [ngClass]="{
+            'bg-secondaryBg rounded-r-3xl': !right,
+            'bg-fadedBlue rounded-l-3xl': right,
+            'rounded-tl-3xl': last && !right,
+            'rounded-bl-3xl': first && !right,
+            'rounded-tr-3xl': last && right,
+            'rounded-br-3xl': first && right
+        }">
+        {{ message.data.text }}
+        </div>
+    </div>
+</div>
