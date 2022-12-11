@@ -4408,10 +4408,10 @@ ng-heroicon@^2.1.0:
   dependencies:
     tslib "^2.0.0"
 
-ngx-infinite-scroll@^14.0.0:
-  version "14.0.1"
-  resolved "https://registry.yarnpkg.com/ngx-infinite-scroll/-/ngx-infinite-scroll-14.0.1.tgz#037abd55c441300651d03bc64a69d3475cce7bf9"
-  integrity sha512-PlGL29d2PxNJTn6qdXs4Es0HlJTZ/ZqOVvFWECWm7mK2fN/q+q62s0iUQ7xRf76NuqoNovXvrjZ1zwLFT6c0Wg==
+ngx-infinite-scroll@14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-infinite-scroll/-/ngx-infinite-scroll-14.0.0.tgz#395b15be5f451c3e3d2ad7ce2aeb66f8c66aba5d"
+  integrity sha512-YZB5PBPXSERNtCGQRZTVflbgkh5asp01NPfC8KPItemmQik1Ip8ZCCbcyHA77TDTdilmaiu8TbguA3geg/LMWw==
   dependencies:
     tslib "^2.3.0"
 
@@ -5776,7 +5776,7 @@ socket.io-parser@~4.2.1:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.1"
 
-socket.io@^4.4.1, socket.io@^4.5.1:
+socket.io@^4.4.1, socket.io@^4.5.1, socket.io@^4.5.4:
   version "4.5.4"
   resolved "https://registry.yarnpkg.com/socket.io/-/socket.io-4.5.4.tgz#a4513f06e87451c17013b8d13fdfaf8da5a86a90"
   integrity sha512-m3GC94iK9MfIEeIBfbhJs5BqFibMtkRk8ZpKwG2QwxV0m/eEhPIV4ara6XCF1LWNAus7z58RodiZlAH71U3EhQ==
