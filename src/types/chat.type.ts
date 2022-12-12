@@ -8,6 +8,7 @@ export interface GroupChatToProfile {
     isAdmin: boolean;
     isMuted: boolean;
     profile: Profile;
+    latestSeenMessage?: Message
 }
 
 export interface Chat {
