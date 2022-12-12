@@ -1,5 +1,6 @@
 import { environment } from '@/environments/environment';
 import { Chat, Message } from '@/types/chat.type';
+import { Profile } from '@/types/profile.type';
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { firstValueFrom, map, Subject, filter, Observable } from 'rxjs';
@@ -9,6 +10,7 @@ import { LocaleService } from '../locale/locale.service';
 import { SendMessageDto } from './send-message.dto';
 
 export type ChatMap = { [key: string]: Chat };
+export type LastMessageSeen = { id: string, profile: Profile };
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +23,7 @@ export class ChatService extends Socket {
 
   constructor(
     private httpService: HttpService,
-    localService: LocaleService,
+    private localService: LocaleService,
   ) {
     super({
       url: environment.wsUrl + '/chat', options: {
@@ -41,6 +43,7 @@ export class ChatService extends Socket {
     });
     this.getChats();
     this.preProcessChat = this.preProcessChat.bind(this);
+    this.preProcessMessage = this.preProcessMessage.bind(this);
   }
 
   public getMessage(groupChatId: string) {
@@ -58,7 +61,20 @@ export class ChatService extends Socket {
           chat.page = chat.page + 1;
           chat.pageSize = ChatService.PAGE_SIZE;
         }
-        chat.messages.unshift(data.message);
+        const user = this.localService.getUser();
+        const isSeenBefore = data.message.seen[user.profile.id];
+        if (!isSeenBefore) {
+          this.markAsSeen(data.message.id);
+        }
+        const message = this.preProcessMessage(data.message, chat);
+        const messageIndex = chat.messages.findIndex(
+          m => m.id === message.id
+        );
+        if (messageIndex !== -1) {
+          chat.messages[messageIndex] = message;
+        } else {
+          chat.messages.unshift(message);
+        }
         this.chatsSubject.next(this.chats);
         return data.message;
       })
@@ -70,10 +86,14 @@ export class ChatService extends Socket {
     const page = chat.page;
 
     const messages = await firstValueFrom(
-      await this.httpService.get<Message[]>(Endpoints.Messages + chatGroupId, {
+      (await this.httpService.get<Message[]>(Endpoints.Messages + chatGroupId, {
         limit: chat.pageSize,
         page
-      })
+      })).pipe(
+        map(messages => messages.map(
+          message => this.preProcessMessage(message, chat)
+        ))
+      )
     );
     chat.messages = [...chat.messages, ...messages];
     chat.page = page + 1;
@@ -95,6 +115,10 @@ export class ChatService extends Socket {
     this.emit("send-message", sendMessageDto);
   }
 
+  public markAsSeen(messageId: string) {
+    this.emit("mark-as-seen", messageId);
+  }
+
   public getChatList() {
     return Object.values(this.chats);
   }
@@ -105,8 +129,37 @@ export class ChatService extends Socket {
     return map;
   }
 
+  private preProcessMessage(message: Message, chat: Chat) {
+    message.createdAt = new Date(message.createdAt);
+    message.updatedAt = new Date(message.updatedAt);
+    message.profile = chat.groupChatToProfiles.find(
+      member => member.profile.id === message.profile.id
+    )?.profile || message.profile;
+    for (const id in message.seen) {
+      const user = this.localService.getUser();
+      if (id === user.profile.id) {
+        delete message.seen[id];
+      }
+      const gctp = chat.groupChatToProfiles.find(
+        member => member.profile.id === id
+      );
+      if (gctp) {
+        const latestSeenMessage = gctp.latestSeenMessage;
+        if (!latestSeenMessage || latestSeenMessage.createdAt <= message.createdAt) {
+          delete latestSeenMessage?.seen[id];
+          gctp.latestSeenMessage = message;
+        } else {
+          delete message.seen[id];
+        }
+      }
+    }
+    return message;
+  }
+
   private preProcessChat(chat: Chat) {
-    chat.pageSize = ChatService.PAGE_SIZE;    
+    chat.createdAt = new Date(chat.createdAt);
+    chat.updatedAt = new Date(chat.updatedAt);
+    chat.pageSize = ChatService.PAGE_SIZE;
     chat.messages = this.chats[chat.id]?.messages || [];
     chat.hasMore = true;
     chat.page = 1;

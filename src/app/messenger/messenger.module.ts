@@ -11,7 +11,7 @@ import { ChatHeadComponent } from './chat-head/chat-head.component';
 import { AppRoutingModule } from '../app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { ChatInputComponent } from './chat-input/chat-input.component';
-// import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { ChatNamePipe } from './pipes/chat-name.pipe';
 @NgModule({
     declarations: [
         MessengerComponent,
@@ -20,7 +20,8 @@ import { ChatInputComponent } from './chat-input/chat-input.component';
         HeaderComponent,
         ChatItemComponent,
         ChatHeadComponent,
-        ChatInputComponent
+        ChatInputComponent,
+        ChatNamePipe
     ],
     imports: [
         AppRoutingModule,

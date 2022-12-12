@@ -1,3 +1,4 @@
+import { LastMessageSeen } from '@/app/services/chat/chat.service';
 import { LocaleService } from '@/app/services/locale/locale.service';
 import { Message } from '@/types/chat.type';
 import { Component, Input, OnInit } from '@angular/core';
@@ -24,7 +25,7 @@ export class ChatHeadComponent implements OnInit {
   ngDoCheck(): void {    
     if (this.user?.profile.id === this.messages[0]?.profile.id) {
       this.right = true;
-    }
+    }    
   }
 
   ngOnInit(): void {
