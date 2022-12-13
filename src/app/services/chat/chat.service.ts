@@ -11,6 +11,7 @@ import { SendMessageDto } from './send-message.dto';
 
 export type ChatMap = { [key: string]: Chat };
 export type LastMessageSeen = { id: string, profile: Profile };
+type IncomingMessage = { groupChatId: string, message: Message };
 @Injectable({
   providedIn: 'root'
 })
@@ -36,53 +37,49 @@ export class ChatService extends Socket {
     });
     this.connect();
     this.on("connect", () => {
-      // emit and wait for ack
-      this.emit("connect-to-rooms", "", () => {
-        console.log("Successfully connected to chat rooms");
-      });
+      this.emit("connect-to-rooms");
+      this.subscribeToIncomingMessages().subscribe();
     });
     this.getChats();
     this.preProcessChat = this.preProcessChat.bind(this);
     this.preProcessMessage = this.preProcessMessage.bind(this);
   }
 
-  public getMessage(groupChatId: string) {
-    return this.fromEvent<any>("message").pipe(
-      filter((data: any) => data.groupChatId === groupChatId)
-    ).pipe(
-      map((data: any) => {
-        const chat = this.chats[groupChatId];
-        if (!chat) {
-          this.getChat_(groupChatId);
-          return data.message;
-        }
+  public subscribeToIncomingMessages() {
+    return this.fromEvent<IncomingMessage>("message").pipe(
+      map(async (data: IncomingMessage) => {
+        const groupChatId = data.groupChatId;
+        const chat = await this.getChat(groupChatId);
+
+        /* Fixing chat pagination due to new message */
         chat.pageSize++;
         if (chat.pageSize === 2 * ChatService.PAGE_SIZE) {
           chat.page = chat.page + 1;
           chat.pageSize = ChatService.PAGE_SIZE;
         }
-        const user = this.localService.getUser();
-        const isSeenBefore = data.message.seen[user.profile.id];
-        if (!isSeenBefore) {
-          this.markAsSeen(data.message.id);
-        }
-        const message = this.preProcessMessage(data.message, chat);
-        const messageIndex = chat.messages.findIndex(
-          m => m.id === message.id
-        );
-        if (messageIndex !== -1) {
-          chat.messages[messageIndex] = message;
-        } else {
-          chat.messages.unshift(message);
-        }
+
+        const processedMessage = this.preProcessMessage(data.message, chat);
+        this.putMessageInChat(processedMessage, chat);
         this.chatsSubject.next(this.chats);
         return data.message;
       })
-    );
+    )
   }
 
+  private putMessageInChat(message: Message, chat: Chat) {
+    const messageIndex = chat.messages.findIndex(
+      m => m.id === message.id
+    );
+    if (messageIndex !== -1) {
+      chat.messages[messageIndex] = message;
+    } else {
+      chat.messages.unshift(message);
+    }
+  }
+
+
   public async getNextMessages(chatGroupId: string) {
-    const chat = await this.getChat_(chatGroupId);
+    const chat = await this.getChat(chatGroupId);
     const page = chat.page;
 
     const messages = await firstValueFrom(
@@ -102,9 +99,9 @@ export class ChatService extends Socket {
     return messages;
   }
 
-  public getChat(chatGroupId: string): Observable<Chat> {
+  public subscribeToChat(chatGroupId: string): Observable<Chat> {
     if (this.chats[chatGroupId]) {
-      this.getChat_(chatGroupId);
+      this.getChat(chatGroupId);
     }
     return this.chatsSubject$.pipe(
       map(chats => chats[chatGroupId])
@@ -115,8 +112,13 @@ export class ChatService extends Socket {
     this.emit("send-message", sendMessageDto);
   }
 
-  public markAsSeen(messageId: string) {
-    this.emit("mark-as-seen", messageId);
+  public markAsSeen(message: Message) {
+    const user = this.localService.getUser();
+    if (!message.seenByMe) {
+      this.emit("mark-as-seen", message.id);
+      console.log("Marking as seen");
+      
+    }
   }
 
   public getChatList() {
@@ -132,6 +134,7 @@ export class ChatService extends Socket {
   private preProcessMessage(message: Message, chat: Chat) {
     message.createdAt = new Date(message.createdAt);
     message.updatedAt = new Date(message.updatedAt);
+    message.seenByMe = !!message.seen[this.localService.getUser().profile.id];
     message.profile = chat.groupChatToProfiles.find(
       member => member.profile.id === message.profile.id
     )?.profile || message.profile;
@@ -177,7 +180,7 @@ export class ChatService extends Socket {
     return response;
   }
 
-  private async getChat_(id: string, update = false) {
+  private async getChat(id: string, update = false) {
     let res = this.chats[id];
     if (update || !res) {
       const response = await firstValueFrom(

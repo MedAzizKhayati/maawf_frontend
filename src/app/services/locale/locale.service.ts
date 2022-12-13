@@ -1,3 +1,4 @@
+import User from "@/types/user.type";
 import { Injectable } from "@angular/core";
 
 @Injectable({
@@ -15,10 +16,10 @@ export class LocaleService {
   }
 
   public getUser() {
-    return JSON.parse(localStorage.getItem("user") || "null");
+    return JSON.parse(localStorage.getItem("user") || "null") as User | null;
   }
 
-  public setUser(user: any) {
+  public setUser(user: User) {
     localStorage.setItem("user", JSON.stringify(user));
   }
 }

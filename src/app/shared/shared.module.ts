@@ -6,12 +6,14 @@ import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { ButtonComponent } from "./button/button.component";
 import { StandardInputComponent } from "./standard-input/standard-input.component";
 import { ReactiveFormsModule } from "@angular/forms";
+import { InitialsPipe } from './pipes/initials.pipe';
 
 @NgModule({
   declarations: [
     FilterButtonComponent,
     ButtonComponent,
     StandardInputComponent,
+    InitialsPipe,
   ],
   imports: [
     InfiniteScrollModule,
@@ -33,6 +35,7 @@ import { ReactiveFormsModule } from "@angular/forms";
     HeroIconModule,
     InfiniteScrollModule,
     StandardInputComponent,
+    InitialsPipe
   ],
 })
 export class SharedModule {}

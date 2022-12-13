@@ -1,6 +1,6 @@
 <section class="pb-5 border-r border-secondaryBg flex scrollable-container">
     <div class="flex flex-col flex-1">
-        <div class="flex p-7 items-center justify-between text-2xl font-medium w-full shadow-md">
+        <div class="flex p-7 items-center justify-between text-xl font-medium w-full shadow-md">
             <h1>{{chat | chatName }}</h1>
             <hero-icon (click)="toggleSettings()" name="information-circle" type="outline"
                 class="w-8 h-8 text-primaryBlue cursor-pointer transition-all hover:scale-105">
@@ -8,7 +8,8 @@
         </div>
         <div #messagesDiv id="messages" (scroll)="onScroll()"
             class="flex flex-col-reverse gap-5 p-7 overflow-y-auto flex-1">
-            <chat-head *ngFor="let block of messages" [messages]="block"></chat-head>
+            <chat-head *ngFor="let block of messages; let first = first" [messages]="block"
+                [shouldMarkAsSeen]="first" [chat]="chat"></chat-head>
             <!-- Loader  -->
             <div *ngIf="!chat || chat.hasMore" id="loader" class="flex items-center gap-2 justify-center">
                 <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse"></div>
@@ -23,11 +24,28 @@
         </div>
         <chat-input></chat-input>
     </div>
-    <div *ngIf="settings"
-        class="max-w-sm flex-1 h-full p-7 pb-0 flex flex-col justify-between border-l border-secondaryBg">
+    <div *ngIf="settings" class="max-w-sm flex-1 h-full p-7 pb-0 flex flex-col border-l border-secondaryBg">
         <button class="w-full py-2 rounded-full bg-fadedBlue text-primaryBlue">
             Settings
         </button>
+        <div class="flex-1 flex flex-col gap-3 py-5">
+            <h1 class="flex items-center gap-5 text-lg mb-5">
+                <hero-icon name="user" type="outline" class="w-6 h-6"></hero-icon>
+                Chat Members
+            </h1>
+            <div *ngFor="let member of chat?.groupChatToProfiles" class="flex items-center gap-5">
+                <div class="w-10 h-10 rounded-full bg-slate-400 text-gray-800 flex-center"> {{ member.profile | initials
+                    }} </div>
+                <div>
+                    <p class="text-primaryBlue" [ngClass]="{
+                        'cursor-pointer underline hover:opacity-80': !member.nickname
+                    }">
+                        {{ member.nickname ? member.nickname : "Set Nickname" }}
+                    </p>
+                    <p class="text-sm font-thin opacity-80">{{member.profile.firstName}} {{member.profile.lastName}}</p>
+                </div>
+            </div>
+        </div>
         <button class="mx-auto py-2 rounded-full text-red-600 font-medium flex items-center gap-2">
             <hero-icon name="trash" type="outline" class="w-5 h-5"></hero-icon>
             Delete Conversation

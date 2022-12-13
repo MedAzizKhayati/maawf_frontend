@@ -16,7 +16,7 @@ export class MessagesComponent implements OnInit {
   chat?: Chat;
   messages: Message[][] = [];
   subscriptions: Subscription[] = [];
-  loading = false;
+  loading = true;
 
   constructor(
     private chatService: ChatService,
@@ -28,16 +28,13 @@ export class MessagesComponent implements OnInit {
       }
       this.id = params['id'];
       this.subscriptions.forEach(sub => sub.unsubscribe());
-      const chatSub = this.chatService.getChat(this.id).subscribe((chat) => {
+      const chatSub = this.chatService.subscribeToChat(this.id).subscribe((chat) => {
         this.chat = chat;
         this.messages = this.chatService.getMessageBlocks(this.id);
       });
       this.getMessages();
-      const messagesSub = this.chatService.getMessage(this.id)
-        .subscribe(() => null);
       this.subscriptions = [
         chatSub,
-        messagesSub
       ]
     });
   }

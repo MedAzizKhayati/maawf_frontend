@@ -19,14 +19,14 @@ export class ChatNamePipe implements PipeTransform {
       return chat.name;
     }
     if (chat.isPrivate) {
-      const user = chat.groupChatToProfiles.find(user => user.id !== me.id);
+      const user = chat.groupChatToProfiles.find(user => user.profile.id !== me.profile.id);
       if (user) {
         return user.nickname || this.getFullName(user.profile);
       }
       return '';
     } else {
-      const users = chat.groupChatToProfiles.filter(user => user.id !== me.id);
-      return users.slice(0, 2).map(user => user.nickname || user.profile.firstName).join(', ');
+      const users = chat.groupChatToProfiles.filter(user => user.profile.id !== me.profile.id);
+      return users.slice(0, 2).map(user => user.nickname || user.profile.firstName).join(', ') + (users.length > 2 ? '...': '');
     }
   }
 
