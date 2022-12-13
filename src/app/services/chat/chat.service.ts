@@ -188,7 +188,6 @@ export class ChatService extends Socket {
           map(this.preProcessChat)
         )
       );
-
       this.chats[id] = response;
       this.chatsSubject.next(this.chats);
       return response;

@@ -12,11 +12,11 @@ export class MessagesComponent implements OnInit {
   @ViewChild('messagesDiv')
   messagesDiv?: ElementRef;
   id = '';
-  settings: boolean = false;
+  settings: boolean = true;
   chat?: Chat;
   messages: Message[][] = [];
   subscriptions: Subscription[] = [];
-  loading = true;
+  loading = false;
 
   constructor(
     private chatService: ChatService,
@@ -42,7 +42,7 @@ export class MessagesComponent implements OnInit {
   async getMessages() {
     if (this.loading) return;
     this.loading = true;
-    await this.chatService.getNextMessages(this.id);
+    const res = await this.chatService.getNextMessages(this.id);
     this.loading = false;
   }
 
