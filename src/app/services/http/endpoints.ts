@@ -5,4 +5,5 @@ export enum Endpoints {
   Chats = "/chat/rooms",
   Chat = "/chat/room/",
   Messages= "/chat/messages/",
+  UpdateGroupMember = "/chat/members/",
 }

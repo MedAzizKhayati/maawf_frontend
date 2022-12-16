@@ -48,4 +48,12 @@ export class HttpService {
 
     return result;
   }
+
+  public async patch<T>(endpoint: string, params: any) {
+    const result = await this.httpClient.patch<T>(this.baseUrl + endpoint, params, {
+      headers: this.headers,
+    });
+
+    return result;
+  }
 }

@@ -26,7 +26,7 @@ export class ChatNamePipe implements PipeTransform {
       return '';
     } else {
       const users = chat.groupChatToProfiles.filter(user => user.profile.id !== me.profile.id);
-      return users.slice(0, 2).map(user => user.nickname || user.profile.firstName).join(', ') + (users.length > 2 ? '...': '');
+      return users.map(user => user.nickname || user.profile.firstName).join(', ');
     }
   }
 

@@ -7,6 +7,7 @@ import { ButtonComponent } from "./button/button.component";
 import { StandardInputComponent } from "./standard-input/standard-input.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { InitialsPipe } from './pipes/initials.pipe';
+import { TimeAgoPipe } from './pipes/time-ago.pipe';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { InitialsPipe } from './pipes/initials.pipe';
     ButtonComponent,
     StandardInputComponent,
     InitialsPipe,
+    TimeAgoPipe,
   ],
   imports: [
     InfiniteScrollModule,
@@ -35,7 +37,8 @@ import { InitialsPipe } from './pipes/initials.pipe';
     HeroIconModule,
     InfiniteScrollModule,
     StandardInputComponent,
-    InitialsPipe
+    InitialsPipe,
+    TimeAgoPipe,
   ],
 })
 export class SharedModule {}

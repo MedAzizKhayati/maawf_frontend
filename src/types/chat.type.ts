@@ -23,6 +23,7 @@ export interface Chat {
     hasMore: boolean;
     page: number;
     pageSize: number;
+    lastMessage?: Message;
 }
 
 export interface Data {

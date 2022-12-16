@@ -1,4 +1,5 @@
 import { ChatService, LastMessageSeen } from '@/app/services/chat/chat.service';
+import { UpdateMemberDto } from '@/app/services/chat/update-member.dto';
 import { Chat, Message } from '@/types/chat.type';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -17,6 +18,7 @@ export class MessagesComponent implements OnInit {
   messages: Message[][] = [];
   subscriptions: Subscription[] = [];
   loading = false;
+  nickname: any = {};
 
   constructor(
     private chatService: ChatService,
@@ -31,6 +33,9 @@ export class MessagesComponent implements OnInit {
       const chatSub = this.chatService.subscribeToChat(this.id).subscribe((chat) => {
         this.chat = chat;
         this.messages = this.chatService.getMessageBlocks(this.id);
+        this.chat.groupChatToProfiles.forEach((member) => {
+          this.nickname[member.id] = member.nickname;
+        });
       });
       this.getMessages();
       this.subscriptions = [
@@ -50,7 +55,6 @@ export class MessagesComponent implements OnInit {
   }
 
   onScroll() {
-
     const loader = document.getElementById('loader');
     if (loader) {
       const rect = loader.getBoundingClientRect();
@@ -59,8 +63,17 @@ export class MessagesComponent implements OnInit {
       }
     }
   }
+
   toggleSettings() {
     this.settings = !this.settings;
+  }
+
+  updateNickname(id: string) {
+    const updateMemberDto = new UpdateMemberDto(
+      id,
+      this.nickname[id]
+    );    
+    this.chatService.updateGroupMember(this.id, updateMemberDto);
   }
 
   ngOnDestroy() {

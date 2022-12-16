@@ -9,18 +9,22 @@
     </div>
     <div class="w-full flex flex-col-reverse gap-0.5" [ngClass]="{'items-end': right}">
         <div class="w-full" *ngFor="let message of messages; let index = index; let first = first; let last = last">
+
             <div [ngClass]="{
-                'bg-secondaryBg max-w-[60%] lg:max-w-[50%] min-h-[2.25rem] w-fit flex items-center py-2 px-4 rounded-md break-all': true,
-                'bg-secondaryBg rounded-r-3xl': !right,
-                'bg-fadedBlue rounded-l-3xl ml-auto': right,
-                'rounded-tl-3xl': last && !right,
-                'rounded-bl-3xl': first && !right,
-                'rounded-tr-3xl': last && right,
-                'rounded-br-3xl': first && right,
-                'latest' : first
-            }">
-                {{ message.data.text }}
+                    'bg-secondaryBg max-w-[60%] lg:max-w-[50%] min-h-[2.25rem] w-fit flex items-center py-2 px-4 rounded-md break-all': true,
+                    'bg-secondaryBg rounded-r-3xl': !right,
+                    'bg-fadedBlue rounded-l-3xl ml-auto': right,
+                    'rounded-tl-3xl': last && !right,
+                    'rounded-bl-3xl': first && !right,
+                    'rounded-tr-3xl': last && right,
+                    'rounded-br-3xl': first && right,
+                    'latest' : first
+                }">
+                <p>
+                    {{ message.data.text }}
+                </p>
             </div>
+
             <div class="w-full flex flex-row-reverse mt-px gap-px">
                 <div *ngFor="let profile of message.seen | keyvalue" class="w-3 h-3 rounded-full bg-slate-300">
 

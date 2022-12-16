@@ -1,36 +1,36 @@
+import { LocaleService } from '@/app/services/locale/locale.service';
 import { Chat } from '@/types/chat.type';
+import { Profile } from '@/types/profile.type';
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'chat-item',
   templateUrl: './chat-item.component.html',
 })
 export class ChatItemComponent implements OnInit {
-  selected: boolean = false;
-  id?: string;
+  lastMessageName: string = '';
+  me?: Profile;
 
   @Input()
   chat?: Chat;
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {
-    this.route.firstChild?.params.subscribe(params => {      
-      this.id = params['id'];
-    });
-  }
+    private localeService: LocaleService,
+  ) { }
 
   ngOnInit(): void {
   }
 
   ngDoCheck() {
-    this.selected = this.id === this.chat?.id;
-  }
-
-  navigateToChat() {
-    this.router.navigate(['messenger', this.chat?.id]);
+    const profile = this.chat?.lastMessage?.profile;
+    this.me = this.localeService.getUser()?.profile;
+    if (profile?.id === this.me?.id) {
+      this.lastMessageName = 'You';
+    } else {
+      this.lastMessageName = this.chat.groupChatToProfiles.find(
+        (gctp) => gctp.profile.id === profile?.id
+      )?.nickname || profile?.firstName
+    }
   }
 
 }
