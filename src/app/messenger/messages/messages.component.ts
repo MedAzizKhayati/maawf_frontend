@@ -29,6 +29,8 @@ export class MessagesComponent implements OnInit {
         this.messagesDiv.nativeElement.scrollTop = 0;
       }
       this.id = params['id'];
+      this.chat = this.chatService.getCurrentChats()[this.id];
+      this.messages = this.chatService.getMessageBlocks(this.id);
       this.subscriptions.forEach(sub => sub.unsubscribe());
       const chatSub = this.chatService.subscribeToChat(this.id).subscribe((chat) => {
         this.chat = chat;
@@ -72,7 +74,7 @@ export class MessagesComponent implements OnInit {
     const updateMemberDto = new UpdateMemberDto(
       id,
       this.nickname[id]
-    );    
+    );
     this.chatService.updateGroupMember(this.id, updateMemberDto);
   }
 

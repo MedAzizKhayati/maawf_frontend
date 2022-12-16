@@ -166,6 +166,7 @@ export class ChatService extends Socket {
   }
 
   private preProcessMessage(message: Message, chat: Chat) {
+    // utc to current timezone
     message.createdAt = new Date(message.createdAt);
     message.updatedAt = new Date(message.updatedAt);
     message.seenByMe = !!message.seen[this.localService.getUser().profile.id];
