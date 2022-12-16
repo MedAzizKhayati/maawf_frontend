@@ -43,4 +43,5 @@ export interface Message {
     seen: Seen;
     profile: Profile;
     seenByMe?: boolean;
+    isSending?: boolean;
 }

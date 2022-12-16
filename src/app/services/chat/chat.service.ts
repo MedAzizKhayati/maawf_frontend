@@ -85,6 +85,17 @@ export class ChatService extends Socket {
   }
 
   private saveNewMessageInChat(message: Message, chat: Chat) {
+    const myProfile = this.localService.getUser().profile;
+    if (myProfile.id === message.profile.id) {
+      const tempMessageIndex = chat.messages.findIndex(
+        m => m.id === 'temp' && m.data.text === message.data.text
+      );
+      if (tempMessageIndex !== -1) {
+        chat.messages[tempMessageIndex] = message;
+        return true;
+      }
+    }
+
     const messageIndex = chat.messages.findIndex(
       m => m.id === message.id
     );
@@ -144,6 +155,17 @@ export class ChatService extends Socket {
 
   public sendMessage(sendMessageDto: SendMessageDto) {
     this.emit("send-message", sendMessageDto);
+    this.chats[sendMessageDto.groupChatId].messages.unshift({
+      createdAt: new Date(),
+      id: "temp",
+      data: {
+        text: sendMessageDto.text
+      },
+      isSending: true,
+      seenByMe: true,
+      profile: this.localService.getUser().profile,
+    } as Message);
+    this.chatsSubject.next(this.chats);
   }
 
   public markAsSeen(message: Message) {
