@@ -1,8 +1,24 @@
-<div class="w-full h-screen overflow-hidden">
+<div class="w-full h-full min-h-screen">
   <messenger-header [title]="'Profile'"></messenger-header>
-  <div class="flex max-h-full">
+  <div class="flex relative">
+    <app-cover></app-cover>
+  </div>
+  <div class="w-full flex flex-row gap-4 max-w-4xl mx-auto mt-48">
+    <div class="flex max-w-xs w-full">
+      <div class="bg-fadedBlue w-full p-6 rounded-xl shadow-md">
+        <p class="text-lg font-semibold mb-5">Friends</p>
+        <div class="flex justify gap-2 flex-wrap">
+          <div class="w-12 h-12 bg-blue-600 rounded-full"></div>
+          <div class="w-12 h-12 bg-blue-600 rounded-full"></div>
+          <div class="w-12 h-12 bg-blue-600 rounded-full"></div>
+          <div class="w-12 h-12 bg-blue-600 rounded-full"></div>
+          <div class="w-12 h-12 bg-blue-600 rounded-full"></div>
+          <div class="w-12 h-12 bg-blue-600 rounded-full"></div>
+        </div>
+      </div>
+    </div>
     <div class="flex-1">
-      <router-outlet></router-outlet>
+      <app-post></app-post>
     </div>
   </div>
 </div>
