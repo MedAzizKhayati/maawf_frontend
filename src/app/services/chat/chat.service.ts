@@ -85,27 +85,21 @@ export class ChatService extends Socket {
   }
 
   private saveNewMessageInChat(message: Message, chat: Chat) {
-    const myProfile = this.localService.getUser().profile;
-    if (myProfile.id === message.profile.id) {
-      const tempMessageIndex = chat.messages.findIndex(
-        m => m.id === 'temp' && m.data.text === message.data.text
-      );
-      if (tempMessageIndex !== -1) {
-        chat.messages[tempMessageIndex] = message;
-        return true;
-      }
-    }
-
+    const myId = this.localService.getUser().profile.id;
     const messageIndex = chat.messages.findIndex(
       m => m.id === message.id
+    );
+    const tempMessageIndex = chat.messages.findIndex(
+      m => m.id === "temp"
     );
     if (messageIndex !== -1) {
       chat.messages[messageIndex] = message;
       return false;
-    } else {
+    } else if (tempMessageIndex === -1 || message.profile.id !== myId) {
       chat.messages.unshift(message);
       return true;
-    }
+    } 
+    return false;
   }
 
   private saveOldMessageInChat(message: Message, chat: Chat) {
@@ -154,8 +148,7 @@ export class ChatService extends Socket {
   }
 
   public sendMessage(sendMessageDto: SendMessageDto) {
-    this.emit("send-message", sendMessageDto);
-    this.chats[sendMessageDto.groupChatId].messages.unshift({
+    const placeHolderMessage = {
       createdAt: new Date(),
       id: "temp",
       data: {
@@ -164,7 +157,15 @@ export class ChatService extends Socket {
       isSending: true,
       seenByMe: true,
       profile: this.localService.getUser().profile,
-    } as Message);
+    } as Message;
+    this.chats[sendMessageDto.groupChatId].messages.unshift(placeHolderMessage);
+    this.emit("send-message", sendMessageDto, (message: Message) => {
+      const chat = this.chats[sendMessageDto.groupChatId];
+      const tempMessageIndex = chat.messages.findIndex(m => m === placeHolderMessage);
+      this.preProcessMessage(message, chat);
+      chat.messages[tempMessageIndex] = message;
+      this.chatsSubject.next(this.chats);
+    });
     this.chatsSubject.next(this.chats);
   }
 
@@ -188,7 +189,7 @@ export class ChatService extends Socket {
   }
 
   private preProcessMessage(message: Message, chat: Chat) {
-    // utc to current timezone
+    if (!message) return {} as Message;
     message.createdAt = new Date(message.createdAt);
     message.updatedAt = new Date(message.updatedAt);
     message.seenByMe = !!message.seen[this.localService.getUser().profile.id];

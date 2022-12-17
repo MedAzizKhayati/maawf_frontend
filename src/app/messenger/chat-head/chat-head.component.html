@@ -9,21 +9,28 @@
     </div>
     <div class="w-full flex flex-col-reverse gap-0.5" [ngClass]="{'items-end': right}">
         <div class="w-full" *ngFor="let message of messages; let index = index; let first = first; let last = last">
-
             <div [ngClass]="{
-                    'bg-secondaryBg relative max-w-[60%] lg:max-w-[50%] min-h-[2.25rem] w-fit flex items-center py-2 px-4 rounded-md break-all': true,
-                    'bg-secondaryBg rounded-r-3xl': !right,
-                    'bg-fadedBlue rounded-l-3xl ml-auto': right,
-                    'rounded-tl-3xl': last && !right,
-                    'rounded-bl-3xl': first && !right,
-                    'rounded-tr-3xl': last && right,
-                    'rounded-br-3xl': first && right,
-                    'latest' : first
+                'bg-secondaryBg group relative max-w-[60%] lg:max-w-[50%] min-h-[2.25rem] w-fit flex items-center py-2 px-4 rounded-md break-all': true,
+                'bg-secondaryBg rounded-r-3xl': !right,
+                'bg-fadedBlue rounded-l-3xl ml-auto': right,
+                'rounded-tl-3xl': last && !right,
+                'rounded-bl-3xl': first && !right,
+                'rounded-tr-3xl': last && right,
+                'rounded-br-3xl': first && right,
+                'latest' : first
+            }">
+                <div class="absolute h-9 p-2 px-4 rounded-2xl text-black group-hover:opacity-100 opacity-0 transition-opacity
+                text-xs flex justify-center items-center bg-slate-400" [ngClass]="{
+                    '-left-20': right,
+                    '-right-20': !right
                 }">
+                    {{ message.createdAt | date: 'shortTime' }}
+                </div>
                 <p>
                     {{ message.data.text }}
                 </p>
-                <div *ngIf="message.isSending" class="absolute bottom-0 -right-4 w-3 h-3 rounded-full border border-slate-300">
+                <div *ngIf="message.isSending"
+                    class="absolute bottom-0 -right-4 w-3 h-3 rounded-full border border-slate-300">
 
                 </div>
             </div>
