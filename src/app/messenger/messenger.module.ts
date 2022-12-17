@@ -12,6 +12,7 @@ import { AppRoutingModule } from "../app-routing.module";
 import { FormsModule } from "@angular/forms";
 import { ChatInputComponent } from "./chat-input/chat-input.component";
 import { ChatNamePipe } from "./pipes/chat-name.pipe";
+import { DropdownComponent } from './header/dropdown/dropdown.component';
 @NgModule({
   declarations: [
     MessengerComponent,
@@ -22,6 +23,7 @@ import { ChatNamePipe } from "./pipes/chat-name.pipe";
     ChatHeadComponent,
     ChatInputComponent,
     ChatNamePipe,
+    DropdownComponent,
   ],
   imports: [
     AppRoutingModule,

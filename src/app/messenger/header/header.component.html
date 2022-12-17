@@ -25,5 +25,13 @@
       1
     </div>
   </div>
-  <div class="w-12 h-12 bg-blue-600 rounded-full"></div>
+  <div class="relative">
+    <div
+      class="w-12 h-12 bg-white rounded-full"
+      (click)="onAvatarClick()"
+    ></div>
+    <div class="absolute pt-4 z-20 top-full -right-1">
+      <app-dropdown [isOpen]="isOpen"></app-dropdown>
+    </div>
+  </div>
 </nav>
