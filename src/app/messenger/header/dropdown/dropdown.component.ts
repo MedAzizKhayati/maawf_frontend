@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { HeroIconName } from "ng-heroicon";
 
 export type DropDownItem = {
@@ -9,11 +9,15 @@ export type DropDownItem = {
 
 @Component({
   selector: "app-dropdown",
-  templateUrl: "./dropdown.component.html",
-  styleUrls: ["./dropdown.component.css"],
+  templateUrl: "./dropdown.component.html"
 })
 export class DropdownComponent implements OnInit {
-  @Input() isOpen: boolean = false;
+  @Input() 
+  isOpen: boolean = false;
+
+  @Output()
+  toggle: EventEmitter<boolean> = new EventEmitter();
+
   dropDownItems?: DropDownItem[];
   constructor() {}
 
@@ -26,6 +30,6 @@ export class DropdownComponent implements OnInit {
   }
 
   onClick() {
-    this.isOpen = !this.isOpen;
+    this.toggle.emit(!this.isOpen);
   }
 }

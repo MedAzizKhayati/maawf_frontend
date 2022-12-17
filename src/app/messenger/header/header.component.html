@@ -27,11 +27,11 @@
   </div>
   <div class="relative">
     <div
-      class="w-12 h-12 bg-white rounded-full"
+      class="w-12 h-12 bg-white rounded-full cursor-pointer"
       (click)="onAvatarClick()"
     ></div>
     <div class="absolute pt-4 z-20 top-full -right-1">
-      <app-dropdown [isOpen]="isOpen"></app-dropdown>
+      <app-dropdown (toggle)="handleToggle($event)" [isOpen]="isOpen"></app-dropdown>
     </div>
   </div>
 </nav>

@@ -13,4 +13,8 @@ export class HeaderComponent implements OnInit {
   onAvatarClick() {
     this.isOpen = !this.isOpen;
   }
+
+  handleToggle(event: boolean) {
+    this.isOpen = event;
+  }
 }
