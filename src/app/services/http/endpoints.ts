@@ -9,4 +9,5 @@ export enum Endpoints {
   Profile = "/profile/",
   Friendships = "/friendships/",
   AcceptFriendRequest = "/friendships/accept/",
+  DeclineFriendRequest = "/friendships/reject/",
 }

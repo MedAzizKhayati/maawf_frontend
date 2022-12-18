@@ -40,4 +40,10 @@ export class FriendshipsService {
       await this.httpService.patch<Friendship>(Endpoints.AcceptFriendRequest + id)
     )
   }
+
+  public async declineFriendRequest(id: string) {
+    return firstValueFrom(
+      await this.httpService.patch<Friendship>(Endpoints.DeclineFriendRequest + id)
+    )
+  }
 }

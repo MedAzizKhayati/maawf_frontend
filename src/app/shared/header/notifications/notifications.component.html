@@ -7,7 +7,8 @@
         <h1 class="px-4 pt-2 font-bold text-xl">Notifications</h1>
 
         <!-- Friend Requests Section -->
-        <div *ngIf="incomingRequests.length" class="pl-4 pr-2 font-medium text-lg flex items-center justify-between gap-2 -mb-2">
+        <div *ngIf="incomingRequests.length"
+            class="pl-4 pr-2 font-medium text-lg flex items-center justify-between gap-2 -mb-2">
             <h2 class="w-max">Friend Requests</h2>
             <p class="text-sm text-primaryBlue cursor-pointer select-none hover:underline">See All</p>
         </div>
@@ -24,8 +25,13 @@
                     {{ request?.createdAt | timeAgo : 'long' }}
                 </p>
                 <div class="flex gap-2 ml-auto">
-                    <p class="cursor-pointer select-none hover:underline" (click)="acceptRequest(request.sender.id)">Accept</p>
-                    <p class="cursor-pointer select-none hover:underline text-gray-400">Decline</p>
+                    <p class="cursor-pointer select-none hover:underline" (click)="acceptRequest(request.sender.id)">
+                        Accept
+                    </p>
+                    <p class="cursor-pointer select-none hover:underline text-gray-400"
+                        (click)="declineRequest(request.sender.id)">
+                        Decline
+                    </p>
                 </div>
             </div>
         </div>

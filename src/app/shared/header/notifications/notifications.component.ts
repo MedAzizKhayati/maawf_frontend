@@ -39,4 +39,11 @@ export class NotificationsComponent implements OnInit {
       this.incomingRequests = this.incomingRequests.filter((request) => request.sender.id !== id);
     }
   }
+
+  async declineRequest(id: string) {
+    const req = await this.friendshipService.declineFriendRequest(id);
+    if (req.status === "rejected") {
+      this.incomingRequests = this.incomingRequests.filter((request) => request.sender.id !== id);
+    }
+  }
 }
