@@ -8,7 +8,7 @@
         <filter-button [toggled]="true" [title]='"Closed"'></filter-button>
         <filter-button [toggled]="false" [title]='"Unread"'></filter-button>
     </div>
-    <div class="flex flex-col gap-5 p-7 my-0 -m-7 overflow-y-auto flex-1">
+    <div class="flex flex-col gap-5 p-7 my-0 -m-7 overflow-y-auto flex-1 scrollbar">
         <chat-item *ngFor="let chat of chats" [chat]="chat"></chat-item>
     </div>
     <button class="hidden md:block w-full py-4 rounded-2xl bg-fadedBlue text-primaryBlue">

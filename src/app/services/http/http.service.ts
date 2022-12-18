@@ -32,7 +32,7 @@ export class HttpService {
     this.baseUrl = envService.apiUrl;
   }
 
-  public async post<T>(endpoint: string, params: any) {
+  public async post<T>(endpoint: string, params?: any) {
     const result = await this.httpClient.post<T>(this.baseUrl + endpoint, params, {
       headers: this.headers,
     });
@@ -49,7 +49,7 @@ export class HttpService {
     return result;
   }
 
-  public async patch<T>(endpoint: string, params: any) {
+  public async patch<T>(endpoint: string, params?: any) {
     const result = await this.httpClient.patch<T>(this.baseUrl + endpoint, params, {
       headers: this.headers,
     });

@@ -1,4 +1,4 @@
-import { forwardRef, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FilterButtonComponent } from "./filter-button/filter-button.component";
 import { HeroIconModule, allIcons } from "ng-heroicon";
@@ -9,6 +9,9 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { InitialsPipe } from './pipes/initials.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { PostComponent } from './post/post.component';
+import { HeaderComponent } from "./header/header.component";
+import { DropdownComponent } from "./header/dropdown/dropdown.component";
+import { NotificationsComponent } from './header/notifications/notifications.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +21,9 @@ import { PostComponent } from './post/post.component';
     InitialsPipe,
     TimeAgoPipe,
     PostComponent,
+    HeaderComponent,
+    DropdownComponent,
+    NotificationsComponent
   ],
   imports: [
     InfiniteScrollModule,
@@ -42,6 +48,7 @@ import { PostComponent } from './post/post.component';
     InitialsPipe,
     TimeAgoPipe,
     PostComponent,
+    HeaderComponent
   ],
 })
 export class SharedModule {}

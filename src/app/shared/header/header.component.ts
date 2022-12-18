@@ -6,15 +6,26 @@ import { Component, Input, OnInit } from "@angular/core";
 })
 export class HeaderComponent implements OnInit {
   @Input() title = "Messaging";
-  isOpen = false;
+  isDropdownOpen = false;
+
+  isNotificationsOpen = false;
+
   constructor() {}
 
   ngOnInit(): void {}
   onAvatarClick() {
-    this.isOpen = !this.isOpen;
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  onNotificationsClick() {
+    this.isNotificationsOpen = !this.isNotificationsOpen;
+  }
+
+  handleNotificationsToggle(event: boolean) {
+    this.isNotificationsOpen = event;
   }
 
   handleToggle(event: boolean) {
-    this.isOpen = event;
+    this.isDropdownOpen = event;
   }
 }

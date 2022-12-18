@@ -1,9 +1,7 @@
 <div class="w-screen h-40 md:h-60">
   <div class="relative w-full h-full">
-    <img
-      class="absolute top-0 left-0 w-full h-full object-cover opacity-40"
-      src="https://images.pexels.com/photos/14430249/pexels-photo-14430249.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-    />
+    <img class="absolute top-0 left-0 w-full h-full object-cover opacity-40"
+      src="https://images.pexels.com/photos/14430249/pexels-photo-14430249.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" />
   </div>
   <div class="flex flex-col mx-auto max-w-4xl w-full p-2">
     <div class="flex flex-col md:flex-row gap-4">
@@ -12,21 +10,17 @@
       </div>
       <div class="flex flex-1 items-center md:max-h-24 p-4 justify-between">
         <div>
-          <h1 class="md:text-4xl text-2xl font-bold tracking-wide">John Doe</h1>
+          <h1 class="md:text-4xl text-2xl font-bold tracking-wide">
+            {{ profile?.firstName + ' ' + profile?.lastName }}
+          </h1>
           <p>Software Engineer</p>
         </div>
         <div class="flex gap-5">
-          <hero-icon
-            name="user-add"
-            type="outline"
-            class="w-8 h-8 text-primaryBlue cursor-pointer transition-all hover:scale-105"
-          >
+          <hero-icon name="user-add" type="outline"
+            class="w-8 h-8 text-primaryBlue cursor-pointer transition-all hover:scale-105">
           </hero-icon>
-          <hero-icon
-            name="chat"
-            type="solid"
-            class="w-8 h-8 text-transparent fill-primaryBlue cursor-pointer transition-all hover:scale-105"
-          >
+          <hero-icon name="chat" type="solid"
+            class="w-8 h-8 text-transparent fill-primaryBlue cursor-pointer transition-all hover:scale-105">
           </hero-icon>
         </div>
       </div>

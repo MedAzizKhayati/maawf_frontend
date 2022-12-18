@@ -6,4 +6,7 @@ export enum Endpoints {
   Chat = "/chat/room/",
   Messages= "/chat/messages/",
   UpdateGroupMember = "/chat/members/",
+  Profile = "/profile/",
+  Friendships = "/friendships/",
+  AcceptFriendRequest = "/friendships/accept/",
 }
