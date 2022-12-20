@@ -6,6 +6,7 @@ import { MessengerModule } from "./messenger/messenger.module";
 import { SocketIoModule } from 'ngx-socket-io';
 import { AppRoutingModule } from "./app-routing.module";
 import { AuthModule } from "./auth/auth.module";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { AuthModule } from "./auth/auth.module";
     AuthModule,
     AppRoutingModule,
     MessengerModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -6,9 +6,10 @@ import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { ButtonComponent } from "./button/button.component";
 import { StandardInputComponent } from "./standard-input/standard-input.component";
 import { ReactiveFormsModule } from "@angular/forms";
-import { InitialsPipe } from './pipes/initials.pipe';
-import { TimeAgoPipe } from './pipes/time-ago.pipe';
-import { ModalComponent } from './modal/modal.component';
+import { InitialsPipe } from "./pipes/initials.pipe";
+import { TimeAgoPipe } from "./pipes/time-ago.pipe";
+import { ModalComponent } from "./modal/modal.component";
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { ModalComponent } from './modal/modal.component';
         attachDefaultDimensionsIfNoneFound: true, // default 'false'
       }
     ),
+    MatProgressSpinnerModule,
   ],
   exports: [
     FilterButtonComponent,
@@ -42,6 +44,7 @@ import { ModalComponent } from './modal/modal.component';
     StandardInputComponent,
     InitialsPipe,
     TimeAgoPipe,
+    MatProgressSpinnerModule
   ],
 })
 export class SharedModule {}

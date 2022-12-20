@@ -1,6 +1,4 @@
 import { Component, Input, OnInit, TemplateRef } from "@angular/core";
-import { async } from "rxjs";
-
 @Component({
   selector: "app-modal",
   templateUrl: "./modal.component.html",
@@ -12,13 +10,13 @@ export class ModalComponent implements OnInit {
   @Input()
   onSubmit: () => Promise<any> | any;
   @Input()
-  onClose: () => Promise<any> | any;
+  onClose?: () => Promise<any> | any;
   @Input()
   title: string = "Title";
   @Input()
-  isDisabled: boolean = true;
+  isDisabled: boolean = false;
   @Input()
-  isVisible: boolean = false;
+  isVisible: boolean = true;
 
   isLoading: boolean = false;
 
@@ -33,12 +31,14 @@ export class ModalComponent implements OnInit {
       await this.close();
     } catch (e) {
       console.error(e);
+    } finally {
+      this.isLoading = false;
     }
   }
 
   async close() {
     try {
-      await this.onClose();
+      await this.onClose?.();
     } catch (e) {
       console.error(e);
     } finally {
