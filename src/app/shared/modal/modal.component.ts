@@ -25,14 +25,16 @@ export class ModalComponent implements OnInit {
   ngOnInit(): void {}
 
   async submit() {
-    this.isLoading = true;
-    try {
-      await this.onSubmit();
-      await this.close();
-    } catch (e) {
-      console.error(e);
-    } finally {
-      this.isLoading = false;
+    if (!this.isDisabled) {
+      this.isLoading = true;
+      try {
+        await this.onSubmit();
+        await this.close();
+      } catch (e) {
+        console.error(e);
+      } finally {
+        this.isLoading = false;
+      }
     }
   }
 
