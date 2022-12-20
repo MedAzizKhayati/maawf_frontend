@@ -1,3 +1,4 @@
+import { objectToFormdata } from '@/app/helpers/objectToFormdata';
 import { environment } from '@/environments/environment';
 import { Chat, GroupChatToProfile, Message } from '@/types/chat.type';
 import { Profile } from '@/types/profile.type';
@@ -45,6 +46,7 @@ export class ChatService extends Socket {
     this.getNextChats();
     this.preProcessChat = this.preProcessChat.bind(this);
     this.preProcessMessage = this.preProcessMessage.bind(this);
+    this.processMessageBlock = this.processMessageBlock.bind(this);
   }
 
   public subscribeToIncomingMessages() {
@@ -98,7 +100,7 @@ export class ChatService extends Socket {
     } else if (tempMessageIndex === -1 || message.profile.id !== myId) {
       chat.messages.unshift(message);
       return true;
-    } 
+    }
     return false;
   }
 
@@ -114,7 +116,9 @@ export class ChatService extends Socket {
   }
 
   public async getNextMessages(chatGroupId: string) {
+
     const chat = await this.getChat(chatGroupId);
+    if (!chat.hasMore) return [];
     const page = chat.page;
 
     const messages = await firstValueFrom(
@@ -145,6 +149,35 @@ export class ChatService extends Socket {
     return this.chatsSubject$.pipe(
       map(chats => chats[chatGroupId])
     );
+  }
+
+  public async httpSendMessage(sendMessageDto: SendMessageDto) {
+    const placeHolderMessage = {
+      createdAt: new Date(),
+      id: "temp",
+      data: {
+        text: sendMessageDto.text,
+        attachments: sendMessageDto.files?.map(file => ({
+          url: file.src,
+          type: file.type,
+        }))
+      },
+      isSending: true,
+      seenByMe: true,
+      profile: this.localService.getUser().profile,
+    } as Message;
+    const chat = this.chats[sendMessageDto.groupChatId];
+    chat.messages.unshift(placeHolderMessage);
+    this.chatsSubject.next(this.chats);
+
+    const formdata = objectToFormdata(sendMessageDto);
+    const message = await firstValueFrom(
+      await this.httpService.post<Message>(Endpoints.SendMessage, formdata)
+    );
+    const tempMessageIndex = chat.messages.findIndex(m => m === placeHolderMessage);
+    this.preProcessMessage(message, chat);
+    chat.messages[tempMessageIndex] = message;
+    this.chatsSubject.next(this.chats);
   }
 
   public sendMessage(sendMessageDto: SendMessageDto) {
@@ -269,6 +302,39 @@ export class ChatService extends Socket {
     return this.chats;
   }
 
+
+  public processMessageBlock(block: Message[]) {
+    // for each message we subdivide it into 2 parts if it got attachments
+    // so that we can display them in the chat head
+    const messages: Message[] = [];
+    for (let i = 0; i < block.length; i++) {
+      const message = block[i];
+      if (message.data?.attachments?.length > 0) {
+        let attachments = message.data.attachments;
+        attachments = attachments.map(attachment => ({
+          ...attachment,
+          url: message.id === 'temp' ? attachment.url : this.httpService.getFullUrl(attachment.url)
+        }));
+        const attachmentMessage = {
+          ...message,
+          data: {
+            attachments
+          }
+        };
+        messages.push(attachmentMessage);
+      }
+      if (message.data?.text)
+        messages.push({
+          ...message,
+          data: {
+            text: message.data.text
+          }
+        });
+    }
+    return messages;
+  }
+
+
   public getMessageBlocks(groupChatId: string): Message[][] {
     const messages = this.chats[groupChatId]?.messages;
     if (!messages)
@@ -291,7 +357,8 @@ export class ChatService extends Socket {
     }
     if (block.length > 0)
       blocks.push(block);
-    return blocks;
+
+    return blocks.map(this.processMessageBlock);
   }
 
   public async updateGroupMember(chatId: string, updateMemberDto: UpdateMemberDto) {

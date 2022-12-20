@@ -25,7 +25,6 @@ export class HttpService {
     private localeService: LocaleService
   ) {
     this.headers = new HttpHeaders({
-      "content-type": "application/json",
       "Access-Control-Allow-Origin": "*",
       Authorization: `Bearer ${localeService.getToken()}`,
     });
@@ -55,5 +54,9 @@ export class HttpService {
     });
 
     return result;
+  }
+
+  public getFullUrl(endpoint: string) {
+    return this.baseUrl + '/' + endpoint;
   }
 }

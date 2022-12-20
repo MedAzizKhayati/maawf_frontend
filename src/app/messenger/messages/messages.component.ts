@@ -49,7 +49,7 @@ export class MessagesComponent implements OnInit {
   async getMessages() {
     if (this.loading) return;
     this.loading = true;
-    const res = await this.chatService.getNextMessages(this.id);
+    await this.chatService.getNextMessages(this.id);
     this.loading = false;
   }
 

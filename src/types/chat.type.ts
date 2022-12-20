@@ -26,9 +26,13 @@ export interface Chat {
     lastMessage?: Message;
 }
 
+export interface Attachment {
+    url: string;
+    type: string;
+}
 export interface Data {
     text?: string;
-    attachment?: any[];
+    attachments?: Attachment[];
 }
 
 export interface Seen {

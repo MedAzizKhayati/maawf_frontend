@@ -2,12 +2,12 @@
     <label for="file-input" class="flex items-center">
         <hero-icon name="paper-clip" type="outline" class="w-6 h-6 text-primaryBlue cursor-pointer hover:scale-110">
         </hero-icon>
-        <input multiple (change)="addFiles($event)" type="file" id="file-input" class="hidden" accept="image/*, video/*">
+        <input multiple (change)="addFiles($event)" type="file" id="file-input" class="hidden" accept="image/*">
     </label>
     <hero-icon name="microphone" type="outline" class="w-6 h-6 text-primaryBlue cursor-pointer hover:scale-110">
     </hero-icon>
     <div class="w-full p-2 px-5 bg-secondaryBg rounded-2xl flex gap-2 flex-wrap">
-        <div *ngFor="let image of files; let index = index" class="relative w-14 h-10">
+        <div *ngFor="let image of files; let index = index" class="relative w-14 h-10 select-none">
             <img 
                 [src]="image.src | safeResourceUrl"
                 class="w-full h-full rounded object-cover"
