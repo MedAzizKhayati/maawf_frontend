@@ -8,6 +8,7 @@ import { StandardInputComponent } from "./standard-input/standard-input.componen
 import { ReactiveFormsModule } from "@angular/forms";
 import { InitialsPipe } from './pipes/initials.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
+import { ModalComponent } from './modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { TimeAgoPipe } from './pipes/time-ago.pipe';
     StandardInputComponent,
     InitialsPipe,
     TimeAgoPipe,
+    ModalComponent,
   ],
   imports: [
     InfiniteScrollModule,
@@ -34,6 +36,7 @@ import { TimeAgoPipe } from './pipes/time-ago.pipe';
   exports: [
     FilterButtonComponent,
     ButtonComponent,
+    ModalComponent,
     HeroIconModule,
     InfiniteScrollModule,
     StandardInputComponent,
