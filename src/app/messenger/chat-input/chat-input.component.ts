@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 export class ChatInputComponent implements OnInit {
   id = "";
   message = "";
+  files: (File & { src: string })[] = [];
 
   constructor(
     private chatService: ChatService,
@@ -17,7 +18,7 @@ export class ChatInputComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {      
+    this.route.params.subscribe(params => {
       this.id = params['id'];
     });
   }
@@ -30,5 +31,16 @@ export class ChatInputComponent implements OnInit {
     };
     this.chatService.sendMessage(dto);
     this.message = "";
+  }
+
+  addFiles(event: any) {
+    this.files = [...event.target.files];
+    this.files.map(file => {
+      file.src = URL.createObjectURL(file);
+    });
+  }
+
+  removeFile(index: number) {
+    this.files.splice(index, 1);
   }
 }
