@@ -1,0 +1,41 @@
+<div *ngIf="isOpen" class="fixed left-0 top-0 w-screen z-100 h-screen" (click)="onClick()"></div>
+<div [class]="
+    'relative z-21 w-fit overflow-y-hidden transition-all ease-in-out duration-300 shadow-xl rounded-xl ' +
+    (isOpen ? 'h-96' : 'h-0')
+  ">
+    <div class="w-80 scrollbar overflow-y-scroll h-full p-2 rounded-xl bg-secondaryBg flex flex-col gap-2">
+        <h1 class="px-4 pt-2 font-bold text-xl">Notifications</h1>
+
+        <!-- Friend Requests Section -->
+        <div *ngIf="incomingRequests.length"
+            class="pl-4 pr-2 font-medium text-lg flex items-center justify-between gap-2 -mb-2">
+            <h2 class="w-max">Friend Requests</h2>
+            <p class="text-sm text-primaryBlue cursor-pointer select-none hover:underline">See All</p>
+        </div>
+        <div class="w-full text-slate-100 text-sm flex flex-col gap-2 rounded-xl transition-all hover:bg-fadedBlue cursor-pointer px-4 py-2"
+            *ngFor="let request of incomingRequests">
+            <div>
+                <strong>
+                    {{ request?.sender?.firstName + ' ' + request?.sender?.lastName }}
+                </strong>
+                has sent you a friend request.
+            </div>
+            <div class="text-primaryBlue flex">
+                <p>
+                    {{ request?.createdAt | timeAgo : 'long' }}
+                </p>
+                <div class="flex gap-2 ml-auto">
+                    <p class="cursor-pointer select-none hover:underline" (click)="acceptRequest(request.sender.id)">
+                        Accept
+                    </p>
+                    <p class="cursor-pointer select-none hover:underline text-gray-400"
+                        (click)="declineRequest(request.sender.id)">
+                        Decline
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- End Friend Requests -->
+
+    </div>
+</div>

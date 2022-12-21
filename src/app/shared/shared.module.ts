@@ -1,4 +1,4 @@
-import { forwardRef, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FilterButtonComponent } from "./filter-button/filter-button.component";
 import { HeroIconModule, allIcons } from "ng-heroicon";
@@ -10,6 +10,11 @@ import { InitialsPipe } from "./pipes/initials.pipe";
 import { TimeAgoPipe } from "./pipes/time-ago.pipe";
 import { ModalComponent } from "./modal/modal.component";
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { PostComponent } from './post/post.component';
+import { HeaderComponent } from "./header/header.component";
+import { DropdownComponent } from "./header/dropdown/dropdown.component";
+import { NotificationsComponent } from './header/notifications/notifications.component';
+import { SafeResourceUrlPipe } from './pipes/safe-resource-url.pipe';
 
 @NgModule({
   declarations: [
@@ -19,6 +24,11 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     InitialsPipe,
     TimeAgoPipe,
     ModalComponent,
+    PostComponent,
+    HeaderComponent,
+    DropdownComponent,
+    NotificationsComponent,
+    SafeResourceUrlPipe
   ],
   imports: [
     InfiniteScrollModule,
@@ -44,7 +54,10 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     StandardInputComponent,
     InitialsPipe,
     TimeAgoPipe,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    PostComponent,
+    HeaderComponent,
+    SafeResourceUrlPipe
   ],
 })
 export class SharedModule {}

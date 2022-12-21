@@ -25,14 +25,13 @@ export class HttpService {
     private localeService: LocaleService
   ) {
     this.headers = new HttpHeaders({
-      "content-type": "application/json",
       "Access-Control-Allow-Origin": "*",
       Authorization: `Bearer ${localeService.getToken()}`,
     });
     this.baseUrl = envService.apiUrl;
   }
 
-  public async post<T>(endpoint: string, params: any) {
+  public async post<T>(endpoint: string, params?: any) {
     const result = await this.httpClient.post<T>(this.baseUrl + endpoint, params, {
       headers: this.headers,
     });
@@ -49,11 +48,15 @@ export class HttpService {
     return result;
   }
 
-  public async patch<T>(endpoint: string, params: any) {
+  public async patch<T>(endpoint: string, params?: any) {
     const result = await this.httpClient.patch<T>(this.baseUrl + endpoint, params, {
       headers: this.headers,
     });
 
     return result;
+  }
+
+  public getFullUrl(endpoint: string) {
+    return this.baseUrl + '/' + endpoint;
   }
 }

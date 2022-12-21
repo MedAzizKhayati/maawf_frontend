@@ -1,4 +1,4 @@
-import { ChatService, LastMessageSeen } from '@/app/services/chat/chat.service';
+import { ChatService } from '@/app/services/chat/chat.service';
 import { UpdateMemberDto } from '@/app/services/chat/update-member.dto';
 import { Chat, Message } from '@/types/chat.type';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
@@ -49,7 +49,7 @@ export class MessagesComponent implements OnInit {
   async getMessages() {
     if (this.loading) return;
     this.loading = true;
-    const res = await this.chatService.getNextMessages(this.id);
+    await this.chatService.getNextMessages(this.id);
     this.loading = false;
   }
 

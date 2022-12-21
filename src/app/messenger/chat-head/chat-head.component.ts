@@ -38,8 +38,10 @@ export class ChatHeadComponent implements OnInit {
     if (this.user?.profile.id === this.messages[0]?.profile.id) {
       this.right = true;
     }
-    this.groupToProfile = this.chat.groupChatToProfiles.find((g) => g.profile.id === this.messages[0]?.profile.id);
+    this.groupToProfile = this.groupToProfile || this.chat.groupChatToProfiles.find((g) => g.profile.id === this.messages[0]?.profile.id);
   }
+
+  
 
   ngOnInit(): void {
 
