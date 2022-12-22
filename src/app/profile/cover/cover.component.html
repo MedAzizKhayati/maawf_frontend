@@ -15,13 +15,17 @@
           </h1>
           <p>Software Engineer</p>
         </div>
-        <div class="flex gap-5">
-          <hero-icon name="user-add" type="outline"
-            class="w-8 h-8 text-primaryBlue cursor-pointer transition-all hover:scale-105">
-          </hero-icon>
-          <hero-icon name="chat" type="solid"
-            class="w-8 h-8 text-transparent fill-primaryBlue cursor-pointer transition-all hover:scale-105">
-          </hero-icon>
+        <div class="flex gap-5 items-center" *ngIf="!me">
+          <div 
+          (click)="sendFriendRequest()"
+          class="p-2 hover:bg-slate-700 transition-colors flex-center rounded-full cursor-pointer">
+            <hero-icon name="user-add" type="outline" class="w-8 h-8 text-primaryBlue translate-x-[2px]">
+            </hero-icon>
+          </div>
+          <div class="p-2 hover:bg-slate-700 transition-colors flex-center rounded-full cursor-pointer">
+            <hero-icon name="chat" type="solid" class="w-8 h-8 text-transparent fill-primaryBlue">
+            </hero-icon>
+          </div>
         </div>
       </div>
     </div>

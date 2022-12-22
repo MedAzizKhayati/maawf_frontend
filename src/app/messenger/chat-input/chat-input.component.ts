@@ -1,5 +1,7 @@
 import { ChatService } from '@/app/services/chat/chat.service';
 import { SendMessageDto } from '@/app/services/chat/send-message.dto';
+import { CryptographyService } from '@/app/services/cryptography/cryptography.service';
+import { LocaleService } from '@/app/services/locale/locale.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -12,10 +14,11 @@ export class ChatInputComponent implements OnInit {
   message = "";
   files: (File & { src: string })[] = [];
   MAX_FILES = 24;
+
   constructor(
     private chatService: ChatService,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -30,9 +33,9 @@ export class ChatInputComponent implements OnInit {
       text: this.message,
       files: this.files,
     };
-    if(!this.message)
+    if (!this.message)
       delete dto.text;
-    this.chatService.httpSendMessage(dto);
+    this.chatService.restSendMessage(dto);
     this.message = "";
     this.files = [];
   }

@@ -25,7 +25,7 @@
                     {{ request?.createdAt | timeAgo : 'long' }}
                 </p>
                 <div class="flex gap-2 ml-auto">
-                    <p class="cursor-pointer select-none hover:underline" (click)="acceptRequest(request.sender.id)">
+                    <p class="cursor-pointer select-none hover:underline" (click)="acceptRequest(request.sender)">
                         Accept
                     </p>
                     <p class="cursor-pointer select-none hover:underline text-gray-400"
@@ -36,6 +36,17 @@
             </div>
         </div>
         <!-- End Friend Requests -->
+
+        <!-- No notifications section -->
+        <div *ngIf="!incomingRequests.length" [class]="'flex-center flex-col gap-2 h-full select-none transition-opacity duration-100 marker:-translate-y-7' 
+        + (isOpen ? ' delay-75' : ' opacity-0')
+        ">
+            <!-- <img src="assets/images/empty-notifications.svg" alt="No notifications" class="w-32"> -->
+            <hero-icon name="bell" type="outline" class="w-32 h-32 text-slate-100"></hero-icon>
+            <p class="text-center text-slate-100">
+                You have no notifications yet.
+            </p>
+        </div>
 
     </div>
 </div>

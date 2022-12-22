@@ -14,9 +14,17 @@ export class ModalComponent implements OnInit {
   @Input()
   title: string = "Title";
   @Input()
-  isDisabled: boolean = false;
+  isDisabled = false;
   @Input()
-  isVisible: boolean = true;
+  isVisible = false;
+  @Input()
+  showCancel = true;
+  @Input()
+  showSubmit = true;
+  @Input()
+  submitText = "Submit";
+  @Input()
+  fixedHeight = false;
 
   isLoading: boolean = false;
 
@@ -28,8 +36,8 @@ export class ModalComponent implements OnInit {
     if (!this.isDisabled) {
       this.isLoading = true;
       try {
-        await this.onSubmit();
-        await this.close();
+        await this.onSubmit?.();
+        await this.close?.();
       } catch (e) {
         console.error(e);
       } finally {
@@ -44,7 +52,6 @@ export class ModalComponent implements OnInit {
     } catch (e) {
       console.error(e);
     } finally {
-      this.isVisible = false;
     }
   }
 }

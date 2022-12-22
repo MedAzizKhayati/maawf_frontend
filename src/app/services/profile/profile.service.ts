@@ -24,4 +24,12 @@ export class ProfileService {
       await this.httpService.get<Profile>(Endpoints.Profile + id)
     );
   }
+
+  public async getProfiles(query: string = '') {
+    return firstValueFrom(
+      await this.httpService.get<Profile[]>(Endpoints.Profile, {
+        query
+      })
+    );
+  }
 }

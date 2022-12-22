@@ -1,5 +1,9 @@
-<app-modal [template]="greet"></app-modal>
-<ng-template #greet><div>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quo earum ullam, numquam harum natus quod nostrum cum! Alias sunt perspiciatis modi aliquam sit error, eos, quasi dolor, veniam libero nihil! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Omnis, consectetur hic autem, dolorem provident reprehenderit accusantium quod quo architecto quas distinctio voluptatibus officiis dignissimos consequuntur culpa temporibus ipsam debitis! Placeat.</div></ng-template>
+<app-modal [title]="'Welcome to Messenger'" [showCancel]="false" [isVisible]="false" [template]="greet"></app-modal>
+<ng-template #greet>
+  <div>
+    <p class="text-gray-500">Select a chat to start messaging</p>
+  </div>
+</ng-template>
 <div class="w-full h-screen overflow-hidden">
   <messenger-header></messenger-header>
   <div class="flex max-h-full">

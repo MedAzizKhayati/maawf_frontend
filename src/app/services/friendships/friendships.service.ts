@@ -1,6 +1,8 @@
 import { Friendship } from '@/types/friendship.type';
+import { Profile } from '@/types/profile.type';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { CryptographyService } from '../cryptography/cryptography.service';
 import { Endpoints } from '../http/endpoints';
 import { HttpService } from '../http/http.service';
 import { ProfileService } from '../profile/profile.service';
@@ -12,19 +14,20 @@ export class FriendshipsService {
 
   constructor(
     private httpService: HttpService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private cryptographyService: CryptographyService
   ) { }
 
   public async getFriendships(
     type: "incoming" | "outgoing" | "all" = "all",
-    status: Friendship["status"] = "accepted"
+    status: Friendship["status"] = "accepted",
+    query: string = ""
   ) {
-    const profile = this.profileService.getMyProfile();
-
     return firstValueFrom(
       await this.httpService.get<Friendship[]>(Endpoints.Friendships, {
         type,
         status,
+        query
       })
     )
   }
@@ -35,9 +38,22 @@ export class FriendshipsService {
     )
   }
 
-  public async acceptFriendRequest(id: string) {
+  public async acceptFriendRequest(profile: Profile) {
+    const myProfile = this.profileService.getMyProfile();
+    const symmetricKey = this.cryptographyService.generateSymmetricKey();
+    const senderEncryptedSymmetricKey = this.cryptographyService.encryptSymmetricKey(
+      profile.publicKey,
+      symmetricKey
+    );
+    const receiverEncryptedSymmetricKey = this.cryptographyService.encryptSymmetricKey(
+      myProfile.publicKey,
+      symmetricKey
+    );
     return firstValueFrom(
-      await this.httpService.patch<Friendship>(Endpoints.AcceptFriendRequest + id)
+      await this.httpService.patch<Friendship>(Endpoints.AcceptFriendRequest + profile.id, {
+        senderEncryptedSymmetricKey,
+        receiverEncryptedSymmetricKey
+      })
     )
   }
 

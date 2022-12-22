@@ -8,15 +8,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChatsComponent implements OnInit {
   chats: Chat[] = [];
+  isGroupChatModalVisible = false;
   constructor(
     private chatService: ChatService,
   ) {
-    this.chatService.chatsSubject$.subscribe(() => {
+    this.closeGroupChatModal = this.closeGroupChatModal.bind(this);
+  }
+
+  ngOnInit(): void {
+    this.chats = this.chatService.getChatList();
+    this.chatService.chatsSubject$.subscribe((_) => {
       this.chats = this.chatService.getChatList();
     });
   }
 
-  ngOnInit(): void {
+  closeGroupChatModal() {
+    this.isGroupChatModalVisible = false;
   }
 
 }

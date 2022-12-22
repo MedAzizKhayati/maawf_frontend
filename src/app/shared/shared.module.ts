@@ -5,7 +5,7 @@ import { HeroIconModule, allIcons } from "ng-heroicon";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { ButtonComponent } from "./button/button.component";
 import { StandardInputComponent } from "./standard-input/standard-input.component";
-import { ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { InitialsPipe } from "./pipes/initials.pipe";
 import { TimeAgoPipe } from "./pipes/time-ago.pipe";
 import { ModalComponent } from "./modal/modal.component";
@@ -15,6 +15,8 @@ import { HeaderComponent } from "./header/header.component";
 import { DropdownComponent } from "./header/dropdown/dropdown.component";
 import { NotificationsComponent } from './header/notifications/notifications.component';
 import { SafeResourceUrlPipe } from './pipes/safe-resource-url.pipe';
+import { RouterModule } from "@angular/router";
+import { SearchComponent } from './header/search/search.component';
 
 @NgModule({
   declarations: [
@@ -28,12 +30,15 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url.pipe';
     HeaderComponent,
     DropdownComponent,
     NotificationsComponent,
-    SafeResourceUrlPipe
+    SafeResourceUrlPipe,
+    SearchComponent
   ],
   imports: [
     InfiniteScrollModule,
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
+    FormsModule,
     HeroIconModule.forRoot(
       {
         ...allIcons,

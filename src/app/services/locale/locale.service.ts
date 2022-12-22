@@ -20,6 +20,14 @@ export class LocaleService {
   }
 
   public setUser(user: User) {
-    localStorage.setItem("user", JSON.stringify(user));
+    const oldUser = this.getUser();
+    localStorage.setItem("user", JSON.stringify({
+      ...user,
+      password: user.password || oldUser.password,
+    }));
+  }
+
+  public clear() {
+    localStorage.clear();
   }
 }

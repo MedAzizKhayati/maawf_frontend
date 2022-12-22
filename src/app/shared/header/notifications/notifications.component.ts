@@ -1,5 +1,6 @@
 import { FriendshipsService } from '@/app/services/friendships/friendships.service';
 import { Friendship } from '@/types/friendship.type';
+import { Profile } from '@/types/profile.type';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
@@ -19,10 +20,7 @@ export class NotificationsComponent implements OnInit {
     private readonly friendshipService: FriendshipsService,
   ) {
     this.friendshipService.getFriendships("incoming", "pending").then((incomingRequests) => {
-      this.incomingRequests = [
-        ...incomingRequests, ...incomingRequests,
-        ...incomingRequests, ...incomingRequests
-      ];
+      this.incomingRequests = incomingRequests;
     })
   }
 
@@ -33,10 +31,10 @@ export class NotificationsComponent implements OnInit {
     this.toggle.emit(!this.isOpen);
   }
 
-  async acceptRequest(id: string) {
-    const req = await this.friendshipService.acceptFriendRequest(id);
+  async acceptRequest(profile: Profile) {
+    const req = await this.friendshipService.acceptFriendRequest(profile);
     if (req.status === "accepted") {
-      this.incomingRequests = this.incomingRequests.filter((request) => request.sender.id !== id);
+      this.incomingRequests = this.incomingRequests.filter((request) => request.sender.id !== profile.id);
     }
   }
 

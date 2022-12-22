@@ -1,3 +1,4 @@
+import { FriendshipsService } from '@/app/services/friendships/friendships.service';
 import { Profile } from '@/types/profile.type';
 import { Component, Input, OnInit } from '@angular/core';
 
@@ -9,9 +10,21 @@ export class CoverComponent implements OnInit {
   @Input()
   profile?: Profile;
 
-  constructor() { }
+  @Input()
+  me: boolean = true;
+
+  constructor(
+    private readonly friendshipService: FriendshipsService
+  ) { }
 
   ngOnInit(): void {
+
+  }
+
+  sendFriendRequest() {
+    if (this.profile) {
+      this.friendshipService.sendFriendRequest(this.profile.id);
+    }
   }
 
 }

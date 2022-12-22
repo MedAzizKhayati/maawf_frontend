@@ -11,6 +11,7 @@ import { AppRoutingModule } from "../app-routing.module";
 import { FormsModule } from "@angular/forms";
 import { ChatInputComponent } from "./chat-input/chat-input.component";
 import { ChatNamePipe } from "./pipes/chat-name.pipe";
+import { GroupChatComponent } from './group-chat/group-chat.component';
 @NgModule({
   declarations: [
     MessengerComponent,
@@ -20,6 +21,7 @@ import { ChatNamePipe } from "./pipes/chat-name.pipe";
     ChatHeadComponent,
     ChatInputComponent,
     ChatNamePipe,
+    GroupChatComponent,
   ],
   imports: [
     AppRoutingModule,

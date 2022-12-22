@@ -7,8 +7,8 @@ export class TimeAgoPipe implements PipeTransform {
 
   transform(date: Date | string, type: 'long' | 'short' = 'short'): string {
     date = new Date(date);
-    date = new Date(+date.getTime() - date.getTimezoneOffset() * 60 * 1000);
     const seconds = Math.floor((+new Date() - +date) / 1000);
+
     if (seconds < 29) // less than 30 seconds ago will show as 'Just now'
       return 'Just now';
     const intervals = type === 'short' ? {
