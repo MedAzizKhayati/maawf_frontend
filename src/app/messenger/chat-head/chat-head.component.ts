@@ -1,6 +1,7 @@
 import { ChatService } from '@/app/services/chat/chat.service';
 import { LocaleService } from '@/app/services/locale/locale.service';
 import { Chat, GroupChatToProfile, Message } from '@/types/chat.type';
+import { Profile } from '@/types/profile.type';
 import User from '@/types/user.type';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 
@@ -27,6 +28,8 @@ export class ChatHeadComponent implements OnInit {
   user?: User;
   groupToProfile?: GroupChatToProfile;
 
+  profiles: { [key: string]: Profile } = {};
+
   constructor(
     private localeService: LocaleService,
     private chatService: ChatService
@@ -38,8 +41,19 @@ export class ChatHeadComponent implements OnInit {
     if (this.user?.profile.id === this.messages[0]?.profile.id) {
       this.right = true;
     }
-    this.groupToProfile = this.chat.groupChatToProfiles.find((g) => g.profile.id === this.messages[0]?.profile.id);
+    this.groupToProfile =
+      this.groupToProfile || this.chat.groupChatToProfiles.find((g) => g.profile.id === this.messages[0]?.profile.id);
+
+    !Object.keys(this.profiles).length &&
+      this.messages.forEach(msg => {
+        Object.keys(msg.seen).forEach(key => {
+          this.profiles[key] = this.chat.groupChatToProfiles.find((g) => g.profile.id === key).profile;
+          console.log(this.profiles);
+        })
+      })
   }
+
+
 
   ngOnInit(): void {
 

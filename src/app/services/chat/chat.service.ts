@@ -1,12 +1,15 @@
+import { objectToFormdata } from '@/app/helpers/objectToFormdata';
 import { environment } from '@/environments/environment';
 import { Chat, GroupChatToProfile, Message } from '@/types/chat.type';
 import { Profile } from '@/types/profile.type';
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import { firstValueFrom, map, Subject, filter, Observable } from 'rxjs';
+import { firstValueFrom, map, Subject, Observable } from 'rxjs';
+import { CryptographyService } from '../cryptography/cryptography.service';
 import { Endpoints } from '../http/endpoints';
 import { HttpService } from '../http/http.service';
 import { LocaleService } from '../locale/locale.service';
+import { CreateGroupChatDTO } from './create-chat.dto';
 import { SendMessageDto } from './send-message.dto';
 import { UpdateMemberDto } from './update-member.dto';
 
@@ -27,6 +30,7 @@ export class ChatService extends Socket {
   constructor(
     private httpService: HttpService,
     private localService: LocaleService,
+    private cryptographyService: CryptographyService
   ) {
     super({
       url: environment.wsUrl + '/chat', options: {
@@ -45,6 +49,7 @@ export class ChatService extends Socket {
     this.getNextChats();
     this.preProcessChat = this.preProcessChat.bind(this);
     this.preProcessMessage = this.preProcessMessage.bind(this);
+    this.processMessageBlock = this.processMessageBlock.bind(this);
   }
 
   public subscribeToIncomingMessages() {
@@ -98,7 +103,7 @@ export class ChatService extends Socket {
     } else if (tempMessageIndex === -1 || message.profile.id !== myId) {
       chat.messages.unshift(message);
       return true;
-    } 
+    }
     return false;
   }
 
@@ -115,6 +120,7 @@ export class ChatService extends Socket {
 
   public async getNextMessages(chatGroupId: string) {
     const chat = await this.getChat(chatGroupId);
+    if (!chat.hasMore) return [];
     const page = chat.page;
 
     const messages = await firstValueFrom(
@@ -147,6 +153,49 @@ export class ChatService extends Socket {
     );
   }
 
+  private prepareMessageDto(sendMessageDto: SendMessageDto) {
+    if (!sendMessageDto.text) return;
+    const chat = this.chats[sendMessageDto.groupChatId];
+    if (!chat.symmetricKey) return;
+    const encryptedText = this.cryptographyService.encryptMessage(
+      sendMessageDto.text,
+      chat.symmetricKey
+    );
+    sendMessageDto.text = encryptedText;
+    sendMessageDto.isEncrypted = true;
+  }
+
+  public async restSendMessage(sendMessageDto: SendMessageDto) {
+    const oldText = sendMessageDto.text;
+    this.prepareMessageDto(sendMessageDto);
+    const placeHolderMessage = {
+      createdAt: new Date(),
+      id: "temp",
+      data: {
+        text: oldText,
+        attachments: sendMessageDto.files?.map(file => ({
+          url: file.src,
+          type: file.type,
+        }))
+      },
+      isSending: true,
+      seenByMe: true,
+      profile: this.localService.getUser().profile,
+    } as Message;
+    const chat = this.chats[sendMessageDto.groupChatId];
+    chat.messages.unshift(placeHolderMessage);
+    this.chatsSubject.next(this.chats);
+
+    const formdata = objectToFormdata(sendMessageDto);
+    const message = await firstValueFrom(
+      await this.httpService.post<Message>(Endpoints.SendMessage, formdata)
+    );
+    const tempMessageIndex = chat.messages.findIndex(m => m === placeHolderMessage);
+    this.preProcessMessage(message, chat);
+    chat.messages[tempMessageIndex] = message;
+    this.chatsSubject.next(this.chats);
+  }
+
   public sendMessage(sendMessageDto: SendMessageDto) {
     const placeHolderMessage = {
       createdAt: new Date(),
@@ -173,8 +222,6 @@ export class ChatService extends Socket {
     const user = this.localService.getUser();
     if (!message.seenByMe) {
       this.emit("mark-as-seen", message.id);
-      console.log("Marking as seen");
-
     }
   }
 
@@ -182,14 +229,17 @@ export class ChatService extends Socket {
     return Object.values(this.chats);
   }
 
-  private chatsToMap(chats: Chat[]) {
-    const map: ChatMap = {};
-    chats.forEach(chat => map[chat.id] = chat);
-    return map;
-  }
-
   private preProcessMessage(message: Message, chat: Chat) {
     if (!message) return {} as Message;
+    if (message.data.text && message.isEncrypted)
+      try {
+        message.data.text = this.cryptographyService.decryptMessage(
+          message.data.text,
+          chat.symmetricKey
+        );
+      } catch (error) {
+      }
+
     message.createdAt = new Date(message.createdAt);
     message.updatedAt = new Date(message.updatedAt);
     message.seenByMe = !!message.seen[this.localService.getUser().profile.id];
@@ -218,6 +268,22 @@ export class ChatService extends Socket {
   }
 
   private preProcessChat(chat: Chat) {
+    const user = this.localService.getUser();
+    try {
+      const encryptedSymmetricKey = chat.groupChatToProfiles.find(
+        gcp => gcp.profile.id === user.profile.id
+      ).encryptedSymmetricKey;
+      const privateKey = this.cryptographyService.decryptPrivateKey(
+        user.encryptedPrivateKey,
+        user.password
+      );
+      const symmetricKey = this.cryptographyService.decryptSymmetricKey(
+        encryptedSymmetricKey,
+        privateKey,
+      );
+      chat.symmetricKey = symmetricKey;
+    } catch (error) {
+    }
     chat.createdAt = new Date(chat.createdAt);
     chat.updatedAt = new Date(chat.updatedAt);
     chat.pageSize = ChatService.PAGE_SIZE;
@@ -269,6 +335,39 @@ export class ChatService extends Socket {
     return this.chats;
   }
 
+
+  public processMessageBlock(block: Message[]) {
+    // for each message we subdivide it into 2 parts if it got attachments
+    // so that we can display them in the chat head
+    const messages: Message[] = [];
+    for (let i = 0; i < block.length; i++) {
+      const message = block[i];
+      if (message.data?.attachments?.length > 0) {
+        let attachments = message.data.attachments;
+        attachments = attachments.map(attachment => ({
+          ...attachment,
+          url: message.id === 'temp' ? attachment.url : this.httpService.getFullUrl(attachment.url)
+        }));
+        const attachmentMessage = {
+          ...message,
+          data: {
+            attachments
+          }
+        };
+        messages.push(attachmentMessage);
+      }
+      if (message.data?.text)
+        messages.push({
+          ...message,
+          data: {
+            text: message.data.text
+          }
+        });
+    }
+    return messages;
+  }
+
+
   public getMessageBlocks(groupChatId: string): Message[][] {
     const messages = this.chats[groupChatId]?.messages;
     if (!messages)
@@ -291,7 +390,8 @@ export class ChatService extends Socket {
     }
     if (block.length > 0)
       blocks.push(block);
-    return blocks;
+
+    return blocks.map(this.processMessageBlock);
   }
 
   public async updateGroupMember(chatId: string, updateMemberDto: UpdateMemberDto) {
@@ -305,5 +405,29 @@ export class ChatService extends Socket {
     this.chats[chatId] = { ...chat };
     this.chatsSubject.next(this.chats);
     return chat;
+  }
+
+  public async createGroupChat(members: Profile[], name?: string) {
+    const me = this.localService.getUser().profile;
+    const createGroupChatDto = {} as CreateGroupChatDTO;
+    createGroupChatDto.name = name;
+
+    const symmetricKey = this.cryptographyService.generateSymmetricKey();
+    createGroupChatDto.encryptedSymmetricKey =
+      this.cryptographyService.encryptSymmetricKey(me.publicKey, symmetricKey);
+
+    createGroupChatDto.members = members.map(member => {
+      const encryptedSymmetricKey =
+        this.cryptographyService.encryptSymmetricKey(member.publicKey, symmetricKey);
+      return {
+        id: member.id,
+        encryptedSymmetricKey
+      }
+    });
+
+    const response = await firstValueFrom<Chat>(
+      await this.httpService.post(Endpoints.CreateGroupChat, createGroupChatDto)
+    );
+    return response;
   }
 }

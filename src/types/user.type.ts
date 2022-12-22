@@ -7,4 +7,6 @@ export default interface User {
     profile: Profile;
     createdAt: Date;
     updatedAt: Date;
+    password: string;
+    encryptedPrivateKey: string;
 }

@@ -1,5 +1,6 @@
 export interface SendMessageDto {
     groupChatId: string;
     text: string;
-    attachments?: string[];
+    files?: (File & { src: string })[];
+    isEncrypted?: boolean;
 }

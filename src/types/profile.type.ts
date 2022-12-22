@@ -4,9 +4,10 @@ export interface Profile {
     updatedAt: Date;
     firstName: string;
     lastName: string;
-    birthday?: any;
+    birthday?: Date;
     gender: string;
-    bio?: any;
-    avatar?: any;
-    cover?: any;
+    bio?: string;
+    avatar?: string;
+    cover?: string;
+    publicKey: string;
 }

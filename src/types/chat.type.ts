@@ -9,6 +9,7 @@ export interface GroupChatToProfile {
     isMuted: boolean;
     profile: Profile;
     latestSeenMessage?: Message;
+    encryptedSymmetricKey: string;
 }
 
 export interface Chat {
@@ -24,11 +25,16 @@ export interface Chat {
     page: number;
     pageSize: number;
     lastMessage?: Message;
+    symmetricKey: string;
 }
 
+export interface Attachment {
+    url: string;
+    type: string;
+}
 export interface Data {
     text?: string;
-    attachment?: any[];
+    attachments?: Attachment[];
 }
 
 export interface Seen {
@@ -44,4 +50,5 @@ export interface Message {
     profile: Profile;
     seenByMe?: boolean;
     isSending?: boolean;
+    isEncrypted: boolean;
 }

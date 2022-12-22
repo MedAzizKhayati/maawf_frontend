@@ -33,7 +33,8 @@ export class SignInComponent implements OnInit {
       .then((res) => {
         console.log(res);
         if (localStorage.getItem("token")) {
-          this.router.navigate(["/messenger"], { relativeTo: this.route });
+          // this.router.navigate(["/messenger"], { relativeTo: this.route });
+          window.location.replace("/messenger");
           console.log(localStorage.getItem("token"));
         }
       })

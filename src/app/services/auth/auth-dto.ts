@@ -4,6 +4,8 @@ export interface AuthDTO {
   gender: string;
   email: string;
   password: string;
+  encryptedPrivateKey: string;
+  publicKey: string;
 }
 
 export interface LoginDTO {
