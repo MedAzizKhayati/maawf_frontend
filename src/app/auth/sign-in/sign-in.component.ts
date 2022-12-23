@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 })
 export class SignInComponent implements OnInit {
   signinForm: FormGroup;
+  errorMessage: string;
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -40,7 +41,7 @@ export class SignInComponent implements OnInit {
       })
       .catch((err) => {
         console.log(err);
-        this.router.navigate(["/sign-in"], { relativeTo: this.route });
+        this.errorMessage = err.error.message?.join?.(' ') || err.error.message || "An error has occured";
       });
   }
 }

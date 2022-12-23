@@ -10,11 +10,12 @@ import { ActivatedRoute, Route, Router } from "@angular/router";
 })
 export class SignUpComponent implements OnInit {
   signupForm: FormGroup;
+  errorMessage: string;
   constructor(
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.signupForm = new FormGroup(
@@ -43,6 +44,7 @@ export class SignUpComponent implements OnInit {
         this.router.navigate(["/sign-in"], { relativeTo: this.route })
       })
       .catch((err) => {
+        this.errorMessage = err.error.message?.join?.(' ') || err.error.message || "An error has occured";
         console.log(err);
       });
   }
