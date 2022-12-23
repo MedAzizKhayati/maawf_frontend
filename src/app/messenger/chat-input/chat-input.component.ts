@@ -4,6 +4,7 @@ import { CryptographyService } from '@/app/services/cryptography/cryptography.se
 import { LocaleService } from '@/app/services/locale/locale.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { bindCallback, map, Observable, of, tap } from 'rxjs';
 
 @Component({
   selector: 'chat-input',
@@ -18,12 +19,25 @@ export class ChatInputComponent implements OnInit {
   constructor(
     private chatService: ChatService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.id = params['id'];
     });
+  }
+
+  onPaste(e: ClipboardEvent) {
+    const clipboardData = e.clipboardData || (window as any).clipboardData;
+    const items: DataTransferItem[] = Array.from(clipboardData.items);
+    const images = items.filter(x => /image/i.test(x.type));
+    if (images.length) {
+      images.forEach((image) => {
+        const file = image.getAsFile() as File & { src: string };
+        file.src = URL.createObjectURL(file);
+        this.files.push(file);
+      });
+    }
   }
 
   sendMessage() {

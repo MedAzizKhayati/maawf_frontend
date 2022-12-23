@@ -19,6 +19,7 @@ export class MessagesComponent implements OnInit {
   subscriptions: Subscription[] = [];
   loading = false;
   nickname: any = {};
+  chatName = '';
 
   constructor(
     private chatService: ChatService,
@@ -64,6 +65,12 @@ export class MessagesComponent implements OnInit {
         this.getMessages();
       }
     }
+  }
+
+  updateChatName() {
+    this.chatName = this.chatName.trim();
+    if (this.chatName === this.chat?.name || !this.chatName) return;
+    this.chatService.updateChatName(this.id, this.chatName);
   }
 
   toggleSettings() {

@@ -29,7 +29,7 @@ export class ChatItemComponent implements OnInit {
     } else {
       this.lastMessageName = this.chat.groupChatToProfiles.find(
         (gctp) => gctp.profile.id === profile?.id
-      )?.nickname || profile?.firstName
+      )?.nickname || profile?.firstName.split(' ')[0];
     }
   }
 

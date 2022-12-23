@@ -52,6 +52,16 @@ export class ChatService extends Socket {
     this.processMessageBlock = this.processMessageBlock.bind(this);
   }
 
+  public async updateChatName(id: string, name: string) {
+    const chat = await firstValueFrom(
+      await this.httpService.patch<Chat>(Endpoints.Chat + id, { id, name })
+    );
+    this.chats[chat.id].name = chat.name;
+    this.chats[chat.id] = { ...this.chats[chat.id] };
+    this.chatsSubject.next(this.chats);
+    return this.chats[chat.id];
+  }
+
   public subscribeToIncomingMessages() {
     return this.fromEvent<IncomingMessage>("message").pipe(
       map(async (data: IncomingMessage) => {

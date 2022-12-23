@@ -1,4 +1,6 @@
+import { FriendshipsService } from "@/app/services/friendships/friendships.service";
 import { ProfileService } from "@/app/services/profile/profile.service";
+import { Friendship } from "@/types/friendship.type";
 import { Profile } from "@/types/profile.type";
 import { Component, Input, OnInit } from "@angular/core";
 
@@ -7,25 +9,37 @@ import { Component, Input, OnInit } from "@angular/core";
   templateUrl: "./header.component.html",
 })
 export class HeaderComponent implements OnInit {
-  @Input() 
+  @Input()
   title = "Messaging";
 
   isDropdownOpen = false;
   isNotificationsOpen = false;
   isSearchOpen = false;
-  searchQuery = ""; 
+  searchQuery = "";
   timeoutId: any;
 
   profile: Profile;
   profiles: Profile[] = [];
+  interval: NodeJS.Timer;
+
+  incomingRequests: Friendship[] = [];
 
   constructor(
     private readonly profileService: ProfileService,
+    private readonly friendshipService: FriendshipsService,
   ) {
-    this.profile = this.profileService.getMyProfile();
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.profile = this.profileService.getMyProfile();
+    this.interval = setInterval(() => {
+      this.friendshipService.getFriendships("incoming", "pending").then((incomingRequests) => {
+        if (JSON.stringify(this.incomingRequests) !== JSON.stringify(incomingRequests))
+          this.incomingRequests = incomingRequests;
+      })
+    }, 3000);
+  }
+
   onAvatarClick() {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
@@ -33,10 +47,10 @@ export class HeaderComponent implements OnInit {
   onSearch($event: any) {
     const query = $event.target.value.trim();
     const changed = query !== this.searchQuery;
-    if(!changed || !query) return;
+    if (!changed || !query) return;
     this.searchQuery = query;
     this.isSearchOpen = true;
-    if(this.timeoutId) {
+    if (this.timeoutId) {
       clearTimeout(this.timeoutId);
     }
     this.timeoutId = setTimeout(async () => {
@@ -59,5 +73,9 @@ export class HeaderComponent implements OnInit {
 
   handleToggle(event: boolean) {
     this.isDropdownOpen = event;
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.interval);
   }
 }

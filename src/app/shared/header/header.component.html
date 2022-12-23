@@ -19,11 +19,12 @@
     <hero-icon name="bell" hostDisplay="inlineBlock" type="outline"
       class="cursor-pointer select-none w-8 h-8 text-white" (click)="onNotificationsClick()"></hero-icon>
     <div
+      *ngIf="incomingRequests.length > 0"
       class="absolute -right-0.5 select-none pointer-events-none -top-0.5 rounded-full h-4 w-4 flex-center bg-notification-background text-white font-medium text-xs">
-      1
+      {{ incomingRequests.length }}
     </div>
     <div class="absolute pt-4 z-20 top-full -right-20">
-      <app-notifications (toggle)="handleNotificationsToggle($event)"
+      <app-notifications [incomingRequests]="incomingRequests" (toggle)="handleNotificationsToggle($event)"
         [isOpen]="isNotificationsOpen"></app-notifications>
     </div>
   </div>
