@@ -1,0 +1,17 @@
+<app-modal [title]="'Welcome to Messenger'" [showCancel]="false" [isVisible]="false" [template]="greet"></app-modal>
+<ng-template #greet>
+  <div>
+    <p class="text-gray-500">Select a chat to start messaging</p>
+  </div>
+</ng-template>
+<div class="w-full h-screen overflow-hidden">
+  <messenger-header></messenger-header>
+  <div class="flex max-h-full">
+    <div class="max-w-xs min-w-min overflow-y-auto max-h-full">
+      <messenger-chats></messenger-chats>
+    </div>
+    <div class="flex-1">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
