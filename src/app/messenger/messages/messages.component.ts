@@ -58,13 +58,11 @@ export class MessagesComponent implements OnInit {
   }
 
   onScroll() {
-    const loader = document.getElementById('loader');
-    if (loader) {
-      const rect = loader.getBoundingClientRect();
-      if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-        this.getMessages();
-      }
-    }
+    const scrollTop = this.messagesDiv?.nativeElement.scrollTop;
+    const scrollHeight = this.messagesDiv?.nativeElement.scrollHeight;
+    const clientHeight = this.messagesDiv?.nativeElement.clientHeight;
+    if (scrollTop + scrollHeight - clientHeight <= 100)
+      this.getMessages();
   }
 
   updateChatName() {
