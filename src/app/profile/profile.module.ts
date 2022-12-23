@@ -12,4 +12,4 @@ import { SharedModule } from "../shared/shared.module";
   declarations: [ProfileComponent, CoverComponent, AvatarComponent],
   imports: [CommonModule, ProfileRoutingModule, MessengerModule, SharedModule],
 })
-export class ProfileModule {}
+export class ProfileModule { }

@@ -17,6 +17,15 @@
         <app-standard-input [type]="'password'" [label]="'Password'" [formGroup]="signinForm" formControlName="password"
           [formElement]="formElement('password')"></app-standard-input>
       </div>
+      <!-- Submit Errors section -->
+      <div *ngIf="errorMessage" class="flex flex-col gap-2">
+        <div class="flex gap-2 items-center">
+          <hero-icon name="exclamation-circle" size="sm" class="text-red-400"></hero-icon>
+          <p class="text-sm text-red-400">
+            {{ errorMessage }}
+          </p>
+        </div>
+      </div>
       <div class="btn md:w-full">
         <app-button [type]="'primary'" [text]="'Login'"></app-button>
       </div>

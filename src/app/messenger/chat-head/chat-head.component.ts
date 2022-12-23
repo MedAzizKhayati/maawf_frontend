@@ -44,11 +44,10 @@ export class ChatHeadComponent implements OnInit {
     this.groupToProfile =
       this.groupToProfile || this.chat.groupChatToProfiles.find((g) => g.profile.id === this.messages[0]?.profile.id);
 
-    !Object.keys(this.profiles).length &&
+    !Object?.keys(this.profiles)?.length &&
       this.messages.forEach(msg => {
-        Object.keys(msg.seen).forEach(key => {
+        Object.keys(msg.seen || {}).forEach(key => {
           this.profiles[key] = this.chat.groupChatToProfiles.find((g) => g.profile.id === key).profile;
-          console.log(this.profiles);
         })
       })
   }

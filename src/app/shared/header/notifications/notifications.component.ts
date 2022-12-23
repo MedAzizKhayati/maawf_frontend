@@ -15,14 +15,12 @@ export class NotificationsComponent implements OnInit {
   @Output()
   toggle: EventEmitter<boolean> = new EventEmitter();
 
+  @Input()
   incomingRequests: Friendship[] = [];
+
   constructor(
     private readonly friendshipService: FriendshipsService,
-  ) {
-    this.friendshipService.getFriendships("incoming", "pending").then((incomingRequests) => {
-      this.incomingRequests = incomingRequests;
-    })
-  }
+  ) {}
 
   ngOnInit(): void {
   }

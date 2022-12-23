@@ -2,7 +2,8 @@
     <div class="flex flex-col flex-1">
         <div class="flex p-6 items-center justify-between text-xl font-medium w-full shadow-md">
             <h1>{{ chat | chatName }}</h1>
-            <div class="hidden lg:flex items-center justify-center p-1 transition-colors cursor-pointer hover:bg-secondaryBg rounded-full">
+            <div
+                class="hidden lg:flex items-center justify-center p-1 transition-colors cursor-pointer hover:bg-secondaryBg rounded-full">
                 <hero-icon (click)="toggleSettings()" name="information-circle" type="outline"
                     class="w-8 h-8 text-primaryBlue">
                 </hero-icon>
@@ -38,14 +39,26 @@
         </div>
         <chat-input></chat-input>
     </div>
-    <div *ngIf="settings && chat" class="max-w-sm hidden lg:flex flex-1 h-full p-7 pb-0 flex-col border-l border-secondaryBg">
+    <div *ngIf="settings && chat"
+        class="max-w-sm hidden lg:flex flex-1 h-full p-7 pb-0 flex-col border-l border-secondaryBg">
         <!-- Chat name and Photo Section -->
         <div class="flex-center flex-col gap-5">
             <div class="w-20 h-20 text-3xl text-medium rounded-full bg-slate-400 text-gray-800 flex-center">
                 {{ chat.groupChatToProfiles[0].profile | initials }}
             </div>
             <div class="flex flex-col gap-2 items-center line-clamp-1">
-                <h1 class="text-xl font-medium">{{ chat | chatName }}</h1>
+                <!-- Input to change chat name -->
+                <form *ngIf="!chat.isPrivate" #chatNameForm="ngForm" class="flex items-center justify-between"
+                    (ngSubmit)="chatNameForm.form.valid && updateChatName()">
+                    <input id="chatName" [(ngModel)]="chatName" name="chatName" class="text-xl text-primaryBlue outline-none bg-inherit pb-1
+                     focus:placeholder:text-primaryBlue/40 placeholder:text-primaryBlue"
+                        placeholder="{{ chat | chatName }}">
+                    <label for="chatName">
+                        <hero-icon name="pencil" type="outline"
+                            class="cursor-pointer w-6 h-6 text-primaryBlue"></hero-icon>
+                    </label>
+                </form>
+                <h1 *ngIf="chat.isPrivate" class="text-xl font-medium">{{ chat | chatName }}</h1>
             </div>
         </div>
 

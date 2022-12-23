@@ -15,7 +15,7 @@
                 </hero-icon>
             </div>
         </div>
-        <input autocomplete="off" name="message" [(ngModel)]="message" class="w-full bg-secondaryBg outline-none"
+        <input (paste)="onPaste($event)" autocomplete="off" name="message" [(ngModel)]="message" class="w-full bg-secondaryBg outline-none"
             placeholder="Aa">
     </div>
     <div class="flex items-center p-1.5 cursor-pointer  transition-colors rounded-full hover:bg-secondaryBg">

@@ -9,6 +9,7 @@ import { CryptographyService } from '../cryptography/cryptography.service';
 import { Endpoints } from '../http/endpoints';
 import { HttpService } from '../http/http.service';
 import { LocaleService } from '../locale/locale.service';
+import { SoundService } from '../sound/sound.service';
 import { CreateGroupChatDTO } from './create-chat.dto';
 import { SendMessageDto } from './send-message.dto';
 import { UpdateMemberDto } from './update-member.dto';
@@ -30,7 +31,8 @@ export class ChatService extends Socket {
   constructor(
     private httpService: HttpService,
     private localService: LocaleService,
-    private cryptographyService: CryptographyService
+    private cryptographyService: CryptographyService,
+    private soundService: SoundService
   ) {
     super({
       url: environment.wsUrl + '/chat', options: {
@@ -52,7 +54,18 @@ export class ChatService extends Socket {
     this.processMessageBlock = this.processMessageBlock.bind(this);
   }
 
+  public async updateChatName(id: string, name: string) {
+    const chat = await firstValueFrom(
+      await this.httpService.patch<Chat>(Endpoints.Chat + id, { id, name })
+    );
+    this.chats[chat.id].name = chat.name;
+    this.chats[chat.id] = { ...this.chats[chat.id] };
+    this.chatsSubject.next(this.chats);
+    return this.chats[chat.id];
+  }
+
   public subscribeToIncomingMessages() {
+    const me = this.localService.getUser().profile;
     return this.fromEvent<IncomingMessage>("message").pipe(
       map(async (data: IncomingMessage) => {
         const groupChatId = data.groupChatId;
@@ -65,11 +78,15 @@ export class ChatService extends Socket {
         if (added) {
           chat.pageSize++;
           this.reorderChats();
+          if (processedMessage.profile.id !== me.id) {
+            this.soundService.playMessageSound();
+          }
         }
         if (chat.pageSize === 2 * ChatService.PAGE_SIZE) {
           chat.page = chat.page + 1;
           chat.pageSize = ChatService.PAGE_SIZE;
         }
+
 
         this.chatsSubject.next(this.chats);
         return data.message;
