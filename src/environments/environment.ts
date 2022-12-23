@@ -1,13 +1,11 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-const url = "ec2-54-211-73-44.compute-1.amazonaws.com";
-const port = "5000";
 export const environment = {
   production: false,
   title: "Local Environment Heading",
-  apiURL: `http://${url}:${port}`,
-  wsUrl: `ws://${url}:${port}`,
+  apiURL: "https://api.maawf.me",
+  wsUrl: "wss://api.maawf.me",
 };
 
 /*

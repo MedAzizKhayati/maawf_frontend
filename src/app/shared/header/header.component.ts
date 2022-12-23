@@ -1,5 +1,6 @@
 import { FriendshipsService } from "@/app/services/friendships/friendships.service";
 import { ProfileService } from "@/app/services/profile/profile.service";
+import { SoundService } from "@/app/services/sound/sound.service";
 import { Friendship } from "@/types/friendship.type";
 import { Profile } from "@/types/profile.type";
 import { Component, Input, OnInit } from "@angular/core";
@@ -27,17 +28,32 @@ export class HeaderComponent implements OnInit {
   constructor(
     private readonly profileService: ProfileService,
     private readonly friendshipService: FriendshipsService,
+    private readonly soundService: SoundService,
   ) {
+    this.getIncomingRequests = this.getIncomingRequests.bind(this);
   }
 
   ngOnInit(): void {
     this.profile = this.profileService.getMyProfile();
-    this.interval = setInterval(() => {
-      this.friendshipService.getFriendships("incoming", "pending").then((incomingRequests) => {
-        if (JSON.stringify(this.incomingRequests) !== JSON.stringify(incomingRequests))
-          this.incomingRequests = incomingRequests;
-      })
-    }, 3000);
+    this.getIncomingRequests();
+    this.interval = setInterval(() => this.getIncomingRequests().then(new_ =>
+      new_ && this.soundService.playNotificationSound()
+    ), 3000);
+  }
+
+  async getIncomingRequests() {
+    return this.friendshipService.getFriendships("incoming", "pending").then((incomingRequests) => {
+      if (JSON.stringify(this.incomingRequests) !== JSON.stringify(incomingRequests)) {
+        const bool = this.areThereNewRequests(incomingRequests);
+        this.incomingRequests = incomingRequests;
+        return bool;
+      }
+      return false;
+    })
+  }
+
+  areThereNewRequests(requests: Friendship[]) {
+    return requests.some((request) => !this.incomingRequests.some((oldRequest) => oldRequest.id === request.id));
   }
 
   onAvatarClick() {

@@ -1,4 +1,3 @@
-import { Chat } from '@/types/chat.type';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
@@ -9,6 +8,7 @@ import { ChatService } from '../services/chat/chat.service';
   templateUrl: './messenger.component.html',
 })
 export class MessengerComponent implements OnInit {
+  subscriptions = [];
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -18,9 +18,10 @@ export class MessengerComponent implements OnInit {
 
   ngOnInit(): void {
     this.redirectIfNoChat();
-    this.chatService.chatsSubject$.subscribe((_) => {
+    const sub = this.chatService.chatsSubject$.subscribe((_) => {
       this.redirectIfNoChat();
     });
+    this.subscriptions.push(sub);
   }
 
   redirectIfNoChat() {
@@ -33,4 +34,7 @@ export class MessengerComponent implements OnInit {
   ngOnChanges(): void {
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
 }

@@ -12,7 +12,8 @@
             <h2 class="w-max">Friend Requests</h2>
             <p class="text-sm text-primaryBlue cursor-pointer select-none hover:underline">See All</p>
         </div>
-        <div class="w-full text-slate-100 text-sm flex flex-col gap-2 rounded-xl transition-all hover:bg-fadedBlue cursor-pointer px-4 py-2"
+        <div [routerLink]="['/profile', request?.sender?.id]"
+            class="w-full text-slate-100 text-sm flex flex-col gap-2 rounded-xl transition-all hover:bg-fadedBlue cursor-pointer px-4 py-2"
             *ngFor="let request of incomingRequests">
             <div>
                 <strong>
@@ -24,7 +25,7 @@
                 <p>
                     {{ request?.createdAt | timeAgo : 'long' }}
                 </p>
-                <div class="flex gap-2 ml-auto">
+                <div (click)="$event.stopPropagation()" class="flex gap-2 ml-auto">
                     <p class="cursor-pointer select-none hover:underline" (click)="acceptRequest(request.sender)">
                         Accept
                     </p>
