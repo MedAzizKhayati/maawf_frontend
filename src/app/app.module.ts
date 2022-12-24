@@ -8,7 +8,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AuthModule } from "./auth/auth.module";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProfileModule } from "./profile/profile.module";
-
+import { ToastrModule } from 'ngx-toastr';
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,6 +23,7 @@ import { ProfileModule } from "./profile/profile.module";
     MessengerModule,
     BrowserAnimationsModule,
     ProfileModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent],
