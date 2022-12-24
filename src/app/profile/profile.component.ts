@@ -1,6 +1,6 @@
 import { Profile } from "@/types/profile.type";
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Route, Router } from "@angular/router";
 import { FriendshipsService } from "../services/friendships/friendships.service";
 import { LocaleService } from "../services/locale/locale.service";
 import { ProfileService } from "../services/profile/profile.service";
@@ -17,16 +17,20 @@ export class ProfileComponent implements OnInit {
   constructor(
     private readonly activeRoute: ActivatedRoute,
     private readonly profileService: ProfileService,
-    private readonly friendshipService: FriendshipsService
-  ) {
+    private readonly friendshipService: FriendshipsService,
+    private readonly router: Router
+  ) {}
+
+  ngOnInit(): void {
     const myProfile = this.profileService.getMyProfile();
 
     if (!this.activeRoute.firstChild) {
-      this.profile = myProfile;
-      this.me = true;
+      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+      this.router.navigate(["profile", myProfile.id]);
     }
 
     this.activeRoute.firstChild?.params.subscribe((params) => {
+      this.router.routeReuseStrategy.shouldReuseRoute = () => true;
       const id = params["id"];
       console.log(id);
       if (id === myProfile?.id) {
@@ -45,6 +49,4 @@ export class ProfileComponent implements OnInit {
       );
     });
   }
-
-  ngOnInit(): void {}
 }
