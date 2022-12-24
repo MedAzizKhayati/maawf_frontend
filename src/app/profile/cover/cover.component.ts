@@ -16,18 +16,33 @@ export class CoverComponent implements OnInit {
 
   constructor(
     private readonly friendshipService: FriendshipsService,
-    private toastrServicce: ToastrService
+    private toastrService: ToastrService
   ) {}
 
   ngOnInit(): void {}
 
   sendFriendRequest() {
     if (this.profile) {
-      this.friendshipService.sendFriendRequest(this.profile.id);
+      try {
+        this.friendshipService
+          .sendFriendRequest(this.profile.id)
+          .then(() => this.showSuccess());
+      } catch (e) {
+        console.error(e);
+        const errorMessage =
+          e.error.message?.join?.(" ") ||
+          e.error.message ||
+          "An error has occured, Please try again later";
+        this.showError(errorMessage);
+      }
     }
   }
 
   showSuccess() {
-    this.toastrServicce.success('Login successful!', 'Welcome back');
+    this.toastrService.success("Invitation successful!", "Friend request sent");
+  }
+
+  showError(message: string) {
+    this.toastrService.error("Invitation Failed!", message);
   }
 }

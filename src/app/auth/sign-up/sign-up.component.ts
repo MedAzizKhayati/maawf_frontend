@@ -2,6 +2,7 @@ import { AuthService } from "@/app/services/auth/auth.service";
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Route, Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-sign-up",
@@ -14,8 +15,9 @@ export class SignUpComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+    private toastrService: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.signupForm = new FormGroup(
@@ -41,11 +43,16 @@ export class SignUpComponent implements OnInit {
       .register(this.signupForm.value)
       .then((res) => {
         console.log(res);
-        this.router.navigate(["/sign-in"], { relativeTo: this.route })
+        this.showSuccess();
+        this.router.navigate(["/sign-in"], { relativeTo: this.route });
       })
       .catch((err) => {
-        this.errorMessage = err.error.message?.join?.(' ') || err.error.message || "An error has occured";
+        this.errorMessage =
+          err.error.message?.join?.(" ") ||
+          err.error.message ||
+          "An error has occured";
         console.log(err);
+        this.showError(this.errorMessage);
       });
   }
 
@@ -64,5 +71,13 @@ export class SignUpComponent implements OnInit {
         confirmPwd.setErrors(null);
       }
     };
+  }
+
+  showSuccess() {
+    this.toastrService.success("Registration successful!", "Welcome among us");
+  }
+
+  showError(message: string) {
+    this.toastrService.error("Registration Failed!", message);
   }
 }
