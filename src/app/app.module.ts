@@ -23,7 +23,10 @@ import { ToastrModule } from 'ngx-toastr';
     MessengerModule,
     BrowserAnimationsModule,
     ProfileModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right',
+      maxOpened: 3
+    })
   ],
   providers: [],
   bootstrap: [AppComponent],

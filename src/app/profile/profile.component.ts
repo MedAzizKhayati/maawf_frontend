@@ -19,34 +19,34 @@ export class ProfileComponent implements OnInit {
     private readonly profileService: ProfileService,
     private readonly friendshipService: FriendshipsService,
     private readonly router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const myProfile = this.profileService.getMyProfile();
 
-    if (!this.activeRoute.firstChild) {
-      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    if (!this.activeRoute.params["id"]) {
       this.router.navigate(["profile", myProfile.id]);
     }
 
-    this.activeRoute.firstChild?.params.subscribe((params) => {
-      this.router.routeReuseStrategy.shouldReuseRoute = () => true;
+    this.activeRoute.params.subscribe((params) => {
       const id = params["id"];
-      console.log(id);
       if (id === myProfile?.id) {
         this.profile = myProfile;
         this.me = true;
+        console.log("me", this.profile);
         return;
       }
-      this.profileService.getProfileById(params["id"]).then((profile) => {
+      this.profileService.getProfileById(id).then((profile) => {
         this.profile = profile;
         this.me = false;
       });
     });
+
     this.friendshipService.getFriendships("all", "accepted").then((friends) => {
       this.friends = friends.map((friend) =>
         friend.sender.id === this.profile?.id ? friend.receiver : friend.sender
       );
     });
+    
   }
 }

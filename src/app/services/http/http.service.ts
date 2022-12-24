@@ -56,6 +56,15 @@ export class HttpService {
     return result;
   }
 
+  public async delete<T>(endpoint: string, params?: any) {
+    const result = await this.httpClient.delete<T>(this.baseUrl + endpoint, {
+      headers: this.headers,
+      params
+    });
+
+    return result;
+  }
+
   public getFullUrl(endpoint: string) {
     return this.baseUrl + '/' + endpoint;
   }

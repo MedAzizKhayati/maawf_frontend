@@ -18,15 +18,33 @@
                 'rounded-tr-3xl': last && right,
                 'rounded-br-3xl': first && right,
                 'latest' : first,
-                'bg-transparent px-0 py-0 lg:max-w-2xl': !message.data.text
+                'bg-transparent px-0 py-0 lg:max-w-2xl': !message.data.text && message.data.attachments?.length,
+                'bg-gray-600': !(message.data.text || message.data.attachments?.length)
             }">
                 <div class="absolute h-9 p-2 px-4 rounded-2xl text-gray-800 opacity-0 transition-opacity
-                text-xs flex-center bg-slate-400 group-hover:opacity-100" [ngClass]="{
+                text-xs flex-center bg-slate-400 group-hover:opacity-100 group-hover:delay-300" [ngClass]="{
                     '-left-20': right,
                     '-right-20': !right
-                }" *ngIf="!message.isSending && message.data.text">
+                }" *ngIf="!message.isSending  && (message.data.text || message.data.attachments?.length)">
                     {{ message.createdAt | date: 'shortTime' }}
                 </div>
+
+                <!-- Message options (delete) -->
+                <div class="absolute h-9 p-2 rounded-2xl text-white opacity-0 transition-all
+                text-xs flex-center cursor-pointer group-hover:opacity-100 group-hover:delay-300 hover:text-red-500"
+                    [ngClass]="{
+                    '-left-28': right,
+                    '-right-28': !right
+                }" *ngIf="!message.isSending && (message.data.text || message.data.attachments?.length) && right">
+                    <button (click)="deleteMessage(message)" class="w-5 h-5 flex-center rounded-full ">
+                        <hero-icon name="trash" class="w-5 h-5"></hero-icon>
+                    </button>
+                </div>
+                <!-- No messages or text -->
+                <p *ngIf="!(message.data.text || message.data.attachments?.length)">
+                    This message was deleted.
+                </p>
+
                 <p *ngIf="message.data.text">
                     {{ message.data.text }}
                 </p>
@@ -53,7 +71,8 @@
             </div>
 
             <div class="w-full flex flex-row-reverse mt-px gap-px select-none">
-                <div *ngFor="let profile of message.seen | keyvalue" class="w-3.5 h-3.5 text-[8.5px] flex-center text-black rounded-full bg-slate-300">
+                <div *ngFor="let profile of message.seen | keyvalue"
+                    class="w-3.5 h-3.5 text-[8.5px] flex-center text-black rounded-full bg-slate-300">
                     {{ profiles[profile.key] && (profiles[profile.key] | initials) }}
                 </div>
             </div>

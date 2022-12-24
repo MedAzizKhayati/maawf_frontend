@@ -14,7 +14,7 @@
             <chat-head *ngFor="let block of messages; let first = first" [messages]="block" [shouldMarkAsSeen]="first"
                 [chat]="chat"></chat-head>
             <!-- Loader  -->
-            <div *ngIf="!chat || chat.hasMore" id="loader" class="flex items-center gap-2 justify-center">
+            <div *ngIf="(!chat || chat.hasMore) && loading" id="loader" class="flex items-center gap-2 justify-center">
                 <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse"></div>
                 <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-200"></div>
                 <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-400"></div>

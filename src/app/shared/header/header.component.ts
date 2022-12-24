@@ -63,6 +63,7 @@ export class HeaderComponent implements OnInit {
   onSearch($event: any) {
     const query = $event.target.value.trim();
     const changed = query !== this.searchQuery;
+    this.searchQuery = query;
     if (!changed || !query) return;
     this.searchQuery = query;
     this.isSearchOpen = true;

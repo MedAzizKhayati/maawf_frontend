@@ -5,7 +5,7 @@ import { MessengerRoutingModule } from "./messenger/messenger-routing.module";
 const routes: Routes = [];
 
 @NgModule({
-  imports: [MessengerRoutingModule,AuthRoutingModule, RouterModule.forRoot(routes)],
+  imports: [MessengerRoutingModule, AuthRoutingModule, RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

@@ -82,6 +82,7 @@ export class ChatService extends Socket {
             this.soundService.playMessageSound();
           }
         }
+
         if (chat.pageSize === 2 * ChatService.PAGE_SIZE) {
           chat.page = chat.page + 1;
           chat.pageSize = ChatService.PAGE_SIZE;
@@ -99,8 +100,10 @@ export class ChatService extends Socket {
     chats.sort((a, b) => {
       if (a.lastMessage && b.lastMessage) {
         return +b.lastMessage.createdAt - +a.lastMessage.createdAt;
+      } else if (a.lastMessage) {
+        return 1;
       }
-      return 0;
+      return -1;
     });
     this.chats = {};
     chats.forEach(chat => this.chats[chat.id] = chat);
@@ -182,6 +185,19 @@ export class ChatService extends Socket {
     sendMessageDto.isEncrypted = true;
   }
 
+  public async deleteMessage(messageId: string, chatGroupId: string) {
+    await firstValueFrom(
+      await this.httpService.delete(Endpoints.DeleteMessage + messageId)
+    );
+    const chat = this.chats[chatGroupId];
+    const messageIndex = chat.messages.findIndex(m => m.id === messageId);
+    if (messageIndex !== -1) {
+      chat.messages[messageIndex].data = {}
+      this.chatsSubject.next(this.chats);
+    }
+  }
+
+
   public async restSendMessage(sendMessageDto: SendMessageDto) {
     const oldText = sendMessageDto.text;
     this.prepareMessageDto(sendMessageDto);
@@ -210,6 +226,7 @@ export class ChatService extends Socket {
     const tempMessageIndex = chat.messages.findIndex(m => m === placeHolderMessage);
     this.preProcessMessage(message, chat);
     chat.messages[tempMessageIndex] = message;
+    this.reorderChats();
     this.chatsSubject.next(this.chats);
   }
 
@@ -332,6 +349,18 @@ export class ChatService extends Socket {
     return response;
   }
 
+  public async getChatWith(profileId: string) {
+    const promise = this.httpService.get<Chat>(Endpoints.ChatWith + profileId);
+    const response = await firstValueFrom(
+      (await promise).pipe(
+        map(this.preProcessChat)
+      )
+    );
+    this.reorderChats();
+    this.chatsSubject.next(this.chats);
+    return response;
+  }
+
   private async getChat(id: string, update = false) {
     let res = this.chats[id];
     if (update || !res) {
@@ -380,7 +409,10 @@ export class ChatService extends Socket {
             text: message.data.text
           }
         });
+      if (!message.data?.text && !message.data?.attachments?.length)
+        messages.push(message);
     }
+
     return messages;
   }
 

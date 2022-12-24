@@ -82,3 +82,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background-color: #49A2E262;
   cursor: pointer;
 }
+
+.toast-container>div{
+  -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+}

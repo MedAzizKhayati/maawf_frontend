@@ -58,6 +58,10 @@ export class ChatHeadComponent implements OnInit {
 
   }
 
+  deleteMessage(message: Message) {
+    this.chatService.deleteMessage(message.id, this.chat.id);
+  }
+
   ngAfterViewInit(): void {
     // intersection observer
     if (!this.shouldMarkAsSeen) return;

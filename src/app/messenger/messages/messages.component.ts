@@ -58,12 +58,11 @@ export class MessagesComponent implements OnInit {
   }
 
   onScroll() {
-    const loader = document.getElementById('loader');
-    if (loader) {
-      const rect = loader.getBoundingClientRect();
-      if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-        this.getMessages();
-      }
+    const scrollHeight = this.messagesDiv?.nativeElement.scrollHeight;
+    const scrollTop = this.messagesDiv?.nativeElement.scrollTop;
+    const clientHeight = this.messagesDiv?.nativeElement.clientHeight;
+    if (scrollHeight + scrollTop - clientHeight < 100) {
+      this.getMessages();
     }
   }
 
