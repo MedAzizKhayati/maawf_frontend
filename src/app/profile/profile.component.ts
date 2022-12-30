@@ -33,7 +33,6 @@ export class ProfileComponent implements OnInit {
       if (id === myProfile?.id) {
         this.profile = myProfile;
         this.me = true;
-        console.log("me", this.profile);
         return;
       }
       this.profileService.getProfileById(id).then((profile) => {
@@ -47,6 +46,6 @@ export class ProfileComponent implements OnInit {
         friend.sender.id === this.profile?.id ? friend.receiver : friend.sender
       );
     });
-    
+
   }
 }

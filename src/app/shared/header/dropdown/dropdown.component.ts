@@ -50,7 +50,7 @@ export class DropdownComponent implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(["/sign-in"]);
+    this.router.navigate(["/login"]);
   }
 
   onClick() {

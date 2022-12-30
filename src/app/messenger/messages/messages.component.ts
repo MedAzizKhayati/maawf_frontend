@@ -2,16 +2,16 @@ import { ChatService } from '@/app/services/chat/chat.service';
 import { UpdateMemberDto } from '@/app/services/chat/update-member.dto';
 import { Chat, Message } from '@/types/chat.type';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'messenger-messages',
   templateUrl: './messages.component.html',
 })
-export class MessagesComponent implements OnInit {
-  @ViewChild('messagesDiv')
-  messagesDiv?: ElementRef;
+export class MessagesComponent {
+  @ViewChild('messagesContainer')
+  messagesContainer?: ElementRef;
   id = '';
   settings: boolean = true;
   chat?: Chat;
@@ -23,28 +23,31 @@ export class MessagesComponent implements OnInit {
 
   constructor(
     private chatService: ChatService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router,
   ) {
-    this.route.params.subscribe(params => {
-      if (this.messagesDiv) {
-        this.messagesDiv.nativeElement.scrollTop = 0;
-      }
+    const routeSub = this.route.params.subscribe(params => {
+      if (this.messagesContainer) this.messagesContainer.nativeElement.scrollTop = 0;
       this.id = params['id'];
-      this.chat = this.chatService.getCurrentChats()[this.id];
-      this.messages = this.chatService.getMessageBlocks(this.id);
-      this.subscriptions.forEach(sub => sub.unsubscribe());
+      this.chatService.getChat(this.id).then(chat => {
+        this.chat = chat;
+        if (!this.chat) this.router.navigate(['messenger'])
+      })
+      // this.messages = this.chatService.getMessageBlocks(this.id);
       const chatSub = this.chatService.subscribeToChat(this.id).subscribe((chat) => {
         this.chat = chat;
-        this.messages = this.chatService.getMessageBlocks(this.id);
+        // this.messages = this.chatService.getMessageBlocks(this.id);
         this.chat.groupChatToProfiles.forEach((member) => {
           this.nickname[member.id] = member.nickname;
         });
       });
       this.getMessages();
-      this.subscriptions = [
-        chatSub,
-      ]
+      this.subscriptions.push(chatSub);
     });
+    this.subscriptions.push(routeSub);
+    // setInterval(() => {
+    //   this.getMessages();
+    // }, 2000);
   }
 
   async getMessages() {
@@ -52,18 +55,6 @@ export class MessagesComponent implements OnInit {
     this.loading = true;
     await this.chatService.getNextMessages(this.id);
     this.loading = false;
-  }
-
-  ngOnInit(): void {
-  }
-
-  onScroll() {
-    const scrollHeight = this.messagesDiv?.nativeElement.scrollHeight;
-    const scrollTop = this.messagesDiv?.nativeElement.scrollTop;
-    const clientHeight = this.messagesDiv?.nativeElement.clientHeight;
-    if (scrollHeight + scrollTop - clientHeight < 100) {
-      this.getMessages();
-    }
   }
 
   updateChatName() {

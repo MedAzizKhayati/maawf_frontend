@@ -6,15 +6,15 @@
       <h1 class="title point font-bold flex-grow text-primaryBlue">.</h1>
     </div>
     <h4 class="sub-note font-normal text-base">
-      New here ? Register <a [routerLink]="'/sign-up'" class="text-primaryBlue">here</a>
+      New here ? Register <a [routerLink]="'/register'" class="text-primaryBlue">here</a>
     </h4>
     <form class="flex flex-col gap-6 w-1/3" [formGroup]="signinForm" (ngSubmit)="onSubmit()">
       <div class="mail">
-        <app-standard-input type="email" [label]="'Email'" formControlName="email" [formGroup]="signinForm"
+        <app-standard-input type="email" label="Email" formControlName="email"
           [formElement]="formElement('email')"></app-standard-input>
       </div>
       <div class="mail">
-        <app-standard-input [type]="'password'" [label]="'Password'" [formGroup]="signinForm" formControlName="password"
+        <app-standard-input type="password" label="Password" formControlName="password"
           [formElement]="formElement('password')"></app-standard-input>
       </div>
       <!-- Submit Errors section -->

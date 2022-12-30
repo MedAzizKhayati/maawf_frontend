@@ -1,23 +1,22 @@
 import { AuthService } from "@/app/services/auth/auth.service";
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute, Route, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 
 @Component({
-  selector: "app-sign-up",
-  templateUrl: "./sign-up.component.html",
-  styleUrls: ["./sign-up.component.scss"],
+  selector: "app-register",
+  templateUrl: "./register.component.html",
+  styleUrls: ["./register.component.scss"],
 })
-export class SignUpComponent implements OnInit {
+export class RegisterComponent implements OnInit {
   signupForm: FormGroup;
   errorMessage: string;
   constructor(
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute,
     private toastrService: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.signupForm = new FormGroup(
@@ -28,6 +27,7 @@ export class SignUpComponent implements OnInit {
         password: new FormControl(null, [
           Validators.required,
           Validators.minLength(8),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
         ]),
         confirmPassword: new FormControl(null, [Validators.required]),
       },
@@ -38,20 +38,16 @@ export class SignUpComponent implements OnInit {
   }
   onSubmit() {
     if (this.signupForm.invalid) return;
-    console.log(this.signupForm.value);
     this.authService
       .register(this.signupForm.value)
       .then((res) => {
         console.log(res);
         this.showSuccess();
-        this.router.navigate(["/sign-in"], { relativeTo: this.route });
+        this.router.navigate(["/login"]);
       })
       .catch((err) => {
-        this.errorMessage =
-          err.error.message?.join?.(" ") ||
-          err.error.message ||
-          "An error has occured";
         console.log(err);
+        this.errorMessage = err.error.errorMessage;
         this.showError(this.errorMessage);
       });
   }

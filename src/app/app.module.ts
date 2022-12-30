@@ -9,6 +9,7 @@ import { AuthModule } from "./auth/auth.module";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProfileModule } from "./profile/profile.module";
 import { ToastrModule } from 'ngx-toastr';
+import { AuthentificationInterceptorProvider } from "./services/http/authentication.interceptor";
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,7 +20,6 @@ import { ToastrModule } from 'ngx-toastr';
     HttpClientModule,
     BrowserModule,
     AuthModule,
-    AppRoutingModule,
     MessengerModule,
     BrowserAnimationsModule,
     ProfileModule,
@@ -28,7 +28,7 @@ import { ToastrModule } from 'ngx-toastr';
       maxOpened: 3
     })
   ],
-  providers: [],
+  providers: [AuthentificationInterceptorProvider],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

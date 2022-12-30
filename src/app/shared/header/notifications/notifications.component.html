@@ -1,9 +1,9 @@
 <div *ngIf="isOpen" class="fixed left-0 top-0 w-screen z-100 h-screen" (click)="onClick()"></div>
 <div [class]="
-    'relative z-21 w-fit overflow-y-hidden transition-all ease-in-out duration-300 shadow-xl rounded-xl ' +
+    'relative z-20 w-fit overflow-y-hidden transition-all ease-in-out duration-300 shadow-xl rounded-xl ' +
     (isOpen ? 'h-96' : 'h-0')
   ">
-    <div class="w-80 scrollbar overflow-y-scroll h-full p-2 rounded-xl bg-secondaryBg flex flex-col gap-2">
+    <div class="w-80 scrollbar overflow-y-scroll h-full p-2 rounded-xl bg-secondaryBg/80 backdrop-blur-lg flex flex-col gap-2">
         <h1 class="px-4 pt-2 font-bold text-xl">Notifications</h1>
 
         <!-- Friend Requests Section -->
@@ -23,7 +23,7 @@
             </div>
             <div class="text-primaryBlue flex">
                 <p>
-                    {{ request?.createdAt | timeAgo : 'long' }}
+                    {{ request?.createdAt | elapsedTime : 'long' }}
                 </p>
                 <div (click)="$event.stopPropagation()" class="flex gap-2 ml-auto">
                     <p class="cursor-pointer select-none hover:underline" (click)="acceptRequest(request.sender)">

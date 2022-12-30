@@ -1,4 +1,3 @@
-import { Profile } from '@/types/profile.type';
 import { Injectable } from '@angular/core';
 import { AES, enc } from 'crypto-js';
 import { pki } from 'node-forge';

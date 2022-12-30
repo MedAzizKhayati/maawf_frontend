@@ -21,6 +21,7 @@ export interface Chat {
     isPrivate: boolean;
     groupChatToProfiles: GroupChatToProfile[];
     messages: Message[];
+    messageBlocks?: Message[][];
     hasMore: boolean;
     page: number;
     pageSize: number;

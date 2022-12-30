@@ -49,7 +49,7 @@ export class ChatInputComponent implements OnInit {
     };
     if (!this.message)
       delete dto.text;
-    this.chatService.restSendMessage(dto);
+    this.chatService.sendMessage(dto);
     this.message = "";
     this.files = [];
   }

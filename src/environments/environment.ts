@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 export const environment = {
   production: false,
-  title: "Local Environment Heading",
+  title: "Maawf",
   apiURL: "http://localhost:5000",
   wsUrl: "ws://localhost:5000",
 };

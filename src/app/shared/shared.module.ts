@@ -2,14 +2,13 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FilterButtonComponent } from "./filter-button/filter-button.component";
 import { HeroIconModule, allIcons } from "ng-heroicon";
-import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { ButtonComponent } from "./button/button.component";
 import { StandardInputComponent } from "./standard-input/standard-input.component";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 import { InitialsPipe } from "./pipes/initials.pipe";
-import { TimeAgoPipe } from "./pipes/time-ago.pipe";
+import { ElapsedTimePipe } from "./pipes/elapsed-time.pipe";
 import { ModalComponent } from "./modal/modal.component";
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PostComponent } from './post/post.component';
 import { HeaderComponent } from "./header/header.component";
 import { DropdownComponent } from "./header/dropdown/dropdown.component";
@@ -17,6 +16,7 @@ import { NotificationsComponent } from './header/notifications/notifications.com
 import { SafeResourceUrlPipe } from './pipes/safe-resource-url.pipe';
 import { RouterModule } from "@angular/router";
 import { SearchComponent } from './header/search/search.component';
+import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
 
 @NgModule({
   declarations: [
@@ -24,21 +24,21 @@ import { SearchComponent } from './header/search/search.component';
     ButtonComponent,
     StandardInputComponent,
     InitialsPipe,
-    TimeAgoPipe,
+    ElapsedTimePipe,
     ModalComponent,
     PostComponent,
     HeaderComponent,
     DropdownComponent,
     NotificationsComponent,
     SafeResourceUrlPipe,
-    SearchComponent
+    SearchComponent,
+    InfiniteScrollDirective
   ],
   imports: [
-    InfiniteScrollModule,
     CommonModule,
-    ReactiveFormsModule,
     RouterModule,
     FormsModule,
+    MatProgressSpinnerModule,
     HeroIconModule.forRoot(
       {
         ...allIcons,
@@ -48,21 +48,20 @@ import { SearchComponent } from './header/search/search.component';
         attachDefaultDimensionsIfNoneFound: true, // default 'false'
       }
     ),
-    MatProgressSpinnerModule,
   ],
   exports: [
     FilterButtonComponent,
     ButtonComponent,
     ModalComponent,
     HeroIconModule,
-    InfiniteScrollModule,
     StandardInputComponent,
     InitialsPipe,
-    TimeAgoPipe,
+    ElapsedTimePipe,
     MatProgressSpinnerModule,
     PostComponent,
     HeaderComponent,
-    SafeResourceUrlPipe
+    SafeResourceUrlPipe,
+    InfiniteScrollDirective
   ],
 })
-export class SharedModule {}
+export class SharedModule { }

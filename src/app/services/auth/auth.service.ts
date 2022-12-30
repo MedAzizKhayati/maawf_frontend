@@ -36,6 +36,7 @@ export class AuthService {
     result.user.password = loginDTO.password;
     this.localeService.setToken(result.token);
     this.localeService.setUser(result.user);
+    return result;
   }
 
   public async whoami() {
@@ -52,7 +53,7 @@ export class AuthService {
       this.logout();
     else
       this.localeService.setUser(user);
-      
+
     return user;
   }
 

@@ -4661,13 +4661,6 @@ ng-heroicon@^2.1.0:
   dependencies:
     tslib "^2.0.0"
 
-ngx-infinite-scroll@14.0.0:
-  version "14.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-infinite-scroll/-/ngx-infinite-scroll-14.0.0.tgz#395b15be5f451c3e3d2ad7ce2aeb66f8c66aba5d"
-  integrity sha512-YZB5PBPXSERNtCGQRZTVflbgkh5asp01NPfC8KPItemmQik1Ip8ZCCbcyHA77TDTdilmaiu8TbguA3geg/LMWw==
-  dependencies:
-    tslib "^2.3.0"
-
 ngx-socket-io@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/ngx-socket-io/-/ngx-socket-io-4.4.0.tgz#89a08fd2a4f070b5aa4fe4f1b95cd97225e4109e"

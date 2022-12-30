@@ -23,7 +23,7 @@
       class="absolute -right-0.5 select-none pointer-events-none -top-0.5 rounded-full h-4 w-4 flex-center bg-notification-background text-white font-medium text-xs">
       {{ incomingRequests.length }}
     </div>
-    <div class="absolute pt-4 z-20 top-full -right-20">
+    <div class="absolute pt-4 z-40 top-full -right-20">
       <app-notifications [incomingRequests]="incomingRequests" (toggle)="handleNotificationsToggle($event)"
         [isOpen]="isNotificationsOpen"></app-notifications>
     </div>
@@ -33,7 +33,7 @@
      flex-center text-xl font-medium text-primaryBg" (click)="onAvatarClick()">
       {{ profile | initials }}
     </div>
-    <div class="absolute pt-4 z-20 top-full -right-1">
+    <div class="absolute pt-4 z-40 top-full -right-1">
       <app-dropdown (toggle)="handleToggle($event)" [isOpen]="isDropdownOpen"></app-dropdown>
     </div>
   </div>

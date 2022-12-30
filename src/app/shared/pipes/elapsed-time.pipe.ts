@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'timeAgo'
+  name: 'elapsedTime'
 })
-export class TimeAgoPipe implements PipeTransform {
+export class ElapsedTimePipe implements PipeTransform {
 
   transform(date: Date | string, type: 'long' | 'short' = 'short'): string {
     date = new Date(date);
