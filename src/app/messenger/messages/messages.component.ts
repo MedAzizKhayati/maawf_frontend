@@ -26,28 +26,38 @@ export class MessagesComponent {
     private route: ActivatedRoute,
     private router: Router,
   ) {
-    const routeSub = this.route.params.subscribe(params => {
-      if (this.messagesContainer) this.messagesContainer.nativeElement.scrollTop = 0;
+    this.route.params.subscribe(params => {
       this.id = params['id'];
-      this.chatService.getChat(this.id).then(chat => {
-        this.chat = chat;
-        if (!this.chat) this.router.navigate(['messenger'])
-      })
-      // this.messages = this.chatService.getMessageBlocks(this.id);
-      const chatSub = this.chatService.subscribeToChat(this.id).subscribe((chat) => {
-        this.chat = chat;
-        // this.messages = this.chatService.getMessageBlocks(this.id);
-        this.chat.groupChatToProfiles.forEach((member) => {
-          this.nickname[member.id] = member.nickname;
-        });
-      });
-      this.getMessages();
-      this.subscriptions.push(chatSub);
+      this.init();
     });
-    this.subscriptions.push(routeSub);
-    // setInterval(() => {
-    //   this.getMessages();
-    // }, 2000);
+  }
+
+  private init() {
+    if (this.messagesContainer) this.messagesContainer.nativeElement.scrollTop = 0;
+    this.navigateIfNoChat();
+    this.update();
+    this.getMessages();
+    const chatSub =
+      this.chatService.subscribeToChat(this.id).subscribe(
+        this.update.bind(this)
+      );
+    this.subscriptions.push(chatSub);
+  }
+
+  private navigateIfNoChat() {
+    this.chatService.getChat(this.id).then(chat => {
+      this.chat = chat;
+      if (!this.chat) this.router.navigate(['messenger'])
+    })
+  }
+
+  private update(chat?: Chat) {
+    this.messages = this.chatService.getMessageBlocks(this.id);
+    if (!chat) return;
+    this.chat = chat;
+    this.chat.groupChatToProfiles.forEach((member) => {
+      this.nickname[member.id] = member.nickname;
+    });
   }
 
   async getMessages() {

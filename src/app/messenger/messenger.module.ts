@@ -13,6 +13,7 @@ import { ChatNamePipe } from "./pipes/chat-name.pipe";
 import { GroupChatComponent } from './group-chat/group-chat.component';
 import { ChatProfilesPipe } from './pipes/chat-profiles.pipe';
 import { ChatEmptyComponent } from './chat-empty/chat-empty.component';
+import { SkeletonComponent } from './chat-item/skeleton/skeleton.component';
 @NgModule({
   declarations: [
     MessengerComponent,
@@ -25,6 +26,7 @@ import { ChatEmptyComponent } from './chat-empty/chat-empty.component';
     GroupChatComponent,
     ChatProfilesPipe,
     ChatEmptyComponent,
+    SkeletonComponent,
   ],
   imports: [
     CommonModule,

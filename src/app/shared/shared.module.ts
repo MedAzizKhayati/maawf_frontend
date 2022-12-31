@@ -32,7 +32,7 @@ import { InfiniteScrollDirective } from './directives/infinite-scroll.directive'
     NotificationsComponent,
     SafeResourceUrlPipe,
     SearchComponent,
-    InfiniteScrollDirective
+    InfiniteScrollDirective,
   ],
   imports: [
     CommonModule,
@@ -61,7 +61,7 @@ import { InfiniteScrollDirective } from './directives/infinite-scroll.directive'
     PostComponent,
     HeaderComponent,
     SafeResourceUrlPipe,
-    InfiniteScrollDirective
+    InfiniteScrollDirective,
   ],
 })
 export class SharedModule { }

@@ -21,7 +21,7 @@ type IncomingMessage = { groupChatId: string, message: Message };
   providedIn: 'root'
 })
 export class ChatService extends Socket {
-  public static readonly PAGE_SIZE = 30;
+  public static readonly PAGE_SIZE = 24;
   private chatsSubject: Subject<ChatMap> = new Subject();
   private chats: ChatMap = {};
   private page = 1;
@@ -89,7 +89,7 @@ export class ChatService extends Socket {
           chat.page = chat.page + 1;
           chat.pageSize = ChatService.PAGE_SIZE;
         }
-        chat.messageBlocks = this.getMessageBlocks(chat.id);
+
         this.chatsSubject.next(this.chats);
         return data.message;
       })
@@ -156,8 +156,7 @@ export class ChatService extends Socket {
           }
         ))
       )
-    );
-    chat.messageBlocks = this.getMessageBlocks(chat.id);
+    )
     chat.page = page + 1;
     chat.hasMore = messages.length === chat.pageSize;
     this.chats[chatGroupId] = chat;
@@ -218,8 +217,7 @@ export class ChatService extends Socket {
       profile: this.localService.getUser().profile,
     } as Message;
     const chat = this.chats[sendMessageDto.groupChatId];
-    chat.messages.unshift(placeHolderMessage);
-    chat.messageBlocks = this.getMessageBlocks(chat.id);
+    chat.messages.unshift(placeHolderMessage)
     this.chatsSubject.next(this.chats);
 
     const formdata = objectToFormdata(sendMessageDto);
@@ -228,8 +226,7 @@ export class ChatService extends Socket {
     );
     const tempMessageIndex = chat.messages.findIndex(m => m === placeHolderMessage);
     this.preProcessMessage(message, chat);
-    chat.messages[tempMessageIndex] = message;
-    chat.messageBlocks = this.getMessageBlocks(chat.id);
+    chat.messages[tempMessageIndex] = message
     this.reorderChats();
     this.chatsSubject.next(this.chats);
   }
@@ -286,26 +283,31 @@ export class ChatService extends Socket {
   private preProcessChat(chat: Chat) {
     if (!chat) return null;
     const user = this.localService.getUser();
+    const oldChat = this.chats[chat.id];
     try {
-      const encryptedSymmetricKey = chat.groupChatToProfiles.find(
-        gcp => gcp.profile.id === user.profile.id
-      ).encryptedSymmetricKey;
-      const privateKey = this.cryptographyService.decryptPrivateKey(
-        user.encryptedPrivateKey,
-        user.password
-      );
-      const symmetricKey = this.cryptographyService.decryptSymmetricKey(
-        encryptedSymmetricKey,
-        privateKey,
-      );
-      chat.symmetricKey = symmetricKey;
+      if (oldChat?.symmetricKey) {
+        chat.symmetricKey = oldChat.symmetricKey;
+      } else {
+        const encryptedSymmetricKey = chat.groupChatToProfiles.find(
+          gcp => gcp.profile.id === user.profile.id
+        ).encryptedSymmetricKey;
+        const privateKey = this.cryptographyService.decryptPrivateKey(
+          user.encryptedPrivateKey,
+          user.password
+        );
+        const symmetricKey = this.cryptographyService.decryptSymmetricKey(
+          encryptedSymmetricKey,
+          privateKey,
+        );
+        chat.symmetricKey = symmetricKey;
+      }
     } catch (error) {
     }
     chat.createdAt = new Date(chat.createdAt);
     chat.updatedAt = new Date(chat.updatedAt);
     chat.pageSize = ChatService.PAGE_SIZE;
-    chat.messages = this.chats[chat.id]?.messages || [];
-    chat.messageBlocks = this.chats[chat.id]?.messageBlocks || [];
+    chat.messages = oldChat?.messages || [];
+    chat.messageBlocks = oldChat?.messageBlocks || [];
     chat.hasMore = true;
     chat.page = 1;
     chat.lastMessage = this.preProcessMessage(chat.lastMessage, chat);
