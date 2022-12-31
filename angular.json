@@ -19,7 +19,9 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "allowedCommonJsDependencies": [
-              "lodash"
+              "lodash",
+              "crypto-js",
+              "node-forge"
             ],
             "assets": [
               "src/favicon.ico",

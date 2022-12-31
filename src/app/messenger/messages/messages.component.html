@@ -1,6 +1,6 @@
 <section class="pb-5 border-r border-secondaryBg flex scrollable-container">
     <div class="flex flex-col flex-1 relative">
-        <div class="flex absolute z-10 left-0 top-0 bg-primaryBg/80 backdrop-blur-md p-6 py-5 items-center justify-between text-xl font-medium w-full shadow-md">
+        <div class="flex absolute z-10 left-0 top-0 bg-primaryBg/80 backdrop-blur-md p-6 py-4 items-center justify-between text-xl font-medium w-full shadow-md">
             <h1>{{ chat | chatName }}</h1>
             <div
                 class="hidden lg:flex items-center justify-center p-1 transition-colors cursor-pointer hover:bg-secondaryBg rounded-full">
@@ -9,7 +9,6 @@
                 </hero-icon>
             </div>
         </div>
-        <!-- infiniteScroll [threshold]="250" (onReachedEnd)="getMessages()" -->
         <div #messagesContainer id="messages" infiniteScroll [threshold]="300" (onReachedEnd)="getMessages()"
             class="flex flex-col-reverse gap-5 p-7 overflow-y-auto flex-1 scrollbar">
             <chat-head *ngFor="let block of chat?.messageBlocks; let first = first" [messages]="block" [shouldMarkAsSeen]="first"
