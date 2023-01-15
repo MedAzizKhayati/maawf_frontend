@@ -2,7 +2,6 @@ import { Profile } from "@/types/profile.type";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Route, Router } from "@angular/router";
 import { FriendshipsService } from "../services/friendships/friendships.service";
-import { LocaleService } from "../services/locale/locale.service";
 import { ProfileService } from "../services/profile/profile.service";
 
 @Component({
@@ -24,7 +23,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     const myProfile = this.profileService.getMyProfile();
 
-    if (!this.activeRoute.params["id"]) {
+    if (!this.activeRoute.snapshot.params["id"]) {
       this.router.navigate(["profile", myProfile.id]);
     }
 
@@ -38,14 +37,14 @@ export class ProfileComponent implements OnInit {
       this.profileService.getProfileById(id).then((profile) => {
         this.profile = profile;
         this.me = false;
+        this.friendshipService.getFriendships("all", "accepted", undefined, this.profile.id).then((friends) => {
+          this.friends = friends.map((friend) =>
+            friend.sender.id === this.profile?.id ? friend.receiver : friend.sender
+          );
+        });
       });
     });
 
-    this.friendshipService.getFriendships("all", "accepted").then((friends) => {
-      this.friends = friends.map((friend) =>
-        friend.sender.id === this.profile?.id ? friend.receiver : friend.sender
-      );
-    });
 
   }
 }

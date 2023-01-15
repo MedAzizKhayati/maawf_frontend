@@ -11,12 +11,9 @@
           <div *ngFor="let profile of friends" class="w-12 h-12 flex-center bg-blue-500 rounded-full">
             {{ profile | initials}}
           </div>
-          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
-          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
-          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
-          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
-          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
-          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
+          <div *ngFor="let i of (friends.length == 0 ? [1,2,3,4,5,6] : [])"
+            class="w-12 h-12 bg-blue-600 rounded-full animate-pulse">
+          </div>
         </div>
       </div>
     </div>

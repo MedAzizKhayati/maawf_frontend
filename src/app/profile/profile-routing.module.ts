@@ -1,4 +1,3 @@
-import { environment } from "@/environments/environment";
 import { RouterModule, Routes } from "@angular/router";
 import getTitle from "../helpers/getTitle";
 import { AuthGuard } from "../services/auth/auth-guard.guard";

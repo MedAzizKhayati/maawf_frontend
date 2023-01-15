@@ -8,7 +8,7 @@ type SelectableProfile = Profile & { isSelected?: boolean };
 
 @Component({
   selector: 'group-chat-modal',
-  templateUrl: './group-chat.component.html'
+  templateUrl: './create-group-chat.component.html'
 })
 export class GroupChatComponent implements OnInit {
   @Input()
@@ -32,12 +32,14 @@ export class GroupChatComponent implements OnInit {
     this.me = this.profileService.getMyProfile();
   }
 
-  async init() {
+  async getFriends() {
     return this.friendshipService.getFriendships('all', 'accepted', this.query).then(
       (friendships) => {
-        this.friends = friendships.map((friendship) =>
-          friendship.sender.id === this.me.id ? friendship.receiver : friendship.sender
-        );
+        this.friends = friendships.map((friendship) => {
+          const friend: SelectableProfile = friendship.sender.id === this.me.id ? friendship.receiver : friendship.sender;
+          friend.isSelected = this.members.some((m) => m.id === friend.id);
+          return friend;
+        });
       }
     )
   }
@@ -53,7 +55,7 @@ export class GroupChatComponent implements OnInit {
 
   ngDoCheck() {
     if (this.isVisible && this.initialize) {
-      this.init();
+      this.getFriends();
       this.initialize = false;
     }
   }
@@ -78,7 +80,7 @@ export class GroupChatComponent implements OnInit {
       clearTimeout(this.timeoutId);
     }
     this.timeoutId = setTimeout(async () => {
-      await this.init();
+      await this.getFriends();
       this.timeoutId = null;
     }, 250);
   }

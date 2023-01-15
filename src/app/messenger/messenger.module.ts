@@ -5,15 +5,16 @@ import { MessagesComponent } from "./messages/messages.component";
 import { MessengerRoutingModule } from "./messenger-routing.module";
 import { ChatsComponent } from "./chats/chats.component";
 import { SharedModule } from "../shared/shared.module";
-import { ChatItemComponent } from "./chat-item/chat-item.component";
-import { ChatHeadComponent } from "./chat-head/chat-head.component";
+import { ChatItemComponent } from "./chats/chat/chat-item.component";
+import { ChatHeadComponent } from "./messages/messages-block/messages-block.component";
 import { FormsModule } from "@angular/forms";
-import { ChatInputComponent } from "./chat-input/chat-input.component";
+import { ChatInputComponent } from "./messages/chat-input/chat-input.component";
 import { ChatNamePipe } from "./pipes/chat-name.pipe";
-import { GroupChatComponent } from './group-chat/group-chat.component';
+import { GroupChatComponent } from './chats/create-group-chat/create-group-chat.component';
 import { ChatProfilesPipe } from './pipes/chat-profiles.pipe';
-import { ChatEmptyComponent } from './chat-empty/chat-empty.component';
-import { SkeletonComponent } from './chat-item/skeleton/skeleton.component';
+import { ChatEmptyComponent } from './chats/chat-empty/chat-empty.component';
+import { SkeletonComponent } from './chats/chat/skeleton/skeleton.component';
+import { SettingsComponent } from './messages/settings/settings.component';
 @NgModule({
   declarations: [
     MessengerComponent,
@@ -27,6 +28,7 @@ import { SkeletonComponent } from './chat-item/skeleton/skeleton.component';
     ChatProfilesPipe,
     ChatEmptyComponent,
     SkeletonComponent,
+    SettingsComponent,
   ],
   imports: [
     CommonModule,

@@ -21,7 +21,8 @@ type IncomingMessage = { groupChatId: string, message: Message };
   providedIn: 'root'
 })
 export class ChatService extends Socket {
-  public static readonly PAGE_SIZE = 24;
+  public static readonly CHAT_PAGE_SIZE = 10;
+  public static readonly MESSAGE_PAGE_SIZE = 24;
   private chatsSubject: Subject<ChatMap> = new Subject();
   private chats: ChatMap = {};
   private page = 1;
@@ -85,9 +86,9 @@ export class ChatService extends Socket {
         if (processedMessage.data.text || processedMessage.data.attachments?.length > 0)
           chat.lastMessage = processedMessage;
 
-        if (chat.pageSize === 2 * ChatService.PAGE_SIZE) {
+        if (chat.pageSize === 2 * ChatService.CHAT_PAGE_SIZE) {
           chat.page = chat.page + 1;
-          chat.pageSize = ChatService.PAGE_SIZE;
+          chat.pageSize = ChatService.CHAT_PAGE_SIZE;
         }
 
         this.chatsSubject.next(this.chats);
@@ -164,12 +165,12 @@ export class ChatService extends Socket {
     return messages;
   }
 
-  public subscribeToChat(chatGroupId: string): Observable<Chat> {
-    if (this.chats[chatGroupId]) {
-      this.getChat(chatGroupId);
+  public subscribeToChat(chatId: string): Observable<Chat> {
+    if (this.chats[chatId]) {
+      this.getChat(chatId);
     }
     return this.chatsSubject$.pipe(
-      map(chats => chats[chatGroupId]),
+      map(chats => chats[chatId]),
       filter(chat => !!chat)
     );
   }
@@ -305,7 +306,7 @@ export class ChatService extends Socket {
     }
     chat.createdAt = new Date(chat.createdAt);
     chat.updatedAt = new Date(chat.updatedAt);
-    chat.pageSize = ChatService.PAGE_SIZE;
+    chat.pageSize = ChatService.MESSAGE_PAGE_SIZE;
     chat.messages = oldChat?.messages || [];
     chat.messageBlocks = oldChat?.messageBlocks || [];
     chat.hasMore = true;
@@ -320,7 +321,7 @@ export class ChatService extends Socket {
       return [];
     this.loadingChats = true;
     const promise = this.httpService.get<Chat[]>(Endpoints.Chats, {
-      limit: ChatService.PAGE_SIZE,
+      limit: ChatService.CHAT_PAGE_SIZE,
       page: this.page++
     });
     const response = await firstValueFrom(
@@ -328,7 +329,7 @@ export class ChatService extends Socket {
         map(chats => chats.map(this.preProcessChat))
       )
     );
-    if (response.length < ChatService.PAGE_SIZE) {
+    if (response.length < ChatService.CHAT_PAGE_SIZE) {
       this.hasMore = false;
     }
     this.reorderChats();
@@ -464,5 +465,13 @@ export class ChatService extends Socket {
       await this.httpService.post(Endpoints.CreateGroupChat, createGroupChatDto)
     );
     return response;
+  }
+
+  public isAdmin(chat: Chat, profile: Profile) {
+    return chat.groupChatToProfiles?.find(gctp => gctp.profile.id === profile.id)?.isAdmin;
+  }
+
+  public amIAdmin(chat: Chat) {
+    return this.isAdmin(chat, this.localService.getUser().profile);
   }
 }

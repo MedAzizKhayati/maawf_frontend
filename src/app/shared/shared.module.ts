@@ -17,6 +17,8 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url.pipe';
 import { RouterModule } from "@angular/router";
 import { SearchComponent } from './header/search/search.component';
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
+import { LoaderComponent } from './loader/loader.component';
+import { ImageViewerComponent } from './image-viewer/image-viewer.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { InfiniteScrollDirective } from './directives/infinite-scroll.directive'
     SafeResourceUrlPipe,
     SearchComponent,
     InfiniteScrollDirective,
+    LoaderComponent,
+    ImageViewerComponent,
   ],
   imports: [
     CommonModule,
@@ -62,6 +66,8 @@ import { InfiniteScrollDirective } from './directives/infinite-scroll.directive'
     HeaderComponent,
     SafeResourceUrlPipe,
     InfiniteScrollDirective,
+    LoaderComponent,
+    ImageViewerComponent,
   ],
 })
 export class SharedModule { }

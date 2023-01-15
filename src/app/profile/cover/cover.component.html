@@ -10,8 +10,8 @@
       </div>
       <div class="flex flex-1 items-center md:max-h-24 p-4 justify-between">
         <div>
-          <h1 class="md:text-4xl text-2xl font-bold tracking-wide">
-            {{ profile?.firstName + ' ' + profile?.lastName }}
+          <h1 *ngIf="profile" class="md:text-4xl text-2xl font-bold tracking-wide">
+            {{ profile.firstName + ' ' + profile.lastName }}
           </h1>
           <p>Software Engineer</p>
         </div>

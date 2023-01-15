@@ -3,13 +3,13 @@ import { LocaleService } from '@/app/services/locale/locale.service';
 import { Chat, GroupChatToProfile, Message } from '@/types/chat.type';
 import { Profile } from '@/types/profile.type';
 import User from '@/types/user.type';
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'chat-head',
-  templateUrl: './chat-head.component.html'
+  selector: 'messages-block',
+  templateUrl: './messages-block.component.html'
 })
-export class ChatHeadComponent implements OnInit {
+export class ChatHeadComponent {
   @ViewChild('chatHead')
   chatHead: ElementRef;
 
@@ -24,6 +24,9 @@ export class ChatHeadComponent implements OnInit {
 
   @Input()
   shouldMarkAsSeen: boolean = false;
+
+  @Output()
+  openImage = new EventEmitter<string>();
 
   user?: User;
   groupToProfile?: GroupChatToProfile;
@@ -52,14 +55,12 @@ export class ChatHeadComponent implements OnInit {
       })
   }
 
-
-
-  ngOnInit(): void {
-
-  }
-
   deleteMessage(message: Message) {
     this.chatService.deleteMessage(message.id, this.chat.id);
+  }
+
+  openImageViewer(src: string) {
+    this.openImage.emit(src);
   }
 
   ngAfterViewInit(): void {

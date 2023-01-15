@@ -1,6 +1,6 @@
 <app-modal [fixedHeight]="true" [onSubmit]="onSubmit" [isDisabled]="members.length < 2" [onClose]="onClose" [title]="'Create Group Chat'"
-    submitText="Create" [isVisible]="isVisible" [template]="greet"></app-modal>
-<ng-template #greet>
+    submitText="Create" [isVisible]="isVisible" [template]="groupChatModal"></app-modal>
+<ng-template #groupChatModal>
     <div class="flex flex-col gap-4 pr-3">
         <div class="flex flex-col gap-1">
             <label for="name" class="text-sm text-primaryBlue">Name</label>
@@ -63,11 +63,8 @@
                     <span class="text-sm text-primaryBlue">No results found.</span>
                 </div>
             </div>
-            <div *ngIf="timeoutId" class="flex-center p-5 gap-px">
-                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse"></div>
-                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-200"></div>
-                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-400"></div>
-            </div>
+            <!-- Loading -->
+            <app-loader *ngIf="timeoutId" class="flex-1 py-5"></app-loader>
         </div>
     </div>
 </ng-template>

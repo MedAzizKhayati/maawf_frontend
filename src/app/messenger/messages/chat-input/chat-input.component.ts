@@ -27,6 +27,19 @@ export class ChatInputComponent implements OnInit {
     });
   }
 
+  onDrop(e: DragEvent) {
+    e.preventDefault();
+    const items: DataTransferItem[] = Array.from(e.dataTransfer?.items || []);
+    const images = items.filter(x => /image/i.test(x.type));
+    if (images.length) {
+      images.forEach((image) => {
+        const file = image.getAsFile() as File & { src: string };
+        file.src = URL.createObjectURL(file);
+        this.files.push(file);
+      });
+    }
+  }
+
   onPaste(e: ClipboardEvent) {
     const clipboardData = e.clipboardData || (window as any).clipboardData;
     const items: DataTransferItem[] = Array.from(clipboardData.items);
@@ -40,7 +53,12 @@ export class ChatInputComponent implements OnInit {
     }
   }
 
-  sendMessage() {
+  ngDoCheck() {
+    this.message = this.message.trim();
+  }
+
+  sendMessage(e?: any) {
+    e?.preventDefault();
     if (this.message === "" && !this.files.length) return;
     const dto: SendMessageDto = {
       groupChatId: this.id,
@@ -52,6 +70,7 @@ export class ChatInputComponent implements OnInit {
     this.chatService.sendMessage(dto);
     this.message = "";
     this.files = [];
+    setTimeout(() => this.adjustHeight(e?.target));
   }
 
   addFiles(event: any) {
@@ -66,5 +85,10 @@ export class ChatInputComponent implements OnInit {
 
   removeFile(index: number) {
     this.files.splice(index, 1);
+  }
+
+  adjustHeight(el: any) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
   }
 }

@@ -11,8 +11,7 @@
             <img *ngIf="file.type.includes('image')" [src]="file.src | safeResourceUrl"
                 class="w-full h-full rounded object-cover">
 
-            <div *ngIf="file.type.includes('video')"
-                class="w-full h-full rounded bg-gray-600 flex-center relative">
+            <div *ngIf="file.type.includes('video')" class="w-full h-full rounded bg-gray-600 flex-center relative">
                 <!-- auto play -->
                 <video [src]="file.src | safeResourceUrl" class="w-full h-full rounded object-cover" autoplay loop
                     muted>
@@ -32,8 +31,16 @@
                 </hero-icon>
             </div>
         </div>
-        <input (paste)="onPaste($event)" autocomplete="off" name="message" [(ngModel)]="message"
-            class="w-full bg-secondaryBg outline-none" placeholder="Aa">
+        <textarea 
+        #messageInput
+        rows="1"
+        maxlength="700"
+        (drop)="onDrop($event)"
+        (keydown.enter)="sendMessage($event)"
+        (input)="adjustHeight(messageInput)"
+        (paste)="onPaste($event)" autocomplete="off" name="message" [(ngModel)]="message"
+            class="w-full max-h-48 bg-secondaryBg outline-none basis-auto resize-none scrollbar" placeholder="Aa">
+        </textarea>
     </div>
     <div class="flex items-center p-1.5 cursor-pointer  transition-colors rounded-full hover:bg-secondaryBg">
         <hero-icon (click)="sendMessage()" name="paper-airplane" type="outline"

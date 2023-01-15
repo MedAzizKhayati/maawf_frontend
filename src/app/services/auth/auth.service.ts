@@ -49,9 +49,8 @@ export class AuthService {
     )
       .then(u => u)
       .catch(() => null);
-    if (!user)
-      this.logout();
-    else
+
+    if (user)
       this.localeService.setUser(user);
 
     return user;

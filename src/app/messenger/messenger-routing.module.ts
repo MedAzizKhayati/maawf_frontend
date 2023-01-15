@@ -1,7 +1,7 @@
 import { RouterModule, Routes } from "@angular/router";
 import getTitle from "../helpers/getTitle";
 import { AuthGuard } from "../services/auth/auth-guard.guard";
-import { ChatEmptyComponent } from "./chat-empty/chat-empty.component";
+import { ChatEmptyComponent } from "./chats/chat-empty/chat-empty.component";
 import { MessagesComponent } from "./messages/messages.component";
 import { MessengerComponent } from "./messenger.component";
 
