@@ -310,7 +310,7 @@ export class ChatService extends Socket {
     chat.messages = oldChat?.messages || [];
     chat.messageBlocks = oldChat?.messageBlocks || [];
     chat.hasMore = true;
-    chat.page = 1;
+    chat.page = oldChat?.page || 1;
     chat.lastMessage = this.preProcessMessage(chat.lastMessage, chat);
     this.chats[chat.id] = chat;
     return chat;

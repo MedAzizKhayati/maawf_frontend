@@ -1,9 +1,9 @@
 import { ChatService } from '@/app/services/chat/chat.service';
 import { FriendshipsService } from '@/app/services/friendships/friendships.service';
-import { ImageUploadService } from '@/app/services/profile/image-upload-service1.service';
 import { ProfileService } from '@/app/services/profile/profile.service';
 import { Profile } from '@/types/profile.type';
 import { Component, Input, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 type SelectableProfile = Profile & { isSelected?: boolean };
 
@@ -11,7 +11,7 @@ type SelectableProfile = Profile & { isSelected?: boolean };
   selector: 'group-chat-modal',
   templateUrl: './create-group-chat.component.html'
 })
-export class GroupChatComponent implements OnInit {
+export class GroupChatComponent {
   @Input()
   isVisible = false;
   @Input()
@@ -23,22 +23,18 @@ export class GroupChatComponent implements OnInit {
   query = '';
   timeoutId?: NodeJS.Timeout;
   name?: string;
-
+  subscriptions: Subscription[] = [];
   constructor(
     private readonly friendshipService: FriendshipsService,
     private readonly profileService: ProfileService,
     private readonly chatService: ChatService,
-    private readonly imageUploadService: ImageUploadService,
   ) {
     this.onSubmit = this.onSubmit.bind(this);
     this.me = this.profileService.getMyProfile();
-    this.members.forEach((m) => this.imageUploadService.imageUploaded$.subscribe(m => {
-      m = m;
-    }));
-    this.friends.forEach((f) => this.imageUploadService.imageUploaded$.subscribe(f => {
-      f = f;
-    }));
-
+    const sub = this.profileService.profile$.subscribe((profile) => {
+      this.me = profile;
+    });
+    this.subscriptions.push(sub);
   }
 
   async getFriends() {
@@ -94,14 +90,8 @@ export class GroupChatComponent implements OnInit {
     }, 250);
   }
 
-  ngOnInit(): void {
-    this.members.forEach((m) => this.imageUploadService.imageUploaded$.subscribe(m => {
-      m = m;
-    }));
-    this.friends.forEach((f) => this.imageUploadService.imageUploaded$.subscribe(f => {
-      f = f;
-    }));
-
+  ngOnDestroy() {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
 }

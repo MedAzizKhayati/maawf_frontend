@@ -30,10 +30,10 @@ export class SettingsComponent {
     if (this.chatName === this.chat?.name || !this.chatName) return;
     this.chatService.updateChatName(this.chat.id, this.chatName)
       .then(() => {
-        this.toastService.success('Chat name updated');
+        this.toastService.success('Chat updated!', 'Chat name updated successfully');
       })
       .catch(err => {
-        this.toastService.error(err.error.errorMessage);
+        this.toastService.error('An error has occured', err.error.errorMessage);
       });
   }
 
@@ -44,10 +44,10 @@ export class SettingsComponent {
     );
     this.chatService.updateGroupMember(this.chat.id, updateMemberDto)
       .then(() => {
-        this.toastService.success('Nickname updated');
+        this.toastService.success('Chat updated!', 'Nickname updated successfully');
       })
       .catch(err => {
-        this.toastService.error(err.error.errorMessage);
+        this.toastService.error('An error has occured', err.error.errorMessage);
       });
   }
 

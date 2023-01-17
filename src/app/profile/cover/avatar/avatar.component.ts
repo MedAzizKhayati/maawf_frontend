@@ -1,3 +1,4 @@
+import { Profile } from '@/types/profile.type';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
@@ -6,7 +7,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class AvatarComponent implements OnInit {
   @Output() fileChanged = new EventEmitter<Event>();
-  @Input() avatar: string;
+  @Input() profile: Profile;
+  @Input() me: boolean = true;
 
   constructor() { }
 

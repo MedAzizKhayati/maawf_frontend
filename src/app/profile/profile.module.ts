@@ -5,7 +5,6 @@ import { ProfileComponent } from "./profile.component";
 import { CoverComponent } from "./cover/cover.component";
 import { AvatarComponent } from "./cover/avatar/avatar.component";
 import { SharedModule } from "../shared/shared.module";
-import { FullUrlPipe } from "../shared/pipes/full-url.pipe";
 
 @NgModule({
   declarations: [ProfileComponent, CoverComponent, AvatarComponent],

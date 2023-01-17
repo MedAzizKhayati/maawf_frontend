@@ -37,8 +37,6 @@ export class MessagesComponent {
   private init() {
     if (this.messagesContainer) this.messagesContainer.nativeElement.scrollTop = 0;
     this.navigateIfNoChat();
-    this.update();
-    this.getMessages();
     const chatSub =
       this.chatService.subscribeToChat(this.id).subscribe(
         this.update.bind(this)
@@ -47,10 +45,13 @@ export class MessagesComponent {
   }
 
   private navigateIfNoChat() {
-    this.chatService.getChat(this.id).then(chat => {
+    this.chatService.getChat(this.id, true).then(chat => {
       this.chat = chat;
-      console.log(chat);
-      if (!this.chat) this.router.navigate(['messenger'])
+      if (chat.messages.length === 0)
+        this.getMessages();
+      this.update(chat);
+      if (!this.chat)
+        this.router.navigate(['messenger'])
     }).catch(err => {
       this.toastService.error(err.error.errorMessage);
       this.router.navigate(['messenger'])

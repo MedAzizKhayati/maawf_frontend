@@ -4,6 +4,7 @@ import { SoundService } from "@/app/services/sound/sound.service";
 import { Friendship } from "@/types/friendship.type";
 import { Profile } from "@/types/profile.type";
 import { Component, Input, OnInit } from "@angular/core";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "messenger-header",
@@ -25,6 +26,8 @@ export class HeaderComponent implements OnInit {
 
   incomingRequests: Friendship[] = [];
 
+  subscriptions: Subscription[] = [];
+
   constructor(
     private readonly profileService: ProfileService,
     private readonly friendshipService: FriendshipsService,
@@ -35,6 +38,10 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.profile = this.profileService.getMyProfile();
+    const sub = this.profileService.profile$.subscribe((profile) => {
+      this.profile = profile;
+    });
+    this.subscriptions.push(sub);
     this.getIncomingRequests();
     this.interval = setInterval(() => this.getIncomingRequests().then(new_ =>
       new_ && this.soundService.playNotificationSound()
@@ -94,5 +101,6 @@ export class HeaderComponent implements OnInit {
 
   ngOnDestroy() {
     clearInterval(this.interval);
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 }

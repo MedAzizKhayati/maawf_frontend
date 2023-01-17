@@ -2,9 +2,9 @@
     width: size,
     borderRadius: rounded ? '50%' : '6px'
 }">
-    <p *ngIf="!profile.avatar" [ngStyle]="{
+    <p *ngIf="!profile?.avatar" [ngStyle]="{
         fontSize: 'calc(' + size + ' * 0.5)'
     }">{{ profile | initials }}</p>
-    <img *ngIf="profile.avatar" class="aspect-square object-cover"
+    <img *ngIf="profile?.avatar" class="aspect-square object-cover bg-black"
         [src]="profile.avatar | fullUrl | safeResourceUrl" />
 </div>
