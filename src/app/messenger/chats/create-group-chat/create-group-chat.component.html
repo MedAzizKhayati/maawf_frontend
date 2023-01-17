@@ -1,5 +1,5 @@
-<app-modal [fixedHeight]="true" [onSubmit]="onSubmit" [isDisabled]="members.length < 2" [onClose]="onClose" [title]="'Create Group Chat'"
-    submitText="Create" [isVisible]="isVisible" [template]="groupChatModal"></app-modal>
+<app-modal [fixedHeight]="true" [onSubmit]="onSubmit" [isDisabled]="members.length < 2" [onClose]="onClose"
+    [title]="'Create Group Chat'" submitText="Create" [isVisible]="isVisible" [template]="groupChatModal"></app-modal>
 <ng-template #groupChatModal>
     <div class="flex flex-col gap-4 pr-3">
         <div class="flex flex-col gap-1">
@@ -16,14 +16,23 @@
             <label for="members" class="text-sm text-primaryBlue">Members</label>
             <div class="flex gap-2 flex-wrap px-2">
                 <div *ngFor="let member of members" class="flex flex-col items-center gap-2 w-16">
-                    <div class="w-10 h-10 rounded-full bg-primaryBlue flex-center text-gray-800 relative">
-                        {{ member | initials }}
+                    <div class="relative">
+                        <app-user-avatar [profile]="member" size="2.5rem">
+                        </app-user-avatar>
                         <div (click)="toggleMember(member)"
                             class="absolute transition-colors flex-center cursor-pointer p-px rounded-full hover:bg-slate-700/80 -top-2 -right-2">
                             <hero-icon name="x" hostDisplay="inlineBlock" type="outline" class="w-5 h-5 text-white">
                             </hero-icon>
                         </div>
                     </div>
+                    <!-- <div class="w-10 h-10 rounded-full bg-primaryBlue flex-center text-gray-800 relative">
+                        {{ member | initials }}
+                        <div (click)="toggleMember(member)"
+                            class="absolute transition-colors flex-center cursor-pointer p-px rounded-full hover:bg-slate-700/80 -top-2 -right-2">
+                            <hero-icon name="x" hostDisplay="inlineBlock" type="outline" class="w-5 h-5 text-white">
+                            </hero-icon>
+                        </div>
+                    </div> -->
                     <div class="flex flex-col gap-1">
                         <span class="text-sm text-primaryBlue line-clamp-1">{{member.firstName}}</span>
                     </div>
@@ -42,9 +51,8 @@
             <div *ngIf="!timeoutId" class="flex flex-col gap-2 py-2">
                 <div (click)="toggleMember(member)" *ngFor="let member of friends" class="flex px-2 transition-colors
                  items-center gap-4 py-2 rounded-2xl cursor-pointer hover:bg-secondaryBg">
-                    <div class="w-10 h-10 rounded-full bg-primaryBlue flex-center text-gray-800">
-                        {{ member | initials }}
-                    </div>
+                    <app-user-avatar [profile]="member" size="2.5rem">
+                    </app-user-avatar>
                     <div class="flex flex-col gap-1 flex-1">
                         <span class="text-sm text-primaryBlue">
                             {{ member.firstName + ' ' + member.lastName }}

@@ -474,4 +474,14 @@ export class ChatService extends Socket {
   public amIAdmin(chat: Chat) {
     return this.isAdmin(chat, this.localService.getUser().profile);
   }
+
+  public async deleteGroupChat(chatId: string) {
+    const result = await firstValueFrom(
+      await this.httpService.delete(Endpoints.DeleteGroupChat + chatId)
+    );
+    console.log(result);
+    delete this.chats[chatId];
+    this.chatsSubject.next(this.chats);
+    return result;
+  }
 }

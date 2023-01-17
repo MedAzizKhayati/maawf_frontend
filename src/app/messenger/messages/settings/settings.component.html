@@ -3,9 +3,8 @@
 ">
     <!-- Chat name and Photo Section -->
     <div class="flex-center flex-col gap-5">
-        <div class="w-20 h-20 text-3xl text-medium rounded-full bg-slate-400 text-gray-800 flex-center">
-            {{ (chat | chatProfiles)[0] | initials }}
-        </div>
+        <app-user-avatar [profile]="(chat | chatProfiles)[0]" size="5rem">
+        </app-user-avatar>
         <div class="flex flex-col gap-2 items-center line-clamp-1">
             <!-- Input to change chat name -->
             <form *ngIf="!chat.isPrivate" #chatNameForm="ngForm" class="flex items-center justify-between"
@@ -30,9 +29,8 @@
             Chat Members
         </h1>
         <div *ngFor="let member of chat?.groupChatToProfiles" class="flex items-center gap-5">
-            <div class="w-10 h-10 rounded-full bg-slate-400 text-gray-800 flex-center">
-                {{ member.profile | initials}}
-            </div>
+            <app-user-avatar [profile]="member.profile" size="2.5rem">
+            </app-user-avatar>
             <div>
                 <form #nicknameForm="ngForm" (ngSubmit)="nicknameForm.form.valid && updateNickname(member.id)"
                     class="flex items-center justify-between">
@@ -48,7 +46,7 @@
             </div>
         </div>
     </div>
-    <button *ngIf="chatService.amIAdmin(chat) && !chat.isPrivate"
+    <button (click)="deleteGroupChat()" *ngIf="chatService.amIAdmin(chat) && !chat.isPrivate"
         class="mx-auto p-4 rounded-lg w-full flex-center text-red-600 font-medium gap-2 transition-colors hover:bg-secondaryBg">
         <hero-icon name="trash" type="outline" class="w-5 h-5"></hero-icon>
         Delete Conversation

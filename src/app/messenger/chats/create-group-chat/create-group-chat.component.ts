@@ -1,5 +1,6 @@
 import { ChatService } from '@/app/services/chat/chat.service';
 import { FriendshipsService } from '@/app/services/friendships/friendships.service';
+import { ImageUploadService } from '@/app/services/profile/image-upload-service1.service';
 import { ProfileService } from '@/app/services/profile/profile.service';
 import { Profile } from '@/types/profile.type';
 import { Component, Input, OnInit } from '@angular/core';
@@ -26,10 +27,18 @@ export class GroupChatComponent implements OnInit {
   constructor(
     private readonly friendshipService: FriendshipsService,
     private readonly profileService: ProfileService,
-    private readonly chatService: ChatService
+    private readonly chatService: ChatService,
+    private readonly imageUploadService: ImageUploadService,
   ) {
     this.onSubmit = this.onSubmit.bind(this);
     this.me = this.profileService.getMyProfile();
+    this.members.forEach((m) => this.imageUploadService.imageUploaded$.subscribe(m => {
+      m = m;
+    }));
+    this.friends.forEach((f) => this.imageUploadService.imageUploaded$.subscribe(f => {
+      f = f;
+    }));
+
   }
 
   async getFriends() {
@@ -86,6 +95,13 @@ export class GroupChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.members.forEach((m) => this.imageUploadService.imageUploaded$.subscribe(m => {
+      m = m;
+    }));
+    this.friends.forEach((f) => this.imageUploadService.imageUploaded$.subscribe(f => {
+      f = f;
+    }));
+
   }
 
 }

@@ -17,9 +17,8 @@
 
             <!-- Chat name and Photo Section -->
             <div *ngIf="chat && !chat.hasMore" class="flex-center flex-col gap-5 mt-24">
-                <div class="w-20 h-20 text-3xl text-medium rounded-full bg-slate-400 text-gray-800 flex-center">
-                    {{ chat?.groupChatToProfiles[0]?.profile | initials }}
-                </div>
+                <app-user-avatar [profile]="(chat | chatProfiles)[0]" size="5rem">
+                </app-user-avatar>
                 <div class="flex flex-col gap-2 items-center line-clamp-1">
                     <h1 class="text-xl font-medium">{{ chat | chatName }}</h1>
                 </div>

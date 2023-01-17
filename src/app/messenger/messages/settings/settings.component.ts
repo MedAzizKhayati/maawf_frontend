@@ -2,6 +2,7 @@ import { ChatService } from '@/app/services/chat/chat.service';
 import { UpdateMemberDto } from '@/app/services/chat/update-member.dto';
 import { Chat } from '@/types/chat.type';
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -20,7 +21,8 @@ export class SettingsComponent {
 
   constructor(
     public chatService: ChatService,
-    public toastService: ToastrService
+    public toastService: ToastrService,
+    public router: Router,
   ) { }
 
   updateChatName() {
@@ -53,5 +55,16 @@ export class SettingsComponent {
     this.chat.groupChatToProfiles.forEach((member) => {
       this.nickname[member.id] = member.nickname;
     });
+  }
+
+  deleteGroupChat() {
+    this.chatService.deleteGroupChat(this.chat.id)
+      .then(() => {
+        this.toastService.success('Chat deleted');
+        this.router.navigate(['/messenger']);
+      })
+      .catch(err => {
+        this.toastService.error(err.error.errorMessage);
+      });
   }
 }
