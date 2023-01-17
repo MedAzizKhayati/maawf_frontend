@@ -8,7 +8,8 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AuthModule } from "./auth/auth.module";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProfileModule } from "./profile/profile.module";
-
+import { ToastrModule } from 'ngx-toastr';
+import { AuthentificationInterceptorProvider } from "./services/http/authentication.interceptor";
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,12 +20,15 @@ import { ProfileModule } from "./profile/profile.module";
     HttpClientModule,
     BrowserModule,
     AuthModule,
-    AppRoutingModule,
     MessengerModule,
     BrowserAnimationsModule,
     ProfileModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right',
+      maxOpened: 3
+    })
   ],
-  providers: [],
+  providers: [AuthentificationInterceptorProvider],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

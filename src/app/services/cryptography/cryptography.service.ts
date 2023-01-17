@@ -1,4 +1,3 @@
-import { Profile } from '@/types/profile.type';
 import { Injectable } from '@angular/core';
 import { AES, enc } from 'crypto-js';
 import { pki } from 'node-forge';
@@ -7,7 +6,7 @@ import { pki } from 'node-forge';
   providedIn: 'root'
 })
 export class CryptographyService {
-
+  alreadyDecrypted = {};
   constructor() { }
 
   public encryptMessage(message: string, symmetricKey: string) {
@@ -24,7 +23,11 @@ export class CryptographyService {
   }
 
   public decryptPrivateKey(encryptedPrivateKey: string, passPhrase: string) {
-    return pki.decryptRsaPrivateKey(encryptedPrivateKey, passPhrase);
+    if (this.alreadyDecrypted[`${encryptedPrivateKey}_${passPhrase}`])
+      return this.alreadyDecrypted[`${encryptedPrivateKey}_${passPhrase}`];
+    const privateKey = pki.decryptRsaPrivateKey(encryptedPrivateKey, passPhrase);
+    this.alreadyDecrypted[`${encryptedPrivateKey}_${passPhrase}`] = privateKey;
+    return privateKey;
   }
 
   public decryptSymmetricKey(encryptedSymmetricKey: string, privateKey: pki.rsa.PrivateKey) {
@@ -32,7 +35,7 @@ export class CryptographyService {
   }
 
   public generatedRsaKeyPair(passPhrase: string) {
-    const keys = pki.rsa.generateKeyPair(2048);
+    const keys = pki.rsa.generateKeyPair(256);
     const encryptedPrivateKey = pki.encryptRsaPrivateKey(
       keys.privateKey,
       passPhrase
@@ -45,7 +48,7 @@ export class CryptographyService {
     return this.randomString();
   }
 
-  public randomString(bits = 256) {
+  public randomString(bits = 128) {
     const bytes = bits / 8;
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+~`|}{[]\:;?><,./-=';
     const rand = (max: number) => Math.floor(Math.random() * max);

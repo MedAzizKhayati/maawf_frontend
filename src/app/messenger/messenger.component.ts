@@ -18,7 +18,7 @@ export class MessengerComponent implements OnInit {
 
   ngOnInit(): void {
     this.redirectIfNoChat();
-    const sub = this.chatService.chatsSubject$.subscribe((_) => {
+    const sub = this.chatService.chatsSubject$.subscribe(() => {
       this.redirectIfNoChat();
     });
     this.subscriptions.push(sub);
@@ -26,12 +26,9 @@ export class MessengerComponent implements OnInit {
 
   redirectIfNoChat() {
     const chats = this.chatService.getChatList();
-    if (chats.length !== 0 && !this.route.firstChild) {
+    if (chats.length !== 0 && !this.route?.firstChild?.snapshot?.params['id']) {
       this.router.navigate(['messenger', chats[0].id]);
     }
-  }
-
-  ngOnChanges(): void {
   }
 
   ngOnDestroy(): void {

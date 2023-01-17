@@ -21,13 +21,15 @@ export class FriendshipsService {
   public async getFriendships(
     type: "incoming" | "outgoing" | "all" = "all",
     status: Friendship["status"] = "accepted",
-    query: string = ""
+    query: string = "",
+    id = ""
   ) {
     return firstValueFrom(
       await this.httpService.get<Friendship[]>(Endpoints.Friendships, {
         type,
         status,
-        query
+        query,
+        id
       })
     )
   }

@@ -4,7 +4,7 @@ import { Chat, GroupChatToProfile, Message } from '@/types/chat.type';
 import { Profile } from '@/types/profile.type';
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import { firstValueFrom, map, Subject, Observable } from 'rxjs';
+import { firstValueFrom, map, Subject, Observable, filter } from 'rxjs';
 import { CryptographyService } from '../cryptography/cryptography.service';
 import { Endpoints } from '../http/endpoints';
 import { HttpService } from '../http/http.service';
@@ -21,11 +21,13 @@ type IncomingMessage = { groupChatId: string, message: Message };
   providedIn: 'root'
 })
 export class ChatService extends Socket {
-  public static readonly PAGE_SIZE = 30;
+  public static readonly CHAT_PAGE_SIZE = 10;
+  public static readonly MESSAGE_PAGE_SIZE = 24;
+  private chatsSubject: Subject<ChatMap> = new Subject();
   private chats: ChatMap = {};
   private page = 1;
-  private hasMore = true;
-  private chatsSubject: Subject<ChatMap> = new Subject();
+  public hasMore = true;
+  public loadingChats = false;
   chatsSubject$ = this.chatsSubject.asObservable();
 
   constructor(
@@ -71,7 +73,6 @@ export class ChatService extends Socket {
         const groupChatId = data.groupChatId;
         const chat = await this.getChat(groupChatId);
         const processedMessage = this.preProcessMessage(data.message, chat);
-        chat.lastMessage = processedMessage;
         const added = this.saveNewMessageInChat(processedMessage, chat);
 
         /* Fixing chat pagination due to new message */
@@ -82,11 +83,13 @@ export class ChatService extends Socket {
             this.soundService.playMessageSound();
           }
         }
-        if (chat.pageSize === 2 * ChatService.PAGE_SIZE) {
-          chat.page = chat.page + 1;
-          chat.pageSize = ChatService.PAGE_SIZE;
-        }
+        if (processedMessage.data.text || processedMessage.data.attachments?.length > 0)
+          chat.lastMessage = processedMessage;
 
+        if (chat.pageSize === 2 * ChatService.CHAT_PAGE_SIZE) {
+          chat.page = chat.page + 1;
+          chat.pageSize = ChatService.CHAT_PAGE_SIZE;
+        }
 
         this.chatsSubject.next(this.chats);
         return data.message;
@@ -99,8 +102,10 @@ export class ChatService extends Socket {
     chats.sort((a, b) => {
       if (a.lastMessage && b.lastMessage) {
         return +b.lastMessage.createdAt - +a.lastMessage.createdAt;
+      } else if (a.lastMessage) {
+        return 1;
       }
-      return 0;
+      return -1;
     });
     this.chats = {};
     chats.forEach(chat => this.chats[chat.id] = chat);
@@ -137,9 +142,8 @@ export class ChatService extends Socket {
 
   public async getNextMessages(chatGroupId: string) {
     const chat = await this.getChat(chatGroupId);
-    if (!chat.hasMore) return [];
+    if (!chat?.hasMore) return [];
     const page = chat.page;
-
     const messages = await firstValueFrom(
       (await this.httpService.get<Message[]>(Endpoints.Messages + chatGroupId, {
         limit: chat.pageSize,
@@ -153,7 +157,7 @@ export class ChatService extends Socket {
           }
         ))
       )
-    );
+    )
     chat.page = page + 1;
     chat.hasMore = messages.length === chat.pageSize;
     this.chats[chatGroupId] = chat;
@@ -161,12 +165,13 @@ export class ChatService extends Socket {
     return messages;
   }
 
-  public subscribeToChat(chatGroupId: string): Observable<Chat> {
-    if (this.chats[chatGroupId]) {
-      this.getChat(chatGroupId);
+  public subscribeToChat(chatId: string): Observable<Chat> {
+    if (this.chats[chatId]) {
+      this.getChat(chatId);
     }
     return this.chatsSubject$.pipe(
-      map(chats => chats[chatGroupId])
+      map(chats => chats[chatId]),
+      filter(chat => !!chat)
     );
   }
 
@@ -182,7 +187,20 @@ export class ChatService extends Socket {
     sendMessageDto.isEncrypted = true;
   }
 
-  public async restSendMessage(sendMessageDto: SendMessageDto) {
+  public async deleteMessage(messageId: string, chatGroupId: string) {
+    await firstValueFrom(
+      await this.httpService.delete(Endpoints.DeleteMessage + messageId)
+    );
+    const chat = this.chats[chatGroupId];
+    const messageIndex = chat.messages.findIndex(m => m.id === messageId);
+    if (messageIndex !== -1) {
+      chat.messages[messageIndex].data = {}
+      this.chatsSubject.next(this.chats);
+    }
+  }
+
+
+  public async sendMessage(sendMessageDto: SendMessageDto) {
     const oldText = sendMessageDto.text;
     this.prepareMessageDto(sendMessageDto);
     const placeHolderMessage = {
@@ -200,7 +218,7 @@ export class ChatService extends Socket {
       profile: this.localService.getUser().profile,
     } as Message;
     const chat = this.chats[sendMessageDto.groupChatId];
-    chat.messages.unshift(placeHolderMessage);
+    chat.messages.unshift(placeHolderMessage)
     this.chatsSubject.next(this.chats);
 
     const formdata = objectToFormdata(sendMessageDto);
@@ -209,29 +227,8 @@ export class ChatService extends Socket {
     );
     const tempMessageIndex = chat.messages.findIndex(m => m === placeHolderMessage);
     this.preProcessMessage(message, chat);
-    chat.messages[tempMessageIndex] = message;
-    this.chatsSubject.next(this.chats);
-  }
-
-  public sendMessage(sendMessageDto: SendMessageDto) {
-    const placeHolderMessage = {
-      createdAt: new Date(),
-      id: "temp",
-      data: {
-        text: sendMessageDto.text
-      },
-      isSending: true,
-      seenByMe: true,
-      profile: this.localService.getUser().profile,
-    } as Message;
-    this.chats[sendMessageDto.groupChatId].messages.unshift(placeHolderMessage);
-    this.emit("send-message", sendMessageDto, (message: Message) => {
-      const chat = this.chats[sendMessageDto.groupChatId];
-      const tempMessageIndex = chat.messages.findIndex(m => m === placeHolderMessage);
-      this.preProcessMessage(message, chat);
-      chat.messages[tempMessageIndex] = message;
-      this.chatsSubject.next(this.chats);
-    });
+    chat.messages[tempMessageIndex] = message
+    this.reorderChats();
     this.chatsSubject.next(this.chats);
   }
 
@@ -285,26 +282,33 @@ export class ChatService extends Socket {
   }
 
   private preProcessChat(chat: Chat) {
+    if (!chat) return null;
     const user = this.localService.getUser();
+    const oldChat = this.chats[chat.id];
     try {
-      const encryptedSymmetricKey = chat.groupChatToProfiles.find(
-        gcp => gcp.profile.id === user.profile.id
-      ).encryptedSymmetricKey;
-      const privateKey = this.cryptographyService.decryptPrivateKey(
-        user.encryptedPrivateKey,
-        user.password
-      );
-      const symmetricKey = this.cryptographyService.decryptSymmetricKey(
-        encryptedSymmetricKey,
-        privateKey,
-      );
-      chat.symmetricKey = symmetricKey;
+      if (oldChat?.symmetricKey) {
+        chat.symmetricKey = oldChat.symmetricKey;
+      } else {
+        const encryptedSymmetricKey = chat.groupChatToProfiles.find(
+          gcp => gcp.profile.id === user.profile.id
+        ).encryptedSymmetricKey;
+        const privateKey = this.cryptographyService.decryptPrivateKey(
+          user.encryptedPrivateKey,
+          user.password
+        );
+        const symmetricKey = this.cryptographyService.decryptSymmetricKey(
+          encryptedSymmetricKey,
+          privateKey,
+        );
+        chat.symmetricKey = symmetricKey;
+      }
     } catch (error) {
     }
     chat.createdAt = new Date(chat.createdAt);
     chat.updatedAt = new Date(chat.updatedAt);
-    chat.pageSize = ChatService.PAGE_SIZE;
-    chat.messages = this.chats[chat.id]?.messages || [];
+    chat.pageSize = ChatService.MESSAGE_PAGE_SIZE;
+    chat.messages = oldChat?.messages || [];
+    chat.messageBlocks = oldChat?.messageBlocks || [];
     chat.hasMore = true;
     chat.page = 1;
     chat.lastMessage = this.preProcessMessage(chat.lastMessage, chat);
@@ -315,8 +319,9 @@ export class ChatService extends Socket {
   public async getNextChats() {
     if (!this.hasMore)
       return [];
+    this.loadingChats = true;
     const promise = this.httpService.get<Chat[]>(Endpoints.Chats, {
-      limit: ChatService.PAGE_SIZE,
+      limit: ChatService.CHAT_PAGE_SIZE,
       page: this.page++
     });
     const response = await firstValueFrom(
@@ -324,22 +329,33 @@ export class ChatService extends Socket {
         map(chats => chats.map(this.preProcessChat))
       )
     );
-    if (response.length < ChatService.PAGE_SIZE) {
+    if (response.length < ChatService.CHAT_PAGE_SIZE) {
       this.hasMore = false;
     }
+    this.reorderChats();
+    this.loadingChats = false;
+    this.chatsSubject.next(this.chats);
+    return response;
+  }
+
+  public async getChatWith(profileId: string) {
+    const promise = this.httpService.get<Chat>(Endpoints.ChatWith + profileId);
+    const response = await firstValueFrom(
+      (await promise).pipe(
+        map(this.preProcessChat)
+      )
+    );
     this.reorderChats();
     this.chatsSubject.next(this.chats);
     return response;
   }
 
-  private async getChat(id: string, update = false) {
+  async getChat(id: string, update = false) {
     let res = this.chats[id];
     if (update || !res) {
       const promise = this.httpService.get<Chat>(Endpoints.Chat + id);
       const response = await firstValueFrom(
-        (await promise).pipe(
-          map(this.preProcessChat)
-        )
+        (await promise).pipe(map(this.preProcessChat))
       );
       this.reorderChats();
       this.chatsSubject.next(this.chats);
@@ -380,7 +396,10 @@ export class ChatService extends Socket {
             text: message.data.text
           }
         });
+      if (!message.data?.text && !message.data?.attachments?.length)
+        messages.push(message);
     }
+
     return messages;
   }
 
@@ -446,5 +465,13 @@ export class ChatService extends Socket {
       await this.httpService.post(Endpoints.CreateGroupChat, createGroupChatDto)
     );
     return response;
+  }
+
+  public isAdmin(chat: Chat, profile: Profile) {
+    return chat.groupChatToProfiles?.find(gctp => gctp.profile.id === profile.id)?.isAdmin;
+  }
+
+  public amIAdmin(chat: Chat) {
+    return this.isAdmin(chat, this.localService.getUser().profile);
   }
 }

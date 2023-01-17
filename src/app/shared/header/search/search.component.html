@@ -3,13 +3,9 @@
     'relative z-21 w-fit overflow-y-hidden transition-all ease-in-out duration-300 shadow-xl rounded-xl ' +
     (isOpen ? 'h-96' : 'h-0')
   ">
-    <div class="w-80 scrollbar overflow-y-scroll h-full p-2 rounded-xl bg-secondaryBg flex flex-col gap-2">
+    <div class="w-80 scrollbar overflow-y-scroll h-full p-2 rounded-xl bg-secondaryBg/80 backdrop-blur-lg flex flex-col gap-2">
         <h1 class="px-4 pt-2 font-bold text-xl">Search Results</h1>
-        <div *ngIf="loading" class="flex-center p-5 gap-px flex-1">
-            <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse"></div>
-            <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-200"></div>
-            <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-400"></div>
-        </div>
+        <app-loader *ngIf="loading" class="flex-1 flex-center"></app-loader>
         <div *ngIf="!loading" class="flex-1 py-3 flex flex-col gap-2">
             <!-- Profiles Search Results Section -->
             <div *ngIf="profiles.length"

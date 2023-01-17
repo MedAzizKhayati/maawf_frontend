@@ -9,8 +9,9 @@ import { Component, OnInit } from '@angular/core';
 export class ChatsComponent implements OnInit {
   chats: Chat[] = [];
   isGroupChatModalVisible = false;
+  isOpen = true;
   constructor(
-    private chatService: ChatService,
+    public chatService: ChatService,
   ) {
     this.closeGroupChatModal = this.closeGroupChatModal.bind(this);
   }
@@ -24,6 +25,10 @@ export class ChatsComponent implements OnInit {
 
   closeGroupChatModal() {
     this.isGroupChatModalVisible = false;
+  }
+
+  toggleChatList() {
+    this.isOpen = !this.isOpen;
   }
 
 }

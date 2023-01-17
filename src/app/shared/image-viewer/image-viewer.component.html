@@ -1,0 +1,13 @@
+<div [class]="'select-none p-10  w-screen h-screen fixed top-0 flex-center left-0 bg-black transition-all duration-300' +
+ (isVisible ?  ' bg-opacity-50 z-50 backdrop-blur-sm' : ' bg-opacity-0 -z-10')">
+    <img [src]="src" [class]="'w-auto rounded-lg h-auto max-w-full max-h-full duration-300 ' + 
+    (isVisible ? 'delay-200' : 'scale-75 opacity-0')"
+     alt="alt">
+
+    <!-- Close button -->
+    <div
+        class="absolute top-5 left-5 flex-center rounded-full transition-all duration-300 hover:bg-gray-600 p-1"
+    >
+        <hero-icon name="x" class="text-white h-8 w-8 cursor-pointer" (click)="close()"></hero-icon>
+    </div>
+</div>
