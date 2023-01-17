@@ -18,6 +18,7 @@ export class SettingsComponent {
 
   chatName: string;
   nickname: { [key: string]: string; } = {};
+  isConfirmingDelete: boolean;
 
   constructor(
     public chatService: ChatService,
@@ -57,8 +58,8 @@ export class SettingsComponent {
     });
   }
 
-  deleteGroupChat() {
-    this.chatService.deleteGroupChat(this.chat.id)
+  deleteGroupChat = async () => {
+    return this.chatService.deleteGroupChat(this.chat.id)
       .then(() => {
         this.toastService.success('Chat deleted');
         this.router.navigate(['/messenger']);
@@ -66,5 +67,9 @@ export class SettingsComponent {
       .catch(err => {
         this.toastService.error(err.error.errorMessage);
       });
+  }
+
+  toggleDeleteGroupChat = () => {
+    this.isConfirmingDelete = !this.isConfirmingDelete;
   }
 }

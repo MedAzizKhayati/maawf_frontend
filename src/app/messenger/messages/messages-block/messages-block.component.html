@@ -96,10 +96,6 @@
                 <app-user-avatar *ngFor="let profile of message.seen | keyvalue"
                     [profile]="profiles[profile.key]" size="0.875rem">
                 </app-user-avatar>
-                <!-- <div *ngFor="let profile of message.seen | keyvalue"
-                    class="w-3.5 h-3.5 text-[8.5px] flex-center text-black rounded-full bg-slate-300">
-                    {{ profiles[profile.key] && (profiles[profile.key] | initials) }}
-                </div> -->
             </div>
         </div>
         <p *ngIf="!right" class="text-sm text-gray-300 ml-4">

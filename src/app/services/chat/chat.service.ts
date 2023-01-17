@@ -243,7 +243,7 @@ export class ChatService extends Socket {
     return Object.values(this.chats);
   }
 
-  private preProcessMessage(message: Message, chat: Chat) {
+  private preProcessMessage(message: Message, chat: Chat, isWithinArray = true) {
     if (!message) return {} as Message;
     if (message.data.text && message.isEncrypted)
       try {
@@ -251,19 +251,19 @@ export class ChatService extends Socket {
           message.data.text,
           chat.symmetricKey
         );
-      } catch (error) {
-      }
-
+      } catch (error) {}
     message.createdAt = new Date(message.createdAt);
     message.updatedAt = new Date(message.updatedAt);
     message.seenByMe = !!message.seen[this.localService.getUser().profile.id];
     message.profile = chat.groupChatToProfiles.find(
       member => member.profile.id === message.profile.id
     )?.profile || message.profile;
+    if(!isWithinArray) return message;
     for (const id in message.seen) {
       const user = this.localService.getUser();
       if (id === user.profile.id) {
         delete message.seen[id];
+        continue;
       }
       const gctp = chat.groupChatToProfiles.find(
         member => member.profile.id === id
@@ -302,8 +302,7 @@ export class ChatService extends Socket {
         );
         chat.symmetricKey = symmetricKey;
       }
-    } catch (error) {
-    }
+    } catch (error) { }
     chat.createdAt = new Date(chat.createdAt);
     chat.updatedAt = new Date(chat.updatedAt);
     chat.pageSize = ChatService.MESSAGE_PAGE_SIZE;
@@ -314,7 +313,15 @@ export class ChatService extends Socket {
       chat.hasMore = oldChat.hasMore;
     else
       chat.hasMore = true;
-    chat.lastMessage = this.preProcessMessage(chat.lastMessage, chat);
+    oldChat?.groupChatToProfiles.forEach(gctp => {
+      const newGctp = chat.groupChatToProfiles.find(
+        gctp2 => gctp2.profile.id === gctp.profile.id
+      );
+      if (newGctp) {
+        newGctp.latestSeenMessage = gctp.latestSeenMessage;
+      }
+    });
+    chat.lastMessage = this.preProcessMessage(chat.lastMessage, chat, false);
     this.chats[chat.id] = chat;
     return chat;
   }
