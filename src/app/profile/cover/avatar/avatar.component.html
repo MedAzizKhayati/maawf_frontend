@@ -2,7 +2,7 @@
   <app-user-avatar [profile]="profile" [size]="'10rem'" >
   </app-user-avatar>
   <div *ngIf="me" class="absolute flex items-center justify-center top-0 right-0">
-    <hero-icon name="camera" type="outline" class="w-8 h-8 text-primaryBlue cursor-pointer"
+    <hero-icon name="camera" type="outline" class="w-8 h-8 text-teritiaryBg p-1 bg-white/50 cursor-pointer hover:bg-white/80 transition-colors rounded-full"
       (click)="fileInput.click()"></hero-icon>
     <input type="file" name="avatar" #fileInput  (change)="fileChanged.emit($event)" accept="image/*" hidden>
   </div>

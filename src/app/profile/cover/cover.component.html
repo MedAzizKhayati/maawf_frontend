@@ -3,8 +3,8 @@
     <img 
       [src]="profile?.cover | fullUrl | safeResourceUrl"
     class="w-full h-full object-cover bg-gray-800" alt="cover image">
-    <div *ngIf="me" class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-      <hero-icon name="camera" type="outline" class="w-8 h-8 text-primaryBlue cursor-pointer  absolute top-5 right-10"
+    <div *ngIf="me" class="flex-center absolute top-4 right-4">
+      <hero-icon name="camera" type="outline" class="w-8 h-8 text-teritiaryBg p-1 bg-white/50 cursor-pointer hover:bg-white/80 transition-colors rounded-full"
         (click)="fileInput.click()"></hero-icon>
       <input type="file" name="cover" #fileInput (change)="uploadFile($event)" accept="image/*" hidden>
     </div>
