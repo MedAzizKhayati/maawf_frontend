@@ -10,14 +10,14 @@ export class ChatNamePipe implements PipeTransform {
 
   constructor(
     private readonly localeService: LocaleService
-  ) {}
+  ) { }
 
-  transform(chat: Chat | null | undefined): string {
+  transform(chat?: Chat): string {
     if (!chat) return '';
+    
+    if (chat.name) return chat.name;
+    
     const me = this.localeService.getUser();
-    if (chat.name) {
-      return chat.name;
-    }
     if (chat.isPrivate) {
       const user = chat.groupChatToProfiles.find(user => user.profile.id !== me.profile.id);
       if (user) {

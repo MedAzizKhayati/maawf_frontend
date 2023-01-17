@@ -1,5 +1,11 @@
-<div
-  class="rounded-full w-40 h-40 border-4 border-white shadow shadow-blue-900 overflow-hidden"
->
-  <img class="w-full h-full object-cover" src="https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"/>
+<div class="rounded-full w-40 h-40 border-4 border-white shadow shadow-blue-900 overflow-hidden">
+  <img 
+  class="w-full h-full object-cover"
+  [src]="avatar | fullUrl | safeResourceUrl" />
+  <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+    <hero-icon name="camera" type="outline" class="w-8 h-8 text-primaryBlue cursor-pointer  absolute top-5 right-5"
+      (click)="fileInput.click()"></hero-icon>
+
+    <input type="file" name="avatar" #fileInput  (change)="fileChanged.emit($event)" accept="image/*" hidden>
+  </div>
 </div>

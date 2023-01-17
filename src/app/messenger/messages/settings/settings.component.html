@@ -1,0 +1,54 @@
+<div [class]="'max-w-sm hidden lg:flex flex-1 h-full p-7 pb-0 flex-col border-l border-secondaryBg overflow-hidden transition-all ease-out duration-300' + 
+(toggle ? ' ' : ' translate-x-full max-w-0 px-0 opacity-0')
+">
+    <!-- Chat name and Photo Section -->
+    <div class="flex-center flex-col gap-5">
+        <app-user-avatar [profile]="(chat | chatProfiles)[0]" size="5rem">
+        </app-user-avatar>
+        <div class="flex flex-col gap-2 items-center line-clamp-1">
+            <!-- Input to change chat name -->
+            <form *ngIf="!chat.isPrivate" #chatNameForm="ngForm" class="flex items-center justify-between"
+                (ngSubmit)="chatNameForm.form.valid && updateChatName()">
+                <input id="chatName" [(ngModel)]="chatName" name="chatName" class="text-xl text-primaryBlue outline-none bg-inherit pb-1
+                     focus:placeholder:text-primaryBlue/40 placeholder:text-primaryBlue"
+                    placeholder="{{ chat | chatName }}">
+                <label for="chatName">
+                    <hero-icon name="pencil" type="outline" class="cursor-pointer w-6 h-6 text-primaryBlue"></hero-icon>
+                </label>
+            </form>
+            <h1 *ngIf="chat.isPrivate" class="text-xl font-medium">{{ chat | chatName }}</h1>
+        </div>
+    </div>
+
+    <!-- Breaking Line -->
+    <div class="w-full h-px bg-secondaryBg my-5 mb-3"></div>
+
+    <div class="flex-1 flex flex-col gap-3 py-5">
+        <h1 class="flex items-center gap-5 text-lg mb-5">
+            <hero-icon name="user-group" type="outline" class="w-6 h-6"></hero-icon>
+            Chat Members
+        </h1>
+        <div *ngFor="let member of chat?.groupChatToProfiles" class="flex items-center gap-5">
+            <app-user-avatar [profile]="member.profile" size="2.5rem">
+            </app-user-avatar>
+            <div>
+                <form #nicknameForm="ngForm" (ngSubmit)="nicknameForm.form.valid && updateNickname(member.id)"
+                    class="flex items-center justify-between">
+                    <input [(ngModel)]="nickname[member.id]" name="nickname" [id]="member.id"
+                        class="text-primaryBlue outline-none bg-inherit pb-1
+                            focus:placeholder:no-underline focus:placeholder:text-primaryBlue/40 placeholder:text-primaryBlue placeholder:underline" [placeholder]="'Set Nickname'">
+                    <label [for]="member.id">
+                        <hero-icon name="pencil" type="outline"
+                            class="cursor-pointer w-4 h-4 text-primaryBlue"></hero-icon>
+                    </label>
+                </form>
+                <p class="text-sm font-thin opacity-80">{{member.profile.firstName}} {{member.profile.lastName}}</p>
+            </div>
+        </div>
+    </div>
+    <button (click)="deleteGroupChat()" *ngIf="chatService.amIAdmin(chat) && !chat.isPrivate"
+        class="mx-auto p-4 rounded-lg w-full flex-center text-red-600 font-medium gap-2 transition-colors hover:bg-secondaryBg">
+        <hero-icon name="trash" type="outline" class="w-5 h-5"></hero-icon>
+        Delete Conversation
+    </button>
+</div>

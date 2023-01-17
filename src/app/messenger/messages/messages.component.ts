@@ -1,50 +1,66 @@
 import { ChatService } from '@/app/services/chat/chat.service';
-import { UpdateMemberDto } from '@/app/services/chat/update-member.dto';
 import { Chat, Message } from '@/types/chat.type';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'messenger-messages',
   templateUrl: './messages.component.html',
 })
-export class MessagesComponent implements OnInit {
-  @ViewChild('messagesDiv')
-  messagesDiv?: ElementRef;
+export class MessagesComponent {
+  @ViewChild('messagesContainer')
+  messagesContainer?: ElementRef;
   id = '';
   settings: boolean = true;
   chat?: Chat;
   messages: Message[][] = [];
   subscriptions: Subscription[] = [];
   loading = false;
-  nickname: any = {};
-  chatName = '';
+  imageViewer = false;
+  imageViewerSrc = '';
 
   constructor(
-    private chatService: ChatService,
-    private route: ActivatedRoute
+    public chatService: ChatService,
+    private route: ActivatedRoute,
+    private router: Router,
+    public toastService: ToastrService,
   ) {
-    this.route.params.subscribe(params => {
-      if (this.messagesDiv) {
-        this.messagesDiv.nativeElement.scrollTop = 0;
-      }
+    const sub = this.route.params.subscribe(params => {
       this.id = params['id'];
-      this.chat = this.chatService.getCurrentChats()[this.id];
-      this.messages = this.chatService.getMessageBlocks(this.id);
-      this.subscriptions.forEach(sub => sub.unsubscribe());
-      const chatSub = this.chatService.subscribeToChat(this.id).subscribe((chat) => {
-        this.chat = chat;
-        this.messages = this.chatService.getMessageBlocks(this.id);
-        this.chat.groupChatToProfiles.forEach((member) => {
-          this.nickname[member.id] = member.nickname;
-        });
-      });
-      this.getMessages();
-      this.subscriptions = [
-        chatSub,
-      ]
+      this.init();
     });
+    this.subscriptions.push(sub);
+  }
+
+  private init() {
+    if (this.messagesContainer) this.messagesContainer.nativeElement.scrollTop = 0;
+    this.navigateIfNoChat();
+    this.update();
+    this.getMessages();
+    const chatSub =
+      this.chatService.subscribeToChat(this.id).subscribe(
+        this.update.bind(this)
+      );
+    this.subscriptions.push(chatSub);
+  }
+
+  private navigateIfNoChat() {
+    this.chatService.getChat(this.id).then(chat => {
+      this.chat = chat;
+      console.log(chat);
+      if (!this.chat) this.router.navigate(['messenger'])
+    }).catch(err => {
+      this.toastService.error(err.error.errorMessage);
+      this.router.navigate(['messenger'])
+    });
+  }
+
+  private update(chat?: Chat) {
+    this.messages = this.chatService.getMessageBlocks(this.id);
+    if (!chat) return;
+    this.chat = chat;
   }
 
   async getMessages() {
@@ -54,35 +70,17 @@ export class MessagesComponent implements OnInit {
     this.loading = false;
   }
 
-  ngOnInit(): void {
+  closeImageViewer() {
+    this.imageViewer = false;
   }
 
-  onScroll() {
-    const loader = document.getElementById('loader');
-    if (loader) {
-      const rect = loader.getBoundingClientRect();
-      if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-        this.getMessages();
-      }
-    }
-  }
-
-  updateChatName() {
-    this.chatName = this.chatName.trim();
-    if (this.chatName === this.chat?.name || !this.chatName) return;
-    this.chatService.updateChatName(this.id, this.chatName);
+  openImageViewer(src: string) {
+    this.imageViewerSrc = src;
+    this.imageViewer = true;
   }
 
   toggleSettings() {
     this.settings = !this.settings;
-  }
-
-  updateNickname(id: string) {
-    const updateMemberDto = new UpdateMemberDto(
-      id,
-      this.nickname[id]
-    );
-    this.chatService.updateGroupMember(this.id, updateMemberDto);
   }
 
   ngOnDestroy() {
