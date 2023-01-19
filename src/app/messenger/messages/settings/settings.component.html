@@ -3,9 +3,8 @@
 ">
     <!-- Chat name and Photo Section -->
     <div class="flex-center flex-col gap-5">
-        <div class="w-20 h-20 text-3xl text-medium rounded-full bg-slate-400 text-gray-800 flex-center">
-            {{ (chat | chatProfiles)[0] | initials }}
-        </div>
+        <app-user-avatar [profile]="(chat | chatProfiles)[0]" size="5rem">
+        </app-user-avatar>
         <div class="flex flex-col gap-2 items-center line-clamp-1">
             <!-- Input to change chat name -->
             <form *ngIf="!chat.isPrivate" #chatNameForm="ngForm" class="flex items-center justify-between"
@@ -30,9 +29,8 @@
             Chat Members
         </h1>
         <div *ngFor="let member of chat?.groupChatToProfiles" class="flex items-center gap-5">
-            <div class="w-10 h-10 rounded-full bg-slate-400 text-gray-800 flex-center">
-                {{ member.profile | initials}}
-            </div>
+            <app-user-avatar [profile]="member.profile" size="2.5rem">
+            </app-user-avatar>
             <div>
                 <form #nicknameForm="ngForm" (ngSubmit)="nicknameForm.form.valid && updateNickname(member.id)"
                     class="flex items-center justify-between">
@@ -48,9 +46,21 @@
             </div>
         </div>
     </div>
-    <button *ngIf="chatService.amIAdmin(chat) && !chat.isPrivate"
-        class="mx-auto p-4 rounded-lg w-full flex-center text-red-600 font-medium gap-2 transition-colors hover:bg-secondaryBg">
+    <button (click)="toggleDeleteGroupChat()" *ngIf="chatService.amIAdmin(chat) && !chat.isPrivate"
+        class="mx-auto py-4 toggleDeleteGroupChat-4 rounded-lg w-full flex-center text-red-600 font-medium gap-2 transition-colors hover:bg-secondaryBg">
         <hero-icon name="trash" type="outline" class="w-5 h-5"></hero-icon>
         Delete Conversation
     </button>
 </div>
+
+<!-- This modal for confirming deletion of group chat -->
+<app-modal title="Delete Conversation" [onClose]="toggleDeleteGroupChat" [onSubmit]="deleteGroupChat"
+    submitText="Delete" [isVisible]="isConfirmingDelete" [template]="confirmModal">
+</app-modal>
+
+<ng-template #confirmModal>
+    <div class="flex flex-col my-5">
+        <p class="text-lg">Are you sure you want to delete this conversation?</p>
+        <p class="text-sm text-gray-400">This action cannot be undone.</p>
+    </div>
+</ng-template>

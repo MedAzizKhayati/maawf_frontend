@@ -12,6 +12,7 @@ export enum Endpoints {
   SendMessage = "/chat/send-message/",
   UpdateGroupMember = "/chat/members/",
   CreateGroupChat = "/chat",
+  DeleteGroupChat = "/chat/",
   /* Profile */
   Profile = "/profile/",
   /* FriendShip */

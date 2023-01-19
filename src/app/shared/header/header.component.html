@@ -18,8 +18,7 @@
    + (isNotificationsOpen ? 'hover:bg-primaryBg': '') ">
     <hero-icon name="bell" hostDisplay="inlineBlock" type="outline"
       class="cursor-pointer select-none w-8 h-8 text-white" (click)="onNotificationsClick()"></hero-icon>
-    <div
-      *ngIf="incomingRequests.length > 0"
+    <div *ngIf="incomingRequests.length > 0"
       class="absolute -right-0.5 select-none pointer-events-none -top-0.5 rounded-full h-4 w-4 flex-center bg-notification-background text-white font-medium text-xs">
       {{ incomingRequests.length }}
     </div>
@@ -29,10 +28,12 @@
     </div>
   </div>
   <div class="relative">
-    <div class="aspect-square h-12 bg-slate-300 rounded-full cursor-pointer
-     flex-center text-xl font-medium text-primaryBg" (click)="onAvatarClick()">
-      {{ profile | initials }}
-    </div>
+    <app-user-avatar 
+    (click)="onAvatarClick()" 
+    [profile]="profile"
+    class="bg-slate-300 cursor-pointer"
+    >
+    </app-user-avatar>
     <div class="absolute pt-4 z-40 top-full -right-1">
       <app-dropdown (toggle)="handleToggle($event)" [isOpen]="isDropdownOpen"></app-dropdown>
     </div>

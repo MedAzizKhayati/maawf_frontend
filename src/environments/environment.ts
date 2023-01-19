@@ -4,8 +4,8 @@
 export const environment = {
   production: false,
   title: "Maawf",
-  apiURL: "http://localhost:5000",
-  wsUrl: "ws://localhost:5000",
+  apiURL: "https://api.maawf.me",
+  wsUrl: "wss://api.maawf.me",
 };
 
 /*

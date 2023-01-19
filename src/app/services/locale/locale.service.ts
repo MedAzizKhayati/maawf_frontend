@@ -1,10 +1,14 @@
 import User from "@/types/user.type";
 import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class LocaleService {
+  private userSubject = new Subject<User>();
+  public user$ = this.userSubject.asObservable();
+
   constructor() { }
 
   public getToken() {
@@ -25,6 +29,7 @@ export class LocaleService {
       ...user,
       password: user.password || oldUser.password,
     }));
+    this.userSubject.next(user);
   }
 
   public clear() {

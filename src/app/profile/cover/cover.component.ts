@@ -1,7 +1,9 @@
 import { ChatService } from "@/app/services/chat/chat.service";
 import { FriendshipsService } from "@/app/services/friendships/friendships.service";
+import { ProfileService } from "@/app/services/profile/profile.service";
+import { UpdateProfileDto } from "@/app/services/profile/update-profile.dto";
 import { Profile } from "@/types/profile.type";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 
@@ -9,7 +11,7 @@ import { ToastrService } from "ngx-toastr";
   selector: "app-cover",
   templateUrl: "./cover.component.html",
 })
-export class CoverComponent implements OnInit {
+export class CoverComponent {
   @Input()
   profile?: Profile;
 
@@ -21,9 +23,8 @@ export class CoverComponent implements OnInit {
     private readonly chatService: ChatService,
     private readonly router: Router,
     private toastrService: ToastrService,
+    private profileService: ProfileService,
   ) { }
-
-  ngOnInit(): void { }
 
   sendFriendRequest() {
     if (this.profile) {
@@ -65,4 +66,28 @@ export class CoverComponent implements OnInit {
   showError(message: string) {
     this.toastrService.error("Invitation Failed!", message);
   }
+
+  uploadFile(event: any) {
+    const updateProfileDto = new UpdateProfileDto();
+    const file = event.target.files[0];
+    let avatar = true;
+    if (event.target.name === 'cover') {
+      updateProfileDto.cover = file;
+      avatar = false;
+    }
+    else if (event.target.name === 'avatar') {
+      updateProfileDto.avatar = file;
+    }
+    this.profileService.updateProfile(updateProfileDto)
+      .then(() => {
+        this.toastrService.success(
+          "Profile updated!",
+          (avatar ? "Avatar " : "Cover ") + "updated successfully"
+        );
+      })
+      .catch((e) => {
+        this.toastrService.error(e.error.errorMessage);
+      });
+  }
+
 }

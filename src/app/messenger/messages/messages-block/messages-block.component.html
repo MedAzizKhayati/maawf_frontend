@@ -2,11 +2,10 @@
     'w-full flex text-sm md:text-base gap-2 items-end relative': true,
     'flex-row-reverse': right
 }">
-    <div *ngIf="!right" class="h-9 aspect-square text-gray-600 rounded-full flex-center bg-slate-300" [ngClass]="{
+    <app-user-avatar *ngIf="!right" [ngClass]="{
         'mb-4': (messages[0].seen | keyvalue).length
-    }">
-        {{ messages[0].profile | initials }}
-    </div>
+    }" [profile]="messages[0].profile" size="2.25rem">
+    </app-user-avatar>
     <div class="w-full flex flex-col-reverse gap-0.5" [ngClass]="{'items-end': right}">
         <div class="w-full" *ngFor="let message of messages; let index = index; let first = first; let last = last">
             <div [ngClass]="{
@@ -94,10 +93,9 @@
             </div>
 
             <div class="w-full flex flex-row-reverse mt-px gap-px select-none">
-                <div *ngFor="let profile of message.seen | keyvalue"
-                    class="w-3.5 h-3.5 text-[8.5px] flex-center text-black rounded-full bg-slate-300">
-                    {{ profiles[profile.key] && (profiles[profile.key] | initials) }}
-                </div>
+                <app-user-avatar *ngFor="let profile of message.seen | keyvalue"
+                    [profile]="profiles[profile.key]" size="0.875rem">
+                </app-user-avatar>
             </div>
         </div>
         <p *ngIf="!right" class="text-sm text-gray-300 ml-4">

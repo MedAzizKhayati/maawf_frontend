@@ -19,6 +19,8 @@ import { SearchComponent } from './header/search/search.component';
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
 import { LoaderComponent } from './loader/loader.component';
 import { ImageViewerComponent } from './image-viewer/image-viewer.component';
+import { FullUrlPipe } from './pipes/full-url.pipe';
+import { UserAvatarComponent } from './user-avatar/user-avatar.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { ImageViewerComponent } from './image-viewer/image-viewer.component';
     InfiniteScrollDirective,
     LoaderComponent,
     ImageViewerComponent,
+    FullUrlPipe,
+    UserAvatarComponent,
   ],
   imports: [
     CommonModule,
@@ -68,6 +72,8 @@ import { ImageViewerComponent } from './image-viewer/image-viewer.component';
     InfiniteScrollDirective,
     LoaderComponent,
     ImageViewerComponent,
+    FullUrlPipe,
+    UserAvatarComponent,
   ],
 })
 export class SharedModule { }

@@ -2,6 +2,7 @@ import { ChatService } from '@/app/services/chat/chat.service';
 import { UpdateMemberDto } from '@/app/services/chat/update-member.dto';
 import { Chat } from '@/types/chat.type';
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -17,10 +18,12 @@ export class SettingsComponent {
 
   chatName: string;
   nickname: { [key: string]: string; } = {};
+  isConfirmingDelete: boolean;
 
   constructor(
     public chatService: ChatService,
-    public toastService: ToastrService
+    public toastService: ToastrService,
+    public router: Router,
   ) { }
 
   updateChatName() {
@@ -28,10 +31,10 @@ export class SettingsComponent {
     if (this.chatName === this.chat?.name || !this.chatName) return;
     this.chatService.updateChatName(this.chat.id, this.chatName)
       .then(() => {
-        this.toastService.success('Chat name updated');
+        this.toastService.success('Chat updated!', 'Chat name updated successfully');
       })
       .catch(err => {
-        this.toastService.error(err.error.errorMessage);
+        this.toastService.error('An error has occured', err.error.errorMessage);
       });
   }
 
@@ -42,10 +45,10 @@ export class SettingsComponent {
     );
     this.chatService.updateGroupMember(this.chat.id, updateMemberDto)
       .then(() => {
-        this.toastService.success('Nickname updated');
+        this.toastService.success('Chat updated!', 'Nickname updated successfully');
       })
       .catch(err => {
-        this.toastService.error(err.error.errorMessage);
+        this.toastService.error('An error has occured', err.error.errorMessage);
       });
   }
 
@@ -53,5 +56,20 @@ export class SettingsComponent {
     this.chat.groupChatToProfiles.forEach((member) => {
       this.nickname[member.id] = member.nickname;
     });
+  }
+
+  deleteGroupChat = async () => {
+    return this.chatService.deleteGroupChat(this.chat.id)
+      .then(() => {
+        this.toastService.success('Chat deleted');
+        this.router.navigate(['/messenger']);
+      })
+      .catch(err => {
+        this.toastService.error(err.error.errorMessage);
+      });
+  }
+
+  toggleDeleteGroupChat = () => {
+    this.isConfirmingDelete = !this.isConfirmingDelete;
   }
 }

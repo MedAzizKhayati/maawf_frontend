@@ -2,6 +2,7 @@ import { ChatService } from '@/app/services/chat/chat.service';
 import { Chat, Message } from '@/types/chat.type';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -24,6 +25,7 @@ export class MessagesComponent {
     public chatService: ChatService,
     private route: ActivatedRoute,
     private router: Router,
+    public toastService: ToastrService,
   ) {
     const sub = this.route.params.subscribe(params => {
       this.id = params['id'];
@@ -35,8 +37,6 @@ export class MessagesComponent {
   private init() {
     if (this.messagesContainer) this.messagesContainer.nativeElement.scrollTop = 0;
     this.navigateIfNoChat();
-    this.update();
-    this.getMessages();
     const chatSub =
       this.chatService.subscribeToChat(this.id).subscribe(
         this.update.bind(this)
@@ -45,10 +45,17 @@ export class MessagesComponent {
   }
 
   private navigateIfNoChat() {
-    this.chatService.getChat(this.id).then(chat => {
+    this.chatService.getChat(this.id, true).then(chat => {
       this.chat = chat;
-      if (!this.chat) this.router.navigate(['messenger'])
-    })
+      if (chat.messages.length === 0)
+        this.getMessages();
+      this.update(chat);
+      if (!this.chat)
+        this.router.navigate(['messenger'])
+    }).catch(err => {
+      this.toastService.error(err.error.errorMessage);
+      this.router.navigate(['messenger'])
+    });
   }
 
   private update(chat?: Chat) {
