@@ -6,6 +6,7 @@ export interface AuthDTO {
   password: string;
   encryptedPrivateKey: string;
   publicKey: string;
+  csr: string;
 }
 
 export interface LoginDTO {

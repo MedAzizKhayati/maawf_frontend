@@ -1,5 +1,6 @@
 import User from "@/types/user.type";
 import { Injectable } from "@angular/core";
+import { pki } from "node-forge";
 import { firstValueFrom } from "rxjs";
 import { CryptographyService } from "../cryptography/cryptography.service";
 import { Endpoints } from "../http/endpoints";
@@ -20,8 +21,21 @@ export class AuthService {
 
   public async register(authDTO: AuthDTO) {
     const keys = this.cryptographyService.generatedRsaKeyPair(authDTO.password);
-    authDTO = { ...authDTO, ...keys };
-
+    const csr = this.cryptographyService.createCertificationRequest(
+      this.cryptographyService.decryptPrivateKey(keys.encryptedPrivateKey, authDTO.password),
+      pki.publicKeyFromPem(keys.publicKey),
+      [
+        {
+          name: "commonName",
+          value: authDTO.firstName + " " + authDTO.lastName,
+        },
+        {
+          name: "emailAddress",
+          value: authDTO.email,
+        },
+      ]
+    );
+    authDTO = { ...authDTO, ...keys, csr };
     const result = await firstValueFrom(
       await this.httpService.post(Endpoints.Register, authDTO)
     );
