@@ -10,4 +10,5 @@ export interface Profile {
     avatar?: string;
     cover?: string;
     publicKey: string;
+    certificate: string;
 }

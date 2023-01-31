@@ -42,6 +42,10 @@ export class FriendshipsService {
 
   public async acceptFriendRequest(profile: Profile) {
     const myProfile = this.profileService.getMyProfile();
+    const publicKey = this.cryptographyService.getPublicKeyFromCertificate(profile.certificate);
+    if (publicKey !== profile.publicKey) {
+      throw new Error("The person you are trying to accept the request from has an invalid certificate");
+    }
     const symmetricKey = this.cryptographyService.generateSymmetricKey();
     const senderEncryptedSymmetricKey = this.cryptographyService.encryptSymmetricKey(
       profile.publicKey,

@@ -2,6 +2,7 @@ import { FriendshipsService } from '@/app/services/friendships/friendships.servi
 import { Friendship } from '@/types/friendship.type';
 import { Profile } from '@/types/profile.type';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-notifications',
@@ -20,7 +21,8 @@ export class NotificationsComponent implements OnInit {
 
   constructor(
     private readonly friendshipService: FriendshipsService,
-  ) {}
+    private readonly toastService: ToastrService
+  ) { }
 
   ngOnInit(): void {
   }
@@ -30,10 +32,12 @@ export class NotificationsComponent implements OnInit {
   }
 
   async acceptRequest(profile: Profile) {
-    const req = await this.friendshipService.acceptFriendRequest(profile);
-    if (req.status === "accepted") {
-      this.incomingRequests = this.incomingRequests.filter((request) => request.sender.id !== profile.id);
-    }
+    await this.friendshipService.acceptFriendRequest(profile)
+      .catch((err) => {
+        this.toastService.error(err?.error?.errorMessage || err);
+        throw err;
+      });
+    this.incomingRequests = this.incomingRequests.filter((request) => request.sender.id !== profile.id);
   }
 
   async declineRequest(id: string) {

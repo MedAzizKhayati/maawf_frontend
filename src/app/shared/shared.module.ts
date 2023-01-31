@@ -21,6 +21,7 @@ import { LoaderComponent } from './loader/loader.component';
 import { ImageViewerComponent } from './image-viewer/image-viewer.component';
 import { FullUrlPipe } from './pipes/full-url.pipe';
 import { UserAvatarComponent } from './user-avatar/user-avatar.component';
+import { TypingAnimationComponent } from './typing-animation/typing-animation.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { UserAvatarComponent } from './user-avatar/user-avatar.component';
     ImageViewerComponent,
     FullUrlPipe,
     UserAvatarComponent,
+    TypingAnimationComponent,
   ],
   imports: [
     CommonModule,
@@ -74,6 +76,7 @@ import { UserAvatarComponent } from './user-avatar/user-avatar.component';
     ImageViewerComponent,
     FullUrlPipe,
     UserAvatarComponent,
+    TypingAnimationComponent,
   ],
 })
 export class SharedModule { }

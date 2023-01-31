@@ -17,6 +17,11 @@ export class CryptographyService {
     return AES.decrypt(encryptedMessage, symmetricKey).toString(enc.Utf8);
   }
 
+  public getPublicKeyFromCertificate(certificate: string) {
+    const pubKey = pki.certificateFromPem(certificate).publicKey;
+    return pki.publicKeyToPem(pubKey);
+  }
+
   public encryptSymmetricKey(publicKey: string, symmetricKey: string) {
     const publicKey_ = pki.publicKeyFromPem(publicKey);
     return publicKey_.encrypt(symmetricKey);
