@@ -1,5 +1,6 @@
 import { ChatService } from '@/app/services/chat/chat.service';
 import { Chat, Message } from '@/types/chat.type';
+import { Profile } from '@/types/profile.type';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -20,6 +21,8 @@ export class MessagesComponent {
   loading = false;
   imageViewer = false;
   imageViewerSrc = '';
+  typingProfile?: Profile | null;
+  typingTimeout?: NodeJS.Timeout;
 
   constructor(
     public chatService: ChatService,
@@ -41,7 +44,17 @@ export class MessagesComponent {
       this.chatService.subscribeToChat(this.id).subscribe(
         this.update.bind(this)
       );
-    this.subscriptions.push(chatSub);
+    const typingSub = this.chatService.subscribeToChatTypingEvent(this.id)
+      .subscribe(profile => {
+        if (this.typingTimeout)
+          clearTimeout(this.typingTimeout);
+        this.typingProfile = profile;
+        this.typingTimeout = setTimeout(() => {
+          this.typingProfile = null;
+          this.typingTimeout = undefined;
+        }, 1000);
+      });
+    this.subscriptions.push(chatSub, typingSub);
   }
 
   private navigateIfNoChat() {

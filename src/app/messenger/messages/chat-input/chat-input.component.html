@@ -35,11 +35,15 @@
         #messageInput
         rows="1"
         maxlength="700"
+        autocomplete="off" 
+        name="message" 
         (drop)="onDrop($event)"
-        (keydown.enter)="sendMessage($event)"
         (input)="adjustHeight(messageInput)"
-        (paste)="onPaste($event)" autocomplete="off" name="message" [(ngModel)]="message"
-            class="w-full max-h-48 bg-secondaryBg outline-none basis-auto resize-none scrollbar" placeholder="Aa">
+        (paste)="onPaste($event)" 
+        (keydown.enter)="sendMessage($event)"
+        (keydown)="triggerTypingEvent($event)"
+        [(ngModel)]="message"
+        class="w-full max-h-48 bg-secondaryBg outline-none basis-auto resize-none scrollbar" placeholder="Aa">
         </textarea>
     </div>
     <div class="flex items-center p-1.5 cursor-pointer  transition-colors rounded-full hover:bg-secondaryBg">

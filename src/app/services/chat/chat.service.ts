@@ -17,6 +17,7 @@ import { UpdateMemberDto } from './update-member.dto';
 export type ChatMap = { [key: string]: Chat };
 export type LastMessageSeen = { id: string, profile: Profile };
 type IncomingMessage = { groupChatId: string, message: Message };
+type IncomingTyping = { groupChatId: string, profileId: string };
 @Injectable({
   providedIn: 'root'
 })
@@ -64,6 +65,23 @@ export class ChatService extends Socket {
     this.chats[chat.id] = { ...this.chats[chat.id] };
     this.chatsSubject.next(this.chats);
     return this.chats[chat.id];
+  }
+
+  public subscribeToChatTypingEvent(chatId: string) {
+    return this.fromEvent<IncomingTyping>("typing").pipe(
+      filter(data => data.groupChatId === chatId),
+      map(data => {
+        const chat = this.chats[chatId];
+        if (!chat) return null;
+        return chat.groupChatToProfiles.find(p => p.profile.id === data.profileId)?.profile;
+      })
+    );
+  }
+
+  public async triggerTypingEvent(chatId: string) {
+    return await firstValueFrom(
+      await this.httpService.post(Endpoints.Typing + chatId)
+    );
   }
 
   public subscribeToIncomingMessages() {
@@ -251,14 +269,14 @@ export class ChatService extends Socket {
           message.data.text,
           chat.symmetricKey
         );
-      } catch (error) {}
+      } catch (error) { }
     message.createdAt = new Date(message.createdAt);
     message.updatedAt = new Date(message.updatedAt);
     message.seenByMe = !!message.seen[this.localService.getUser().profile.id];
     message.profile = chat.groupChatToProfiles.find(
       member => member.profile.id === message.profile.id
     )?.profile || message.profile;
-    if(!isWithinArray) return message;
+    if (!isWithinArray) return message;
     for (const id in message.seen) {
       const user = this.localService.getUser();
       if (id === user.profile.id) {

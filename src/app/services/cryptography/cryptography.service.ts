@@ -17,6 +17,11 @@ export class CryptographyService {
     return AES.decrypt(encryptedMessage, symmetricKey).toString(enc.Utf8);
   }
 
+  public getPublicKeyFromCertificate(certificate: string) {
+    const pubKey = pki.certificateFromPem(certificate).publicKey;
+    return pki.publicKeyToPem(pubKey);
+  }
+
   public encryptSymmetricKey(publicKey: string, symmetricKey: string) {
     const publicKey_ = pki.publicKeyFromPem(publicKey);
     return publicKey_.encrypt(symmetricKey);
@@ -35,7 +40,7 @@ export class CryptographyService {
   }
 
   public generatedRsaKeyPair(passPhrase: string) {
-    const keys = pki.rsa.generateKeyPair(256);
+    const keys = pki.rsa.generateKeyPair(2048);
     const encryptedPrivateKey = pki.encryptRsaPrivateKey(
       keys.privateKey,
       passPhrase
@@ -46,6 +51,14 @@ export class CryptographyService {
 
   public generateSymmetricKey() {
     return this.randomString();
+  }
+
+  public createCertificationRequest(privateKey: pki.rsa.PrivateKey, publicKey: pki.PublicKey, subject: pki.CertificateField[]) {
+    const certificationRequest = pki.createCertificationRequest();
+    certificationRequest.publicKey = publicKey;
+    certificationRequest.setSubject(subject);
+    certificationRequest.sign(privateKey);
+    return pki.certificationRequestToPem(certificationRequest);
   }
 
   public randomString(bits = 128) {

@@ -2,8 +2,11 @@
     <div class="flex flex-col flex-1 relative">
         <div #messagesContainer infiniteScroll [threshold]="400" (onReachedEnd)="getMessages()"
             class="flex flex-col-reverse gap-5 p-7 overflow-x-hidden overflow-y-auto flex-1 scrollbar pt-28">
+            <!-- Animation To Showcase Certain person is typing -->
+            <app-typing-animation *ngIf="typingProfile" [profile]="typingProfile"></app-typing-animation>
+
             <messages-block *ngFor="let block of messages; let first = first" [messages]="block"
-               (openImage)="openImageViewer($event)" [shouldMarkAsSeen]="first" [chat]="chat">
+                (openImage)="openImageViewer($event)" [shouldMarkAsSeen]="first" [chat]="chat">
             </messages-block>
             <!-- Loader  -->
             <app-loader *ngIf="(!chat || chat.hasMore) && loading"></app-loader>

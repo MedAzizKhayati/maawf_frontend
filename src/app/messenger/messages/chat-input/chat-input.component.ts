@@ -1,10 +1,7 @@
 import { ChatService } from '@/app/services/chat/chat.service';
 import { SendMessageDto } from '@/app/services/chat/send-message.dto';
-import { CryptographyService } from '@/app/services/cryptography/cryptography.service';
-import { LocaleService } from '@/app/services/locale/locale.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { bindCallback, map, Observable, of, tap } from 'rxjs';
 
 @Component({
   selector: 'chat-input',
@@ -55,6 +52,12 @@ export class ChatInputComponent implements OnInit {
 
   ngDoCheck() {
     this.message = this.message.trim();
+  }
+
+  triggerTypingEvent($event: any) {
+    // if enter then ignore
+    if ($event.keyCode === 13) return;
+    this.chatService.triggerTypingEvent(this.id);
   }
 
   sendMessage(e?: any) {
