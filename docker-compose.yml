@@ -6,5 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - API_DOMAIN=api.maawf.tech
     ports:
       - "3000:80"

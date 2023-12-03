@@ -1,6 +1,9 @@
+const windowApiDomain = window?.["env"]?.["API_DOMAIN"];
+const apiDomain = windowApiDomain ? windowApiDomain : "api.maawf.tech";
+
 export const environment = {
   production: true,
   title: "Maawf",
-  apiURL: "https://api.maawf.tech",
-  wsUrl: "wss://api.maawf.tech",
+  apiURL: `https://${apiDomain}`,
+  wsUrl: `wss://${apiDomain}`,
 };
