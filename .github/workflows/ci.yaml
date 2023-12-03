@@ -1,17 +1,18 @@
 name: Ci/CD Pipeline
 
 env:
-  APP_NAME: 'maaawf_frontend'
+  APP_NAME: "maaawf_frontend"
   TAG: ${{ github.sha }}
 
 on:
   push:
-    branches: ['dev']
+    branches: ["dev"]
   pull_request:
-    branches: ['dev']
+    branches: ["dev"]
 
 jobs:
-  cicd-pipeline:
+  build-push:
+    name: "Build and Push to Docker Hub"
     runs-on: ubuntu-latest
 
     steps:
@@ -27,4 +28,28 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${{ env.TAG }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${{ env.TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:latest
+
+  deploy:
+    name: "Trigger deployment"
+    needs: build-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - if: github.event_name == 'pull_request'
+        run: exit 0
+
+      - name: Trigger deploy workflow of backend
+        uses: convictional/trigger-workflow-and-wait@v1.6.1
+        with:
+          owner: ${{ github.repository_owner }}
+          repo: maaawf_backend
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow_file_name: deploy.yml
+          ref: dev
+          wait_interval: 10
+          propagate_failure: true
+          trigger_worflow: true
+          wait_workflow: true
