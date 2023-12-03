@@ -45,7 +45,7 @@ jobs:
         uses: convictional/trigger-workflow-and-wait@v1.6.5
         with:
           owner: ${{ github.repository_owner }}
-          repo: maaawf_backend
+          repo: maawf_backend
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow_file_name: deploy.yaml
           ref: dev
