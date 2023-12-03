@@ -42,12 +42,12 @@ jobs:
         run: exit 0
 
       - name: Trigger deploy workflow of backend
-        uses: convictional/trigger-workflow-and-wait@v1.6.1
+        uses: convictional/trigger-workflow-and-wait@v1.6.5
         with:
           owner: ${{ github.repository_owner }}
           repo: maaawf_backend
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow_file_name: deploy.yml
+          workflow_file_name: deploy.yaml
           ref: dev
           wait_interval: 10
           propagate_failure: true
