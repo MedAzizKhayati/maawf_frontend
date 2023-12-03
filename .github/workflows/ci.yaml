@@ -51,5 +51,5 @@ jobs:
           ref: dev
           wait_interval: 10
           propagate_failure: true
-          trigger_worflow: true
+          trigger_workflow: true
           wait_workflow: true
