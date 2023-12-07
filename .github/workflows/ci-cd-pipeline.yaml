@@ -6,9 +6,9 @@ env:
 
 on:
   push:
-    branches: ["dev"]
+    branches: ['dev', 'test', 'prod']
   pull_request:
-    branches: ["dev"]
+    branches: ['dev']
 
 jobs:
   build-push:
@@ -33,22 +33,20 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:latest
 
   deploy:
-    name: "Trigger deployment"
+    if: github.event_name == 'pull_request'
+    name: Trigger deployment
     needs: build-push
     runs-on: ubuntu-latest
 
     steps:
-      - if: github.event_name == 'pull_request'
-        run: exit 0
-
-      - name: Trigger deploy workflow of backend
+      - name: Trigger deploy workflow
         uses: convictional/trigger-workflow-and-wait@v1.6.5
         with:
           owner: ${{ github.repository_owner }}
           repo: maawf_backend
           github_token: ${{ secrets.PERSONAL_GITHUB_ACCESS_TOKEN }}
           workflow_file_name: deploy.yaml
-          ref: dev
+          ref: ${{ github.ref }}
           wait_interval: 10
           propagate_failure: true
           trigger_workflow: true
