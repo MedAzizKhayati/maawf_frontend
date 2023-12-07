@@ -12,6 +12,7 @@ on:
 
 jobs:
   build-push:
+    if: github.event_name != 'pull_request' && !startsWith(github.event.head_commit.message, 'ci:')
     name: "Build and Push to Docker Hub"
     runs-on: ubuntu-latest
 
@@ -33,7 +34,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:latest
 
   deploy:
-    if: github.event_name == 'pull_request'
+    if: github.event_name != 'pull_request'
     name: Trigger deployment
     needs: build-push
     runs-on: ubuntu-latest
