@@ -8,7 +8,7 @@ import { Component } from "@angular/core";
 export class AppComponent {
   environment?: string;
   constructor() {
-    if (environment.apiURL.includes("develop")) {
+    if (environment.apiURL.includes("dev")) {
       this.environment = "develop";
     } else if (environment.apiURL.includes("test")) {
       this.environment = "test";
