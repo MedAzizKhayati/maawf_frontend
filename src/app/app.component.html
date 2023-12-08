@@ -1,3 +1,9 @@
 <main class="bg-primaryBg text-white min-h-screen h-fit">
     <router-outlet></router-outlet>
+
+    <!-- if environment is defined, then show a static tag on the bottom left  -->
+    <div *ngIf="environment"
+        class="fixed flex-center top-0 left-0 text-white bg-green-600 p-1 px-3 rounded-br opacity-70">
+        <span class="text-xs">{{environment}}</span>
+    </div>
 </main>
